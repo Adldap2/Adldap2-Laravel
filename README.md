@@ -25,3 +25,11 @@ You can perform all methods on Adldap through its facade like so:
     $user = Adldap::users()->find('john doe');
     
     $search = Adldap::search()->where('cn', '=', 'John Doe')->get();
+    
+    
+    if(Adldap::authenticate($username, $password))
+    {
+        // Passed!
+    }
+
+To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2);
