@@ -16,6 +16,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Connection
+    |--------------------------------------------------------------------------
+    |
+    | The connection class to use to run operations on.
+    |
+    | Custom connection classes must implement \Adldap\Connections\ConnectionInterface
+    |
+    */
+
+    'connection' => Adldap\Connections\Ldap::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Connection Settings
     |--------------------------------------------------------------------------
     |

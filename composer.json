@@ -10,10 +10,7 @@
         "laravel/framework": "5.*"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
-        "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0",
-        "phpspec/phpspec": "~2.1"
+        "orchestra/testbench": "~3.0"
     },
     "archive": {
         "exclude": ["/tests"]

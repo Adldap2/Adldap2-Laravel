@@ -42,7 +42,7 @@ class AdldapServiceProvider extends ServiceProvider
                 throw new ConfigurationMissingException($message);
             }
 
-            return new Adldap($config['connection_settings'], null, $config['auto_connect']);
+            return new Adldap($config['connection_settings'], new $config['connection'], $config['auto_connect']);
         });
     }
 
