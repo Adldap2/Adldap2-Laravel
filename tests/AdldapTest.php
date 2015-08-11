@@ -2,10 +2,9 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Adldap\Laravel\AdldapServiceProvider;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
 use Illuminate\Support\Facades\App;
-use Adldap\Laravel\Facades\Adldap as AdldapFacade;
-use Adldap\Adldap;
 
 class AdldapTest extends FunctionalTestCase
 {
@@ -16,8 +15,8 @@ class AdldapTest extends FunctionalTestCase
         App::make('adldap');
     }
 
-    public function testIsBound()
+    public function testRegistration()
     {
-
+        $this->assertTrue(app()->register(AdldapServiceProvider::class));
     }
 }
