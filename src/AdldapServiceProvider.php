@@ -32,16 +32,16 @@ class AdldapServiceProvider extends ServiceProvider
     {
         $config = $this->app['config']->get('adldap');
 
-        // Verify configuration
-        if(is_null($config)) {
-            $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish`.';
-
-            throw new ConfigurationMissingException($message);
-        }
-
         // Bind the Adldap instance to the IoC
         $this->app->bind('adldap', function() use ($config)
         {
+            // Verify configuration
+            if(is_null($config)) {
+                $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish`.';
+
+                throw new ConfigurationMissingException($message);
+            }
+
             return new Adldap($config['connection_settings'], null, $config['auto_connect']);
         });
     }
