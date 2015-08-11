@@ -18,6 +18,6 @@ class AdldapTest extends FunctionalTestCase
 
     public function testIsBound()
     {
-        
+
     }
 }
