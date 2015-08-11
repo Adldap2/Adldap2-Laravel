@@ -1,5 +1,7 @@
 # Adldap2 - Laravel
 
+
+
 ## Installation
 
 First, insert Adldap2-Laravel into your `composer.json` file:
