@@ -22,7 +22,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Adldap\\Tests\\": "tests/"
+            "Adldap\\Laravel\\Tests\\": "tests/"
         }
     }
 }
