@@ -20,8 +20,12 @@ class AdldapServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $config = __DIR__.'/Config/config.php';
+
+        $this->mergeConfigFrom($config, 'adldap');
+
         $this->publishes([
-            __DIR__.'/Config/config.php' => config_path('adldap.php'),
+            $config => config_path('adldap.php'),
         ]);
     }
 
