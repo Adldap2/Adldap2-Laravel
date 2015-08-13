@@ -20,8 +20,12 @@ Once finished, insert the service provider in your `config/app.php` file:
     
 Then insert the facade:
 
-    'Adldap' => Adldap\Laravel\Facades\Adldap::class,
-    
+    'Adldap' => Adldap\Laravel\Facades\Adldap::class
+
+Publish the configuration file by running:
+
+    php artisan vendor:publish
+
 Now you're all set!
 
 ## Usage
