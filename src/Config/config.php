@@ -108,6 +108,7 @@ return [
         | these permissions.
         |
         */
+
         'admin_username' => 'username',
         'admin_password' => 'password',
 
