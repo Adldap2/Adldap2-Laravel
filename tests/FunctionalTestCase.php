@@ -40,7 +40,7 @@ class FunctionalTestCase extends TestCase
     protected function getPackageAliases()
     {
         return [
-            Adldap::class,
+            'Adldap\Laravel\Facades\Adldap',
         ];
     }
 }
