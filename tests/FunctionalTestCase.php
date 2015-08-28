@@ -28,7 +28,7 @@ class FunctionalTestCase extends TestCase
     protected function getPackageProviders()
     {
         return [
-            AdldapServiceProvider::class,
+            'Adldap\Laravel\AdldapServiceProvider',
         ];
     }
 
