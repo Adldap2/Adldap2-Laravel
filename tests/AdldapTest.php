@@ -10,13 +10,13 @@ class AdldapTest extends FunctionalTestCase
 {
     public function testConfigurationNotFoundException()
     {
-        $this->setExpectedException(ConfigurationMissingException::class);
+        $this->setExpectedException('Adldap\Laravel\Exceptions\ConfigurationMissingException');
 
         App::make('adldap');
     }
 
     public function testRegistration()
     {
-        $this->assertTrue(app()->register(AdldapServiceProvider::class));
+        $this->assertTrue(app()->register('Adldap\Laravel\AdldapServiceProvider'));
     }
 }
