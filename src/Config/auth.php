@@ -4,25 +4,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields
+    | Login Attribute
     |--------------------------------------------------------------------------
     |
-    | If auto connect is true, anytime Adldap is instantiated it will automatically
-    | connect to your AD server. If this is set to false, you must connect manually
-    | using: Adldap::connect().
+    | The login attribute is the name of the active directory user property
+    | that you use to log users in. For example, if your company uses
+    | email, then insert `mail`.
     |
     */
 
-    'fields' => [
-
-        'unique' => [
-            'email' => \Adldap\Schemas\ActiveDirectory::EMAIL,
-        ],
-
-        'information' => [
-            'name' => \Adldap\Schemas\ActiveDirectory::COMMON_NAME,
-        ],
-
-    ],
+    'login_attribute' => 'samaccountname',
 
 ];
