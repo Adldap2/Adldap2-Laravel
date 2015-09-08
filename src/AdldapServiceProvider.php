@@ -26,7 +26,7 @@ class AdldapServiceProvider extends ServiceProvider
 
         $this->publishes([
             $config => config_path('adldap.php'),
-        ]);
+        ], 'adldap');
     }
 
     /**
