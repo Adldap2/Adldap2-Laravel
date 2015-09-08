@@ -4,6 +4,8 @@ namespace Adldap\Laravel;
 
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\EloquentUserProvider;
 
@@ -18,30 +20,29 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        if($this->authenticate($credentials)) {
-            $user = Adldap::users()->find($credentials['email']);
+        $query = Adldap::users()->search();
 
-            if($user instanceof User) {
-                if($this->createModelFromAdlap($user, $credentials['password'])) {
-                    return parent::retrieveByCredentials($credentials);
-                }
+        foreach($credentials as $key => $value) {
+            if(! Str::contains('password', $key)) {
+                $query->whereEquals($key, $value);
+            }
+        }
+
+        $user = $query->first();
+
+        if($user instanceof User) {
+            $username = $user->{$this->getLoginAttribute()};
+
+            if(is_array($username) && array_key_exists(0, $username)) {
+                $username = $username[0];
+            }
+
+            if($this->authenticate($username, $credentials['password'])) {
+                return $this->createModelFromAdldap($user, $credentials['password']);
             }
         }
 
         return null;
-    }
-
-    /**
-     * Validate a user against the given credentials.
-     *
-     * @param  Authenticatable  $user
-     * @param  array            $credentials
-     *
-     * @return bool
-     */
-    public function validateCredentials(Authenticatable $user, array $credentials)
-    {
-        return $this->authenticate($credentials);
     }
 
     /**
@@ -52,7 +53,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function createModelFromAdlap(User $user, $password)
+    protected function createModelFromAdldap(User $user, $password)
     {
         $email = $user->getEmail();
 
@@ -62,9 +63,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $model = $this->createModel();
 
             $model->fill([
-                'email' => $email,
-                'name' => $user->getName(),
-                'password' => bcrypt($password),
+                'email'     => $email,
+                'name'      => $user->getName(),
+                'password'  => bcrypt($password),
             ]);
 
             $model->save();
@@ -76,12 +77,23 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     /**
      * Authenticates a user against Active Directory.
      *
-     * @param array $credentials
+     * @param string $username
+     * @param string $password
      *
      * @return bool
      */
-    private function authenticate(array $credentials = [])
+    protected function authenticate($username, $password)
     {
-        return Adldap::authenticate($credentials['email'], $credentials['password']);
+        return Adldap::authenticate($username, $password);
+    }
+
+    /**
+     * Retrieves the Adldap login attribute for authenticating users.
+     *
+     * @return string
+     */
+    protected function getLoginAttribute()
+    {
+        return Config::get('adldap_auth.login_attribute', 'samaccountname');
     }
 }
