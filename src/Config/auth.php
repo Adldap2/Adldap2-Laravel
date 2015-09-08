@@ -15,4 +15,27 @@ return [
 
     'login_attribute' => 'samaccountname',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Sync Attributes
+    |--------------------------------------------------------------------------
+    |
+    | Attributes specified here will be added / replaced on the user model
+    | upon login, automatically synchronizing and keeping the attributes
+    | up to date.
+    |
+    | The array key represents the Laravel model key, and the value
+    | represents the Active Directory attribute to retrieve.
+    |
+    | The users email is already synchronized and does not need to be
+    | added to this array.
+    |
+    */
+
+    'sync_attributes' => [
+
+        'name' => 'cn',
+
+    ],
+
 ];
