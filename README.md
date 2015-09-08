@@ -51,6 +51,8 @@ The Adldap Laravel auth driver allows you to seamlessly authenticate active dire
 as well as have a local database record of the user. This allows you to easily attach information
 to the users as you would a regular laravel application.
 
+### Installation
+
 Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
 
     Adldap\Laravel\AdldapAuthServiceProvider::class,
@@ -76,6 +78,8 @@ Change the auth driver in `config/auth.php` to `adldap`:
 
     'driver' => 'adldap',
 
+### Usage
+
 In your login form, change the username form input name to the active directory attribute you'd like to
 use to retrieve users from. For example, if I'd like to login users by their email address, then use the
 form input name `mail`:
@@ -92,6 +96,8 @@ Or, use their `samaccountname` attribute:
     
 All this name represents, is how Adldap discovers the user trying to login. The actual authentication is done
 with the `login_attribute` inside your `config/adldap_auth.php` file.
+
+#### Logging In
 
 Login a user regularly using `Auth::attempt($credentials);`. Using `Auth::user()` when a user is logged in
 will return your configured `App\User` model in `config/auth.php`.
