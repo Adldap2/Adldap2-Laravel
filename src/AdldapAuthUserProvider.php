@@ -4,10 +4,10 @@ namespace Adldap\Laravel;
 
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\EloquentUserProvider;
 
 class AdldapAuthUserProvider extends EloquentUserProvider
