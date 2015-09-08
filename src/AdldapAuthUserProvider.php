@@ -79,7 +79,10 @@ class AdldapAuthUserProvider extends EloquentUserProvider
 
         $model = $this->fillModelFromAdldap($user, $model);
 
-        $model->save();
+        // Only save models that contain changes
+        if(count($model->getDirty()) > 0) {
+            $model->save();
+        }
 
         return $model;
     }
