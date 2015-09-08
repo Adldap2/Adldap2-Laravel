@@ -49,7 +49,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             if($this->authenticate($username, $credentials['password'])) {
                 // Login was successful, we'll create a new
                 // Laravel model with the Adldap user
-                return $this->createModelFromAdldap($user, $credentials['password']);
+                return $this->getModelFromAdldap($user, $credentials['password']);
             }
         }
 
@@ -64,7 +64,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function createModelFromAdldap(User $user, $password)
+    protected function getModelFromAdldap(User $user, $password)
     {
         $email = $user->getEmail();
 
