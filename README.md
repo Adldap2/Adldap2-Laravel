@@ -92,3 +92,6 @@ Or, use their `samaccountname` attribute:
     
 All this name represents, is how Adldap discovers the user trying to login. The actual authentication is done
 with the `login_attribute` inside your `config/adldap_auth.php` file.
+
+Login a user regularly using `Auth::attempt($credentials);`. Using `Auth::user()` when a user is logged in
+will return your configured `App\User` model in `config/auth.php`.
