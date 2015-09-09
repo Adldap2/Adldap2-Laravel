@@ -10,7 +10,7 @@
 
 Insert Adldap2-Laravel into your `composer.json` file:
 
-    "adldap2\adldap2-laravel": "1.1.*",
+    "adldap2/adldap2-laravel": "1.1.*",
 
 Then run `composer update`.
 
@@ -93,6 +93,10 @@ Or, use their `samaccountname` attribute:
     <input type="text" name="samaccountname" />
     
     <input type="password" name="password" />
+    
+You'll also need to add the following to your AuthController if you're not overriding the default postLogin method.
+
+	protected $username = 'samaccountname';
     
 All this name represents, is how Adldap discovers the user trying to login. The actual authentication is done
 with the `login_attribute` inside your `config/adldap_auth.php` file.
