@@ -23,6 +23,9 @@
     "autoload-dev": {
         "psr-4": {
             "Adldap\\Laravel\\Tests\\": "tests/"
-        }
+        },
+        "classmap": [
+            "tests/stubs"
+        ]
     }
 }
