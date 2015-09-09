@@ -84,6 +84,10 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $model->save();
         }
 
+        if($this->getBindUserToModel()) {
+            $model->adldapUser = $user;
+        }
+
         return $model;
     }
 
@@ -133,6 +137,17 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function getLoginAttribute()
     {
         return Config::get('adldap_auth.login_attribute', 'samaccountname');
+    }
+
+    /**
+     * Retrieves the Adldap bind user to model config option for binding
+     * the Adldap user model instance to the laravel model.
+     *
+     * @return bool
+     */
+    protected function getBindUserToModel()
+    {
+        return Config::get('adldap_auth.bind_user_to_model', false);
     }
 
     /**

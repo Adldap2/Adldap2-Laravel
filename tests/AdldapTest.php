@@ -51,10 +51,11 @@ class AdldapTest extends FunctionalTestCase
 
         $this->assertTrue(Auth::attempt(['mail' => 'jdoe@email.com', 'password' => '12345']));
 
-        $user = \DB::table('users')->where('id', '=', 1)->first();
+        $user = Auth::user();
 
         $this->assertEquals('jdoe@email.com', $user->email);
         $this->assertTrue(\Hash::check('12345', $user->password));
+        $this->assertEquals($adUser, $user->adldapUser);
     }
 
     public function testAuthFails()
