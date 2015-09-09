@@ -44,6 +44,8 @@ class FunctionalTestCase extends TestCase
     /**
      * Get the package service providers required for testing.
      *
+     * @param \Illuminate\Foundation\Application $app
+     *
      * @return array
      */
     protected function getPackageProviders($app)
@@ -56,6 +58,8 @@ class FunctionalTestCase extends TestCase
 
     /**
      * Get the package aliases for testing.
+     *
+     * @param \Illuminate\Foundation\Application $app
      *
      * @return array
      */

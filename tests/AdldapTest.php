@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Adldap\Models\User;
 use Mockery;
+use Adldap\Models\User;
 use Adldap\Laravel\Facades\Adldap;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -27,9 +27,6 @@ class AdldapTest extends FunctionalTestCase
 
     public function testAuthPasses()
     {
-        // Get around E Strict warning about mockery's __call signature being different
-        if(defined('E_STRICT')) error_reporting('E_ALL ^ E_STRICT');
-
         $mockedBuilder = Mockery::mock('Adldap\Query\Builder');
 
         $rawAttributes = [
@@ -62,9 +59,6 @@ class AdldapTest extends FunctionalTestCase
 
     public function testAuthFails()
     {
-        // Get around E Strict warning about mockery's __call signature being different
-        if(defined('E_STRICT')) error_reporting('E_ALL ^ E_STRICT');
-
         $mockedBuilder = Mockery::mock('Adldap\Query\Builder');
 
         $mockedSearch = Mockery::mock('Adldap\Classes\Search');
@@ -83,9 +77,6 @@ class AdldapTest extends FunctionalTestCase
 
     public function testAuthFailsWhenUserFound()
     {
-        // Get around E Strict warning about mockery's __call signature being different
-        if(defined('E_STRICT')) error_reporting('E_ALL ^ E_STRICT');
-
         $mockedBuilder = Mockery::mock('Adldap\Query\Builder');
 
         $rawAttributes = [
