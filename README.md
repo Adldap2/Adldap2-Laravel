@@ -101,3 +101,12 @@ with the `login_attribute` inside your `config/adldap_auth.php` file.
 
 Login a user regularly using `Auth::attempt($credentials);`. Using `Auth::user()` when a user is logged in
 will return your configured `App\User` model in `config/auth.php`.
+
+#### Synchronizing Attributes
+
+Inside your `config/adldap_auth.php` file there is a configuration option named `sync_attributes`. This is an array
+of attributes where the key is the User model attribute, and the value is the active directory users attribute.
+
+By default, the User models `name` attribute is synchronized to the AD users `cn` attribute. This means, upon login,
+the users `name` attribute will be set to the active directory common name (`cn`) attribute. Feel free to add more
+attributes here, however be sure that your database table contains the key you've entered.
