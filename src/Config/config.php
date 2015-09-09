@@ -62,7 +62,7 @@ return [
         |--------------------------------------------------------------------------
         |
         | The domain controllers option is an array of servers located on your
-        | network that serve Active Directory. You insert as many servers or
+        | network that serve Active Directory. You can insert as many servers or
         | as little as you'd like depending on your forest (with the
         | minimum of one of course).
         |
