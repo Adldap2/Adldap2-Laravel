@@ -30,6 +30,8 @@ return [
     |
     | Onto your User model configured in `config/auth.php`.
     |
+    | Then use `Auth::user()->adldapUser` to access.
+    |
     */
 
     'bind_user_to_model' => false,
