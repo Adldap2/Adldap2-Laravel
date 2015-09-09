@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase;
 
 class FunctionalTestCase extends TestCase
@@ -10,10 +11,15 @@ class FunctionalTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->artisan('migrate', [
-            '--database' => 'testbench',
-            '--realpath' => realpath(__DIR__.'/stubs/migrations'),
-        ]);
+        // Create the users table for testing
+        Schema::create('users', function ($table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password', 60);
+            $table->rememberToken();
+            $table->timestamps();
+        });
     }
 
     /**
