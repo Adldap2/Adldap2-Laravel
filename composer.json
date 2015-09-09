@@ -10,7 +10,8 @@
         "laravel/framework": "5.*"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.0"
+        "orchestra/testbench": "~3.0",
+        "mockery/mockery": "0.9.*"
     },
     "archive": {
         "exclude": ["/tests"]
