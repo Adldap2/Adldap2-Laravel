@@ -116,3 +116,62 @@ the users `name` attribute on Laravel Model will be set to the active directory 
 
 Feel free to add more
 attributes here, however be sure that your database table contains the key you've entered.
+
+#### Binding the Adldap User Model to the Laravel User Model
+
+Inside your `config/adldap_auth.php` file there is a configuration option named `bind_user_to_model`. Setting this to
+true sets the `adldapUser` property on your configured auth User model to the Adldap User model. For example:
+    
+    if(Auth::attempt($credentials))
+    {
+        $user = Auth::user();
+        
+        var_dump($user); // Returns instance of App\User;
+        
+        var_dump($user->adldapUser); // Returns instance of Adldap\Models\User;
+        
+        // Retrieving the authenticated LDAP users groups
+        $groups = $user->adldapUser->getGroups();
+    }
+    
+You **must** insert the trait `Adldap\Laravel\Traits\AdldapUserModelTrait` onto your configured auth User model, **OR**
+Add the public property `adldapUser` to your model.
+
+    // app/User.php
+    
+    <?php
+    
+    namespace App;
+    
+    use Adldap\Laravel\Traits\AdldapUserModelTrait;
+    use Illuminate\Auth\Authenticatable;
+    use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Auth\Passwords\CanResetPassword;
+    use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+    use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+    
+    class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+    {
+        use Authenticatable, CanResetPassword, AdldapUserModelTrait; // Insert trait here
+    
+        /**
+         * The database table used by the model.
+         *
+         * @var string
+         */
+        protected $table = 'users';
+    
+        /**
+         * The attributes that are mass assignable.
+         *
+         * @var array
+         */
+        protected $fillable = ['name', 'email', 'password'];
+    
+        /**
+         * The attributes excluded from the model's JSON form.
+         *
+         * @var array
+         */
+        protected $hidden = ['password', 'remember_token'];
+    }
