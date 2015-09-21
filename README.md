@@ -130,7 +130,8 @@ attributes here, however be sure that your database table contains the key you'v
 #### Binding the Adldap User Model to the Laravel User Model
 
 > **Note**: Before we begin, enabling this option will perform a single query on your AD server for a logged in user
-**per request**. Eloquent already does this for authentication, however this could lead to slightly slower load times.
+**per request**. Eloquent already does this for authentication, however this could lead to slightly slower load times
+(depending on your AD server speed of course).
 
 Inside your `config/adldap_auth.php` file there is a configuration option named `bind_user_to_model`. Setting this to
 true sets the `adldapUser` property on your configured auth User model to the Adldap User model. For example:
