@@ -3,35 +3,65 @@
 namespace Adldap\Laravel;
 
 use Adldap\Laravel\Facades\Adldap;
+use Adldap\Schemas\ActiveDirectory;
 use Adldap\Models\User;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\EloquentUserProvider;
 
 class AdldapAuthUserProvider extends EloquentUserProvider
 {
     /**
+     * Retrieve a user by their unique identifier.
+     *
+     * @param  mixed  $identifier
+     *
+     * @return Authenticatable|null
+     */
+    public function retrieveById($identifier)
+    {
+        $model = parent::retrieveById($identifier);
+
+        if ($model instanceof Authenticatable) {
+            $attributes = $this->getUsernameAttribute();
+
+            $key = key($attributes);
+
+            $query = Adldap::users()->search();
+
+            $query->whereEquals($attributes[$key], $model->{$key});
+
+            $user = $query->first();
+
+            if ($user instanceof User && $this->getBindUserToModel()) {
+                $model = $this->bindAdldapToModel($user, $model);
+            }
+        }
+
+        return $model;
+    }
+
+    /**
      * Retrieve a user by the given credentials.
      *
      * @param array $credentials
      *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return Authenticatable|null
      */
     public function retrieveByCredentials(array $credentials)
     {
         // Get the search query for users only
         $query = Adldap::users()->search();
 
-        // Go through the credentials array and
-        // scope the query by the key and
-        // value besides password
-        foreach($credentials as $key => $value) {
-            if(! Str::contains('password', $key)) {
-                $query->whereEquals($key, $value);
-            }
-        }
+        // Get the username input attributes
+        $attributes = $this->getUsernameAttribute();
+
+        // Get the input key
+        $key = key($attributes);
+
+        // Filter the query by the username attribute
+        $query->whereEquals($attributes[$key], $credentials[$key]);
 
         // Retrieve the first user result
         $user = $query->first();
@@ -77,15 +107,10 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $model->password = bcrypt($password);
         }
 
-        $model = $this->fillModelFromAdldap($user, $model);
-
-        // Only save models that contain changes
-        if(count($model->getDirty()) > 0) {
-            $model->save();
-        }
+        $model = $this->syncModelFromAdldap($user, $model);
 
         if($this->getBindUserToModel()) {
-            $model->adldapUser = $user;
+            $model = $this->bindAdldapToModel($user, $model);
         }
 
         return $model;
@@ -94,12 +119,12 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     /**
      * Fills a models attributes by the specified Users attributes.
      *
-     * @param User  $user
-     * @param Model $model
+     * @param User            $user
+     * @param Authenticatable $model
      *
-     * @return Model
+     * @return Authenticatable
      */
-    protected function fillModelFromAdldap(User $user, Model $model)
+    protected function syncModelFromAdldap(User $user, Authenticatable $model)
     {
         $attributes = $this->getSyncAttributes();
 
@@ -112,6 +137,27 @@ class AdldapAuthUserProvider extends EloquentUserProvider
 
             $model->{$modelField} = $adValue;
         }
+
+        // Only save models that contain changes
+        if(count($model->getDirty()) > 0) {
+            $model->save();
+        }
+
+        return $model;
+    }
+
+    /**
+     * Binds the Adldap User instance to the Eloquent model instance
+     * by setting its `adldapUser` public property.
+     *
+     * @param User            $user
+     * @param Authenticatable $model
+     *
+     * @return Authenticatable
+     */
+    protected function bindAdldapToModel(User $user, Authenticatable $model)
+    {
+        $model->adldapUser = $user;
 
         return $model;
     }
@@ -130,13 +176,23 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
+     * Returns the username attribute for discovering LDAP users.
+     *
+     * @return array
+     */
+    protected function getUsernameAttribute()
+    {
+        return Config::get('adldap_auth.username_attribute', ['email' => ActiveDirectory::EMAIL]);
+    }
+
+    /**
      * Retrieves the Adldap login attribute for authenticating users.
      *
      * @return string
      */
     protected function getLoginAttribute()
     {
-        return Config::get('adldap_auth.login_attribute', 'samaccountname');
+        return Config::get('adldap_auth.login_attribute', ActiveDirectory::ACCOUNT_NAME);
     }
 
     /**
@@ -158,6 +214,6 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getSyncAttributes()
     {
-        return Config::get('adldap_auth.sync_attributes', ['name' => 'cn']);
+        return Config::get('adldap_auth.sync_attributes', ['name' => ActiveDirectory::COMMON_NAME]);
     }
 }
