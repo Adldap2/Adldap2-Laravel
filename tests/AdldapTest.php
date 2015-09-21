@@ -102,4 +102,21 @@ class AdldapTest extends FunctionalTestCase
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
+
+    public function testCredentialsKeyDoesNotExist()
+    {
+        $mockedSearch = Mockery::mock('Adldap\Classes\Search');
+
+        $mockedUsers = Mockery::mock('Adldap\Classes\Users');
+
+        $mockedUsers->shouldReceive('search')->once()->andReturn($mockedSearch);
+
+        Adldap::shouldReceive('users')->once()->andReturn($mockedUsers);
+
+        $nonExistantInputKey = 'non-existant-key';
+
+        $this->setExpectedException('ErrorException');
+
+        Auth::attempt([$nonExistantInputKey => 'jdoe@email.com', 'password' => '12345']);
+    }
 }
