@@ -4,6 +4,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Username Attribute
+    |--------------------------------------------------------------------------
+    |
+    | The username attribute is an array of the html input name and the LDAP
+    | attribute to discover the user by. The reason for this is to hide
+    | the attribute that you're using to login users.
+    |
+    | For example, if your input name is `username` and you'd like users
+    | to login by their `samaccountname` attribute, then keep the
+    | configuration below. However, if you'd like to login users
+    | by their emails, then change `samaccountname` to `mail`.
+    | and `username` to `email`.
+    |
+    */
+
+    'username_attribute' => ['email' => 'mail'],
+
+    /*
+    |--------------------------------------------------------------------------
     | Login Attribute
     |--------------------------------------------------------------------------
     |
