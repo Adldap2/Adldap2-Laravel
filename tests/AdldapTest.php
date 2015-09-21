@@ -55,7 +55,6 @@ class AdldapTest extends FunctionalTestCase
 
         $this->assertEquals('jdoe@email.com', $user->email);
         $this->assertTrue(\Hash::check('12345', $user->password));
-        $this->assertEquals($adUser, $user->adldapUser);
     }
 
     public function testAuthPassesWithPersistentAdldapUser()
@@ -64,6 +63,16 @@ class AdldapTest extends FunctionalTestCase
 
         $this->assertInstanceOf('Adldap\Models\User', \Auth::user()->adldapUser);
         $this->assertInstanceOf('Adldap\Models\User', auth()->user()->adldapUser);
+    }
+
+    public function testAuthPassesWithoutPersistentAdldapUser()
+    {
+        $this->app['config']->set('adldap_auth.bind_user_to_model', false);
+
+        $this->testAuthPasses();
+
+        $this->assertNull(\Auth::user()->adldapUser);
+        $this->assertNull(auth()->user()->adldapUser);
     }
 
     public function testAuthFails()
