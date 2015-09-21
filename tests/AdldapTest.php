@@ -62,6 +62,7 @@ class AdldapTest extends FunctionalTestCase
     {
         $this->testAuthPasses();
 
+        $this->assertInstanceOf('Adldap\Models\User', \Auth::user()->adldapUser);
         $this->assertInstanceOf('Adldap\Models\User', auth()->user()->adldapUser);
     }
 
