@@ -49,7 +49,7 @@ class AdldapTest extends FunctionalTestCase
         Adldap::shouldReceive('users')->once()->andReturn($mockedUsers);
         Adldap::shouldReceive('authenticate')->once()->andReturn(true);
 
-        $this->assertTrue(Auth::attempt(['mail' => 'jdoe@email.com', 'password' => '12345']));
+        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
 
         $user = Auth::user();
 
@@ -73,7 +73,7 @@ class AdldapTest extends FunctionalTestCase
 
         Adldap::shouldReceive('users')->once()->andReturn($mockedUsers);
 
-        $this->assertFalse(Auth::attempt(['mail' => 'jdoe@email.com', 'password' => '12345']));
+        $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
 
     public function testAuthFailsWhenUserFound()
@@ -100,6 +100,6 @@ class AdldapTest extends FunctionalTestCase
         Adldap::shouldReceive('users')->once()->andReturn($mockedUsers);
         Adldap::shouldReceive('authenticate')->once()->andReturn(false);
 
-        $this->assertFalse(Auth::attempt(['mail' => 'jdoe@email.com', 'password' => '12345']));
+        $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
 }
