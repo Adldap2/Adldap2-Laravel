@@ -99,7 +99,7 @@ You'll also need to add the following to your AuthController if you're not overr
 
 	protected $username = 'email';
 
-If you'd like to use the users `samaccountname` to login instead, just your inputs and configuration:
+If you'd like to use the users `samaccountname` to login instead, just change your input name and auth configuration:
 
     <input type="text" name="username" />
     
