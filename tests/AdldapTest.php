@@ -58,6 +58,13 @@ class AdldapTest extends FunctionalTestCase
         $this->assertEquals($adUser, $user->adldapUser);
     }
 
+    public function testAuthPassesWithPersistentAdldapUser()
+    {
+        $this->testAuthPasses();
+
+        $this->assertInstanceOf('Adldap\Models\User', auth()->user()->adldapUser);
+    }
+
     public function testAuthFails()
     {
         $mockedBuilder = Mockery::mock('Adldap\Query\Builder');
