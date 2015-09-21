@@ -80,26 +80,36 @@ Change the auth driver in `config/auth.php` to `adldap`:
 
 ### Usage
 
-In your login form, change the username form input name to the active directory attribute you'd like to
-use to retrieve users from. For example, if I'd like to login users by their email address, then use the
-form input name `mail`:
+#### Username Attributes
 
-    <input type="text" name="mail" />
-    
-    <input type="password" name="password" />
+Inside your `config/adldap_auth.php` file there is a configuration option named `username_attribute`. The key of the
+array indicates the input name of your login form, and the value indicates the LDAP attribute that this references.
 
-Or, use their `samaccountname` attribute:
+This option just allows you to set your input name to however you see fit, and allow different ways of logging in a user.
 
-    <input type="text" name="samaccountname" />
+In your login form, change the username form input name to your configured input name.
+
+By default this is set to `email`:
+
+    <input type="text" name="email" />
     
     <input type="password" name="password" />
     
 You'll also need to add the following to your AuthController if you're not overriding the default postLogin method.
 
-	protected $username = 'samaccountname';
+	protected $username = 'email';
+
+If you'd like to use the users `samaccountname` to login instead, just your inputs and configuration:
+
+    <input type="text" name="username" />
     
-All this name represents, is how Adldap discovers the user trying to login. The actual authentication is done
-with the `login_attribute` inside your `config/adldap_auth.php` file.
+    <input type="password" name="password" />
+    
+Inside `config/adldap_auth.php`
+
+    'username_attribute' => ['username' => 'samaccountname'],
+
+> **Note** The actual authentication is done with the `login_attribute` inside your `config/adldap_auth.php` file.
 
 #### Logging In
 
