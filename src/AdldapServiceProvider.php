@@ -50,7 +50,7 @@ class AdldapServiceProvider extends ServiceProvider
         });
 
         // Bind the Adldap contract to the Adldap implementation
-        $this->app->bind('Adldap\Contracts\Adldap', 'Adldap\Adldap');
+        $this->app->bind('Adldap\Contracts\Adldap', 'adldap');
     }
 
     /**

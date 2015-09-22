@@ -25,6 +25,16 @@ class AdldapTest extends FunctionalTestCase
         $this->assertTrue(app()->register('Adldap\Laravel\AdldapAuthServiceProvider'));
     }
 
+    public function testContractResolve()
+    {
+        $this->app['config']->set('adldap.auto_connect', false);
+
+        $adldap = $this->app->make('Adldap\Contracts\Adldap');
+
+        $this->assertInstanceOf('Adldap\Adldap', $adldap);
+        $this->assertInstanceOf('Adldap\Contracts\Adldap', $adldap);
+    }
+
     public function testAuthPasses()
     {
         $mockedBuilder = Mockery::mock('Adldap\Query\Builder');
