@@ -82,14 +82,28 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getModelFromAdldap(User $user, $password)
     {
-        $email = $user->getEmail();
+        // Get the username attributes
+        $attributes = $this->getUsernameAttribute();
 
-        $model = $this->createModel()->newQuery()->where(compact('email'))->first();
+        // Get the model key
+        $key = key($attributes);
+
+        // Get the username from the AD model
+        $username = $user->{$attributes[$key]};
+
+        // Make sure we retrieve the first username
+        // result if it's an array
+        if (is_array($username)) {
+            $username = Arr::get($username, 0);
+        }
+
+        // Try to retrieve the model from the model key and AD username
+        $model = $this->createModel()->newQuery()->where([$key => $username])->first();
 
         if(!$model) {
             $model = $this->createModel();
 
-            $model->email = $email;
+            $model->{$key} = $username;
             $model->password = bcrypt($password);
         }
 
@@ -197,7 +211,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getUsernameAttribute()
     {
-        return Config::get('adldap_auth.username_attribute', ['email' => ActiveDirectory::EMAIL]);
+        return Config::get('adldap_auth.username_attribute', ['username' => ActiveDirectory::ACCOUNT_NAME]);
     }
 
     /**
