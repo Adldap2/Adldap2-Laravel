@@ -104,7 +104,10 @@ If you'd like to use the users `samaccountname` to login instead, just change yo
     <input type="text" name="username" />
     
     <input type="password" name="password" />
-    
+
+> **Note**: If you're using the `username` input field, make sure you have the `username` field inside your users database
+table as well. By default, laravel's migrations use the `email` field.
+
 Inside `config/adldap_auth.php`
 
     'username_attribute' => ['username' => 'samaccountname'],
