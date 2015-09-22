@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\App;
 
 class AdldapTest extends FunctionalTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        // Set auth configuration for email use since stock
+        // laravel only comes with an email field
+        $this->app['config']->set('adldap_auth.username_attribute', [
+            'email' => 'mail',
+        ]);
+    }
+
     public function testConfigurationNotFoundException()
     {
         $this->app['config']->set('adldap', null);
@@ -59,7 +70,7 @@ class AdldapTest extends FunctionalTestCase
         Adldap::shouldReceive('users')->once()->andReturn($mockedUsers);
         Adldap::shouldReceive('authenticate')->once()->andReturn(true);
 
-        $this->assertTrue(Auth::attempt(['username' => 'jdoe', 'password' => '12345']));
+        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
 
         $user = Auth::user();
 
@@ -100,7 +111,7 @@ class AdldapTest extends FunctionalTestCase
 
         Adldap::shouldReceive('users')->once()->andReturn($mockedUsers);
 
-        $this->assertFalse(Auth::attempt(['username' => 'jdoe', 'password' => '12345']));
+        $this->assertFalse(Auth::attempt(['email' => 'jdoe', 'password' => '12345']));
     }
 
     public function testAuthFailsWhenUserFound()
@@ -127,7 +138,7 @@ class AdldapTest extends FunctionalTestCase
         Adldap::shouldReceive('users')->once()->andReturn($mockedUsers);
         Adldap::shouldReceive('authenticate')->once()->andReturn(false);
 
-        $this->assertFalse(Auth::attempt(['username' => 'jdoe', 'password' => '12345']));
+        $this->assertFalse(Auth::attempt(['email' => 'jdoe', 'password' => '12345']));
     }
 
     public function testCredentialsKeyDoesNotExist()
