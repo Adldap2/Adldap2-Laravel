@@ -13,41 +13,27 @@ use Illuminate\Auth\EloquentUserProvider;
 class AdldapAuthUserProvider extends EloquentUserProvider
 {
     /**
-     * Retrieve a user by their unique identifier.
-     *
-     * @param  mixed  $identifier
-     *
-     * @return Authenticatable|null
+     * {@inheritDoc}
      */
     public function retrieveById($identifier)
     {
         $model = parent::retrieveById($identifier);
 
-        if ($model instanceof Authenticatable) {
-            $attributes = $this->getUsernameAttribute();
-
-            $key = key($attributes);
-
-            $query = Adldap::users()->search();
-
-            $query->whereEquals($attributes[$key], $model->{$key});
-
-            $user = $query->first();
-
-            if ($user instanceof User && $this->getBindUserToModel()) {
-                $model = $this->bindAdldapToModel($user, $model);
-            }
-        }
-
-        return $model;
+        return $this->discoverAdldapFromModel($model);
     }
 
     /**
-     * Retrieve a user by the given credentials.
-     *
-     * @param array $credentials
-     *
-     * @return Authenticatable|null
+     * {@inheritDoc}
+     */
+    public function retrieveByToken($identifier, $token)
+    {
+        $model = parent::retrieveByToken($identifier, $token);
+
+        return $this->discoverAdldapFromModel($model);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function retrieveByCredentials(array $credentials)
     {
@@ -141,6 +127,35 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         // Only save models that contain changes
         if(count($model->getDirty()) > 0) {
             $model->save();
+        }
+
+        return $model;
+    }
+
+    /**
+     * Retrieves the Adldap User model from the
+     * specified Laravel model.
+     *
+     * @param mixed $model
+     *
+     * @return null|Authenticatable
+     */
+    protected function discoverAdldapFromModel($model)
+    {
+        if ($model instanceof Authenticatable && $this->getBindUserToModel()) {
+            $attributes = $this->getUsernameAttribute();
+
+            $key = key($attributes);
+
+            $query = Adldap::users()->search();
+
+            $query->whereEquals($attributes[$key], $model->{$key});
+
+            $user = $query->first();
+
+            if ($user instanceof User) {
+                $model = $this->bindAdldapToModel($user, $model);
+            }
         }
 
         return $model;
