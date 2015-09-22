@@ -100,13 +100,16 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         // Try to retrieve the model from the model key and AD username
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
 
-        if(!$model) {
-            $model = $this->createModel();
+        // Create the model instance of it isn't found
+        if(!$model) $model = $this->createModel();
 
-            $model->{$key} = $username;
-            $model->password = bcrypt($password);
-        }
+        // Set the username and password in case
+        // of changes in active directory
+        $model->{$key} = $username;
+        $model->password = bcrypt($password);
 
+        // Synchronize other active directory
+        // attributes on the model
         $model = $this->syncModelFromAdldap($user, $model);
 
         if($this->getBindUserToModel()) {
