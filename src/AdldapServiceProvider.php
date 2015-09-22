@@ -48,6 +48,9 @@ class AdldapServiceProvider extends ServiceProvider
 
             return new Adldap($config['connection_settings'], new $config['connection'], $config['auto_connect']);
         });
+
+        // Bind the Adldap contract to the Adldap implementation
+        $this->app->bind('Adldap\Contracts\Adldap', 'Adldap\Adldap');
     }
 
     /**
