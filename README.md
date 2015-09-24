@@ -62,6 +62,7 @@ Or you can inject the Adldap contract:
         {
             $this->adldap = $adldap;
         }
+        
         /**
          * Displays the all LDAP users.
          *
@@ -74,7 +75,7 @@ Or you can inject the Adldap contract:
             return view('users.index', compact('users'));
         }
     }
-    
+
 To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2);
 
 ## Auth Driver
