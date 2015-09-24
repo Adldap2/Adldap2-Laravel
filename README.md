@@ -42,8 +42,40 @@ You can perform all methods on Adldap through its facade like so:
         // Passed!
     }
 
-To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2);
+Or you can inject the Adldap contract:
 
+    use Adldap\Contracts\Adldap;
+    
+    class UserController extends Controller
+    {
+        /**
+         * @var Adldap
+         */
+        protected $adldap;
+        
+        /**
+         * Constructor.
+         *
+         * @param Adldap $adldap
+         */
+        public function __construct(Adldap $adldap)
+        {
+            $this->adldap = $adldap;
+        }
+        /**
+         * Displays the all LDAP users.
+         *
+         * @return \Illuminate\View\View
+         */
+        public function index()
+        {
+            $users = $this->adldap->users()->all();
+            
+            return view('users.index', compact('users'));
+        }
+    }
+    
+To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2);
 
 ## Auth Driver
 
