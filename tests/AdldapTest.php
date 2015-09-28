@@ -59,6 +59,7 @@ class AdldapTest extends FunctionalTestCase
         $adUser = (new User([], $mockedBuilder))->setRawAttributes($rawAttributes);
 
         $mockedSearch = Mockery::mock('Adldap\Classes\Search');
+        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch);
 
         $mockedUsers = Mockery::mock('Adldap\Classes\Users');
 
@@ -101,6 +102,7 @@ class AdldapTest extends FunctionalTestCase
         $mockedBuilder = Mockery::mock('Adldap\Query\Builder');
 
         $mockedSearch = Mockery::mock('Adldap\Classes\Search');
+        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch);
 
         $mockedUsers = Mockery::mock('Adldap\Classes\Users');
 
@@ -127,6 +129,7 @@ class AdldapTest extends FunctionalTestCase
         $adUser = (new User([], $mockedBuilder))->setRawAttributes($rawAttributes);
 
         $mockedSearch = Mockery::mock('Adldap\Classes\Search');
+        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch);
 
         $mockedUsers = Mockery::mock('Adldap\Classes\Users');
 
@@ -144,6 +147,7 @@ class AdldapTest extends FunctionalTestCase
     public function testCredentialsKeyDoesNotExist()
     {
         $mockedSearch = Mockery::mock('Adldap\Classes\Search');
+        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch);
 
         $mockedUsers = Mockery::mock('Adldap\Classes\Users');
 
