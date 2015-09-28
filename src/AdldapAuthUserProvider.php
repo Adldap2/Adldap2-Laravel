@@ -38,7 +38,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     public function retrieveByCredentials(array $credentials)
     {
         // Get the search query for users only
-        $query = Adldap::users()->search();
+        $query = $this->newAdldapUserQuery();
 
         // Get the username input attributes
         $attributes = $this->getUsernameAttribute();
@@ -164,7 +164,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
 
             $key = key($attributes);
 
-            $query = Adldap::users()->search();
+            $query = $this->newAdldapUserQuery();
 
             $query->whereEquals($attributes[$key], $model->{$key});
 
@@ -192,6 +192,16 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         $model->adldapUser = $user;
 
         return $model;
+    }
+
+    /**
+     * Returns a new Adldap user query.
+     *
+     * @return \Adldap\Query\Builder
+     */
+    protected function newAdldapUserQuery()
+    {
+        return Adldap::users()->select($this->getSelectAttributes())->search();
     }
 
     /**
@@ -247,5 +257,16 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function getSyncAttributes()
     {
         return Config::get('adldap_auth.sync_attributes', ['name' => ActiveDirectory::COMMON_NAME]);
+    }
+
+    /**
+     * Retrieves the Aldldap select attributes when performing
+     * queries for authentication and binding for users.
+     *
+     * @return array
+     */
+    protected function getSelectAttributes()
+    {
+        return Config::get('adldap_auth.select_attributes', []);
     }
 }

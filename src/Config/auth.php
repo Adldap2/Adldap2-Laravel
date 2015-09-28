@@ -78,4 +78,22 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Select Attributes
+    |--------------------------------------------------------------------------
+    |
+    | Attributes to select upon the user on authentication and binding.
+    |
+    | If no attributes are given inside the array, all attributes on the
+    | user are selected.
+    |
+    */
+
+    'select_attributes' => [
+
+        //
+
+    ],
+
 ];
