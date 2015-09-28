@@ -201,7 +201,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function newAdldapUserQuery()
     {
-        return Adldap::users()->select($this->getSelectAttributes())->search();
+        return Adldap::users()->search()->select($this->getSelectAttributes());
     }
 
     /**
