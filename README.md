@@ -27,7 +27,7 @@ Then insert the facade:
 
 Publish the configuration file by running:
 ```bash
-php artisan vendor:publish
+php artisan vendor:publish --tag="adldap"
 ```
 
 Now you're all set!
@@ -99,7 +99,7 @@ Adldap\Laravel\AdldapAuthServiceProvider::class,
 Publish the auth configuration:
 
 ```bash
-php artisan vendor:publish
+php artisan vendor:publish --tag="adldap"
 ```
 
 Change the auth driver in `config/auth.php` to `adldap`:
