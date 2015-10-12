@@ -23,12 +23,14 @@ class AdldapAuthServiceProvider extends ServiceProvider
     {
         $auth = __DIR__.'/Config/auth.php';
 
-        $this->mergeConfigFrom($auth, 'adldap_auth');
-
+        // Add publishable configuration.
         $this->publishes([
             $auth => config_path('adldap_auth.php'),
         ], 'adldap');
 
+        $this->mergeConfigFrom($auth, 'adldap_auth');
+
+        // Extend Laravel authentication with Adldap driver.
         Auth::extend('adldap', function($app) {
             return new AdldapAuthUserProvider($app['hash'], $app['config']['auth.model']);
         });

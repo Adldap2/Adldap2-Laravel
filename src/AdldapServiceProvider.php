@@ -22,11 +22,11 @@ class AdldapServiceProvider extends ServiceProvider
     {
         $config = __DIR__.'/Config/config.php';
 
-        $this->mergeConfigFrom($config, 'adldap');
-
         $this->publishes([
             $config => config_path('adldap.php'),
         ], 'adldap');
+
+        $this->mergeConfigFrom($config, 'adldap');
     }
 
     /**
@@ -49,7 +49,8 @@ class AdldapServiceProvider extends ServiceProvider
             return new Adldap($config['connection_settings'], new $config['connection'], $config['auto_connect']);
         });
 
-        // Bind the Adldap contract to the Adldap implementation
+        // Bind the Adldap contract to the Adldap object
+        // in the IoC for dependency injection.
         $this->app->bind('Adldap\Contracts\Adldap', 'adldap');
     }
 
