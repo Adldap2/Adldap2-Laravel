@@ -137,6 +137,8 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $adValue = $user->{$adField};
 
             if(is_array($adValue)) {
+                // If the AD Value is an array, we'll
+                // retrieve the first value.
                 $adValue = Arr::get($adValue, 0);
             }
 
