@@ -169,7 +169,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     {
         if ($model instanceof Model && $model->hasSetMutator('password')) {
             // If the model has a set mutator for the password then
-            // we'll assume that the dev is using they're
+            // we'll assume that the dev is using their
             // own encryption method for passwords.
             $model->password = $password;
 
