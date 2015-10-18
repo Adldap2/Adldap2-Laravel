@@ -7,6 +7,7 @@ use Adldap\Schemas\ActiveDirectory;
 use Adldap\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\EloquentUserProvider;
 
@@ -85,36 +86,36 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getModelFromAdldap(User $user, $password)
     {
-        // Get the username attributes
+        // Get the username attributes.
         $attributes = $this->getUsernameAttribute();
 
-        // Get the model key
+        // Get the model key.
         $key = key($attributes);
 
-        // Get the username from the AD model
+        // Get the username from the AD model.
         $username = $user->{$attributes[$key]};
 
         // Make sure we retrieve the first username
-        // result if it's an array
+        // result if it's an array.
         if (is_array($username)) {
             $username = Arr::get($username, 0);
         }
 
-        // Try to retrieve the model from the model key and AD username
+        // Try to retrieve the model from the model key and AD username.
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
 
-        // Create the model instance of it isn't found
+        // Create the model instance of it isn't found.
         if(!$model) $model = $this->createModel();
 
         // Set the username and password in case
-        // of changes in active directory
+        // of changes in active directory.
         $model->{$key} = $username;
 
-        // Sync the users password
+        // Sync the users password.
         $model = $this->syncModelPassword($model, $password);
 
         // Synchronize other active directory
-        // attributes on the model
+        // attributes on the model.
         $model = $this->syncModelFromAdldap($user, $model);
 
         if($this->getBindUserToModel()) {
@@ -166,6 +167,16 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function syncModelPassword(Authenticatable $model, $password)
     {
+        if ($model instanceof Model && $model->hasSetMutator('password')) {
+            // If the model has a set mutator for the password then
+            // we'll assume that the dev is using they're
+            // own encryption method for passwords.
+            $model->password = $password;
+
+            return $model;
+        }
+
+        // Always encrypt the model password by default.
         $model->password = bcrypt($password);
 
         return $model;
