@@ -23,6 +23,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Password Key
+    |--------------------------------------------------------------------------
+    |
+    | The password key is the name of the input array key located inside
+    | the user input array given to the auth driver.
+    |
+    | Change this if you change your password fields input name.
+    |
+    */
+
+    'password_key' => 'password',
+
+    /*
+    |--------------------------------------------------------------------------
     | Login Attribute
     |--------------------------------------------------------------------------
     |
