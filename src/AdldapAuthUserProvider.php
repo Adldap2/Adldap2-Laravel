@@ -106,7 +106,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         // Set the username and password in case
         // of changes in active directory
         $model->{$key} = $username;
-        $model->password = bcrypt($password);
+
+        // Sync the users password
+        $model = $this->syncModelPassword($model, $password);
 
         // Synchronize other active directory
         // attributes on the model
@@ -145,6 +147,21 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         if(count($model->getDirty()) > 0) {
             $model->save();
         }
+
+        return $model;
+    }
+
+    /**
+     * Syncs the models password with the specified password.
+     *
+     * @param Authenticatable $model
+     * @param string          $password
+     *
+     * @return Authenticatable
+     */
+    protected function syncModelPassword(Authenticatable $model, $password)
+    {
+        $model->password = bcrypt($password);
 
         return $model;
     }
