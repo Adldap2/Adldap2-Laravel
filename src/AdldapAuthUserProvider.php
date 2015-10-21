@@ -150,7 +150,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         }
 
         // Only save models that contain changes.
-        if(count($model->getDirty()) > 0) {
+        if($model instanceof Model && count($model->getDirty()) > 0) {
             $model->save();
         }
 
