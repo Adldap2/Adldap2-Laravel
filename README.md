@@ -10,7 +10,7 @@
 
 Insert Adldap2-Laravel into your `composer.json` file:
 ```json
-"adldap2/adldap2-laravel": "1.2.*",
+"adldap2/adldap2-laravel": "1.3.*",
 ```
 
 Then run `composer update`.
