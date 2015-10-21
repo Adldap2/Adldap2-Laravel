@@ -36,11 +36,13 @@ Now you're all set!
 
 You can perform all methods on Adldap through its facade like so:
 ```php
+// Finding a user.
 $user = Adldap::users()->find('john doe');
 
+// Searching for a user.
 $search = Adldap::search()->where('cn', '=', 'John Doe')->get();
 
-
+// Authenticating.
 if (Adldap::authenticate($username, $password)) {
     // Passed!
 }
