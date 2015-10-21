@@ -170,10 +170,10 @@ will return your configured `App\User` model in `config/auth.php`.
 #### Synchronizing Attributes
 
 Inside your `config/adldap_auth.php` file there is a configuration option named `sync_attributes`. This is an array
-of attributes where the key is the User model attribute, and the value is the active directory users attribute.
+of attributes where the key is the `User` model attribute, and the value is the active directory users attribute.
 
-By default, the User models `name` attribute is synchronized to the AD users `cn` attribute. This means, upon login,
-the users `name` attribute on Laravel Model will be set to the active directory common name (`cn`) attribute **then saved**.
+By default, the `User` models `name` attribute is synchronized to the AD users `cn` attribute. This means, upon login,
+the users `name` attribute on Laravel `User` Model will be set to the active directory common name (`cn`) attribute, **then saved**.
 
 Feel free to add more
 attributes here, however be sure that your database table contains the key you've entered.
