@@ -3,18 +3,18 @@
 namespace Adldap\Laravel;
 
 use Adldap\Laravel\Facades\Adldap;
-use Adldap\Schemas\ActiveDirectory;
 use Adldap\Models\User;
+use Adldap\Schemas\ActiveDirectory;
+use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Auth\EloquentUserProvider;
 
 class AdldapAuthUserProvider extends EloquentUserProvider
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function retrieveById($identifier)
     {
@@ -24,7 +24,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function retrieveByToken($identifier, $token)
     {
@@ -34,7 +34,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function retrieveByCredentials(array $credentials)
     {
@@ -54,11 +54,11 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         $user = $query->first();
 
         // If the user is an Adldap User model instance.
-        if($user instanceof User) {
+        if ($user instanceof User) {
             // Retrieve the users login attribute.
             $username = $user->{$this->getLoginAttribute()};
 
-            if(is_array($username)) {
+            if (is_array($username)) {
                 $username = Arr::get($username, 0);
             }
 
@@ -66,18 +66,18 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $key = $this->getPasswordKey();
 
             // Try to log the user in.
-            if($this->authenticate($username, $credentials[$key])) {
+            if ($this->authenticate($username, $credentials[$key])) {
                 // Login was successful, we'll create a new
                 // Laravel model with the Adldap user.
                 return $this->getModelFromAdldap($user, $credentials[$key]);
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Creates a local User from Active Directory
+     * Creates a local User from Active Directory.
      *
      * @param User   $user
      * @param string $password
@@ -105,7 +105,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
 
         // Create the model instance of it isn't found.
-        if(!$model) $model = $this->createModel();
+        if (!$model) {
+            $model = $this->createModel();
+        }
 
         // Set the username and password in case
         // of changes in active directory.
@@ -118,7 +120,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         // attributes on the model.
         $model = $this->syncModelFromAdldap($user, $model);
 
-        if($this->getBindUserToModel()) {
+        if ($this->getBindUserToModel()) {
             $model = $this->bindAdldapToModel($user, $model);
         }
 
@@ -137,10 +139,10 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     {
         $attributes = $this->getSyncAttributes();
 
-        foreach($attributes as $modelField => $adField) {
+        foreach ($attributes as $modelField => $adField) {
             $adValue = $user->{$adField};
 
-            if(is_array($adValue)) {
+            if (is_array($adValue)) {
                 // If the AD Value is an array, we'll
                 // retrieve the first value.
                 $adValue = Arr::get($adValue, 0);
@@ -150,7 +152,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         }
 
         // Only save models that contain changes.
-        if($model instanceof Model && count($model->getDirty()) > 0) {
+        if ($model instanceof Model && count($model->getDirty()) > 0) {
             $model->save();
         }
 
