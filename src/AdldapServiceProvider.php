@@ -35,18 +35,17 @@ class AdldapServiceProvider extends ServiceProvider
     public function register()
     {
         // Bind the Adldap instance to the IoC
-        $this->app->bind('adldap', function()
-        {
+        $this->app->bind('adldap', function () {
             $config = $this->app['config']->get('adldap');
 
             // Verify configuration
-            if(is_null($config)) {
+            if (is_null($config)) {
                 $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish`.';
 
                 throw new ConfigurationMissingException($message);
             }
 
-            return new Adldap($config['connection_settings'], new $config['connection'], $config['auto_connect']);
+            return new Adldap($config['connection_settings'], new $config['connection'](), $config['auto_connect']);
         });
 
         // Bind the Adldap contract to the Adldap object
