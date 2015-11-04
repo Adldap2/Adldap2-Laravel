@@ -1,5 +1,5 @@
 {
-    "name": "adldap2/adldap2-laravel",
+    "name": "minkbear/adldap2-laravel",
     "description": "Adldap2 for Laravel 5.",
     "keywords": ["adldap", "adldap2", "ldap", "laravel"],
     "license": "MIT",
