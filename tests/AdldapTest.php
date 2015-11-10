@@ -2,11 +2,11 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Mockery;
-use Adldap\Models\User;
 use Adldap\Laravel\Facades\Adldap;
-use Illuminate\Support\Facades\Auth;
+use Adldap\Models\User;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Mockery;
 
 class AdldapTest extends FunctionalTestCase
 {
@@ -52,8 +52,8 @@ class AdldapTest extends FunctionalTestCase
 
         $rawAttributes = [
             'samaccountname' => ['jdoe'],
-            'mail' => ['jdoe@email.com'],
-            'cn' => ['John Doe'],
+            'mail'           => ['jdoe@email.com'],
+            'cn'             => ['John Doe'],
         ];
 
         $adUser = (new User([], $mockedBuilder))->setRawAttributes($rawAttributes);
@@ -122,8 +122,8 @@ class AdldapTest extends FunctionalTestCase
 
         $rawAttributes = [
             'samaccountname' => ['jdoe'],
-            'mail' => ['jdoe@email.com'],
-            'cn' => ['John Doe'],
+            'mail'           => ['jdoe@email.com'],
+            'cn'             => ['John Doe'],
         ];
 
         $adUser = (new User([], $mockedBuilder))->setRawAttributes($rawAttributes);
