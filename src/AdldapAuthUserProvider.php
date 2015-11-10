@@ -59,6 +59,8 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $username = $user->{$this->getLoginAttribute()};
 
             if(is_array($username)) {
+                // We'll make sure we retrieve the users first username
+                // attribute if it's contained in an array.
                 $username = Arr::get($username, 0);
             }
 
@@ -149,8 +151,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $model->{$modelField} = $adValue;
         }
 
-        // Only save models that contain changes.
-        if($model instanceof Model && count($model->getDirty()) > 0) {
+        if($model instanceof Model) {
             $model->save();
         }
 
