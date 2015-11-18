@@ -142,12 +142,18 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         $attributes = $this->getSyncAttributes();
 
         foreach ($attributes as $modelField => $adField) {
-            $adValue = $user->{$adField};
+            if ($adField === ActiveDirectory::THUMBNAIL) {
+                // If the field we're retrieving is the users thumbnail photo, we need
+                // to retrieve it encoded so we're able to save it to the database.
+                $adValue = $user->getThumbnailEncoded();
+            } else {
+                $adValue = $user->{$adField};
 
-            if (is_array($adValue)) {
-                // If the AD Value is an array, we'll
-                // retrieve the first value.
-                $adValue = Arr::get($adValue, 0);
+                if (is_array($adValue)) {
+                    // If the AD Value is an array, we'll
+                    // retrieve the first value.
+                    $adValue = Arr::get($adValue, 0);
+                }
             }
 
             $model->{$modelField} = $adValue;
