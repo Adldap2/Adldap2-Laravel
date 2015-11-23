@@ -36,16 +36,26 @@ class AdldapServiceProvider extends ServiceProvider
     {
         // Bind the Adldap instance to the IoC
         $this->app->bind('adldap', function () {
-            $config = $this->app['config']->get('adldap');
+            $config = $this->app['config'];
+
+            $settings = $config->get('adldap');
 
             // Verify configuration.
-            if (is_null($config)) {
+            if (is_null($settings)) {
                 $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish --tag="adldap"`.';
 
                 throw new ConfigurationMissingException($message);
             }
 
-            return new Adldap($config['connection_settings'], new $config['connection'](), $config['auto_connect']);
+            // Create a new Adldap instance.
+            $ad = new Adldap($settings['connection_settings'], new $settings['connection'](), $config['auto_connect']);
+
+            if ($config->get('app.debug')) {
+                // If the application is set to debug mode, we'll display LDAP error messages.
+                $ad->getConnection()->showErrors();
+            }
+
+            return $ad;
         });
 
         // Bind the Adldap contract to the Adldap object
