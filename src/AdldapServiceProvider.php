@@ -45,7 +45,14 @@ class AdldapServiceProvider extends ServiceProvider
                 throw new ConfigurationMissingException($message);
             }
 
-            return new Adldap($config['connection_settings'], new $config['connection'](), $config['auto_connect']);
+            $ad = new Adldap($config['connection_settings'], new $config['connection'](), $config['auto_connect']);
+
+            if( \Config::get('app.debug') )
+            {
+                $ad->getConnection()->showErrors();
+            }
+
+            return $ad;
         });
 
         // Bind the Adldap contract to the Adldap object
