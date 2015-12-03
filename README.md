@@ -91,7 +91,7 @@ The Adldap Laravel auth driver allows you to seamlessly authenticate active dire
 as well as have a local database record of the user. This allows you to easily attach information
 to the users as you would a regular laravel application.
 
-> ** Note **: The Adldap auth driver actually extends from and utilizes Laravel's eloquent auth driver.
+> **Note**: The Adldap auth driver actually extends from and utilizes Laravel's eloquent auth driver.
 
 ### Installation
 
