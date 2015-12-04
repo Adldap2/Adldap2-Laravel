@@ -164,7 +164,7 @@ Inside `config/adldap_auth.php`
 'username_attribute' => ['username' => 'samaccountname'],
 ```
 
-> **Note** The actual authentication is done with the `login_attribute` inside your `config/adldap_auth.php` file.
+> **Note**: The actual authentication is done with the `login_attribute` inside your `config/adldap_auth.php` file.
 
 #### Logging In
 
