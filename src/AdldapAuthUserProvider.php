@@ -263,13 +263,13 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     {
         $matches = preg_grep("/(\w)@(\w)/", explode("\n", $string));
 
-        return (count($matches) > 0);
+        return count($matches) > 0;
     }
 
     /**
      * Handles retrieving the value from an attribute callback.
      *
-     * @param User  $user
+     * @param User   $user
      * @param string $callback
      *
      * @return mixed
