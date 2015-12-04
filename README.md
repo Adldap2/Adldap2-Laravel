@@ -186,7 +186,7 @@ Feel free to add more attributes here, however be sure that your database table 
 > **Note**: This feature was introduced in `v1.3.8`.
 
 If you're looking to synchronize an attribute from an Adldap model that contains an array or an object, you can use a callback
-to return specific value to your Laravel model's attribute. For example:
+to return a specific value to your Laravel model's attribute. For example:
 
 ```php
 'sync_attributes' => [
