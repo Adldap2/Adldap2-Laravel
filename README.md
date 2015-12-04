@@ -179,8 +179,45 @@ of attributes where the key is the `User` model attribute, and the value is the 
 By default, the `User` models `name` attribute is synchronized to the AD users `cn` attribute. This means, upon login,
 the users `name` attribute on Laravel `User` Model will be set to the active directory common name (`cn`) attribute, **then saved**.
 
-Feel free to add more
-attributes here, however be sure that your database table contains the key you've entered.
+Feel free to add more attributes here, however be sure that your database table contains the key you've entered.
+
+##### Sync Attribute Callbacks
+
+> **Note**: This feature was introduced in `v1.3.8`.
+
+If you're looking to synchronize an attribute from an Adldap model that contains an array or an object, you can use a callback
+to return specific value to your Laravel model's attribute. For example:
+
+```php
+'sync_attributes' => [
+
+    'name' => 'App\Handlers\LdapAttributeHandler@name',
+
+],
+```
+
+The `LdapAttributeHandler` class:
+
+```php
+namespace App\Handlers;
+
+use Adldap\Models\User;
+
+class LdapAttributeHandler
+{
+    /**
+     * Returns the common name of the AD User.
+     *
+     * @param User $user
+     *
+     * @return string
+     */
+    public function name(User $user)
+    {
+        return $user->getAccountName();
+    }
+}
+```
 
 #### Binding the Adldap User Model to the Laravel User Model
 
