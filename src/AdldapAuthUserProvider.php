@@ -142,21 +142,13 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         $attributes = $this->getSyncAttributes();
 
         foreach ($attributes as $modelField => $adField) {
-            if ($adField === ActiveDirectory::THUMBNAIL) {
-                // If the field we're retrieving is the users thumbnail photo, we need
-                // to retrieve it encoded so we're able to save it to the database.
-                $adValue = $user->getThumbnailEncoded();
+            if ($this->isAttributeCallback($adField)) {
+                $value = $this->handleAttributeCallback($user, $adField);
             } else {
-                $adValue = $user->{$adField};
-
-                if (is_array($adValue)) {
-                    // If the AD Value is an array, we'll
-                    // retrieve the first value.
-                    $adValue = Arr::get($adValue, 0);
-                }
+                $value = $this->handleAttributeRetrieval($user, $adField);
             }
 
-            $model->{$modelField} = $adValue;
+            $model->{$modelField} = $value;
         }
 
         if ($model instanceof Model) {
@@ -257,6 +249,68 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function authenticate($username, $password)
     {
         return Adldap::authenticate($username, $password);
+    }
+
+    /**
+     * Returns true / false if the specified string
+     * is a callback for an attribute handler.
+     *
+     * @param string $string
+     *
+     * @return bool
+     */
+    protected function isAttributeCallback($string)
+    {
+        $matches = preg_grep("/(\w)@(\w)/", explode("\n", $string));
+
+        return (count($matches) > 0);
+    }
+
+    /**
+     * Handles retrieving the value from an attribute callback.
+     *
+     * @param User  $user
+     * @param string $callback
+     *
+     * @return mixed
+     */
+    protected function handleAttributeCallback(User $user, $callback)
+    {
+        // Explode the callback into its class and method.
+        list($class, $method) = explode('@', $callback);
+
+        // Create the handler.
+        $handler = app($class);
+
+        // Call the attribute handler method and return the result.
+        return call_user_func_array([$handler, $method], [$user]);
+    }
+
+    /**
+     * Handles retrieving the specified field from the User model.
+     *
+     * @param User   $user
+     * @param string $field
+     *
+     * @return string|null
+     */
+    protected function handleAttributeRetrieval(User $user, $field)
+    {
+        if ($field === ActiveDirectory::THUMBNAIL) {
+            // If the field we're retrieving is the users thumbnail photo, we need
+            // to retrieve it encoded so we're able to save it to the database.
+            $value = $user->getThumbnailEncoded();
+        } else {
+            $value = $user->{$field};
+
+            if (is_array($value)) {
+                // If the AD Value is an array, we'll
+                // retrieve the first value.
+                $value = Arr::get($value, 0);
+            }
+        }
+
+        return $value;
     }
 
     /**

@@ -161,4 +161,17 @@ class AdldapTest extends FunctionalTestCase
 
         Auth::attempt([$nonExistantInputKey => 'jdoe@email.com', 'password' => '12345']);
     }
+
+    public function testConfigCallbackAttributeHandler()
+    {
+        $this->app['config']->set('adldap_auth.sync_attributes', [
+            'name' => 'Adldap\Laravel\Tests\Handlers\LdapAttributeHandler@name',
+        ]);
+
+        $this->testAuthPasses();
+
+        $user = \Auth::user();
+
+        $this->assertEquals('handled', $user->name);
+    }
 }
