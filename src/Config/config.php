@@ -114,7 +114,7 @@ return [
 
         /*
         |--------------------------------------------------------------------------
-        | Base Distinguished Name
+        | Follow Referrals
         |--------------------------------------------------------------------------
         |
         | The follow referrals option is a boolean to tell active directory
