@@ -4,6 +4,7 @@ namespace Adldap\Laravel;
 
 use Adldap\Adldap;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 class AdldapServiceProvider extends ServiceProvider
@@ -35,8 +36,8 @@ class AdldapServiceProvider extends ServiceProvider
     public function register()
     {
         // Bind the Adldap instance to the IoC
-        $this->app->bind('adldap', function () {
-            $config = $this->app['config'];
+        $this->app->bind('adldap', function (Application $app) {
+            $config = $app->make('config');
 
             $settings = $config->get('adldap');
 
