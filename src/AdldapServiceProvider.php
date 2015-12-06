@@ -14,7 +14,7 @@ class AdldapServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = true;
 
     /**
      * Run service provider boot operations.
