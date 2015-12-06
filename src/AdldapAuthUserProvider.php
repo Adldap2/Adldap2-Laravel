@@ -142,20 +142,39 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         $attributes = $this->getSyncAttributes();
 
         foreach ($attributes as $modelField => $adField) {
-            if ($this->isAttributeCallback($adField)) {
-                $value = $this->handleAttributeCallback($user, $adField);
-            } else {
-                $value = $this->handleAttributeRetrieval($user, $adField);
-            }
-
-            $model->{$modelField} = $value;
+            $model->{$modelField} = $this->getSyncAttribute($user, $adField);
         }
-
+        
+        $sync_on_empty_attributes = $this->getSyncOnEmptyAttributes();
+        
+        foreach ($sync_on_empty_attributes as $modelField => $adField) {
+            if(empty($model->{$modelField})){
+                $model->{$modelField} = $this->getSyncAttribute($user, $adField);
+            }
+        }
+ 
         if ($model instanceof Model) {
             $model->save();
         }
 
         return $model;
+    }
+
+    /**
+     * Retrieves AD attribute value for the specified User attribute.
+     *
+     * @param User            $user
+     * @param string          $adField
+     *
+     * @return string
+     */
+    protected function getSyncAttribute($user, $adField){
+        
+        if ($this->isAttributeCallback($adField)) {
+            return $this->handleAttributeCallback($user, $adField);
+        }
+        
+        return $this->handleAttributeRetrieval($user, $adField);
     }
 
     /**
@@ -364,6 +383,17 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function getSyncAttributes()
     {
         return Config::get('adldap_auth.sync_attributes', ['name' => ActiveDirectory::COMMON_NAME]);
+    }
+    
+    /**
+     * Retrieves the Adldap sync attributes for filling the
+     * Laravel user model with active directory fields.
+     *
+     * @return array
+     */
+    protected function getSyncOnEmptyAttributes()
+    {
+        return Config::get('adldap_auth.sync_attributes_on_empty', []);
     }
 
     /**
