@@ -286,7 +286,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 #### Login Fallback
 
-> **Note**: Login fallback was added in `v1.3.9`. You'll will need to re-publish the Adldap Auth configuration file
+> **Note**: This feature was introduced in `v1.3.9`. You'll will need to re-publish the Adldap Auth configuration file
 to receive this option.
 
 The login fallback option allows you to login as a local database user using the Eloquent authentication driver if 
