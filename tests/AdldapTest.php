@@ -3,10 +3,10 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\Laravel\Facades\Adldap;
+use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Mockery;
 
 class AdldapTest extends FunctionalTestCase
@@ -181,13 +181,13 @@ class AdldapTest extends FunctionalTestCase
         $this->app['config']->set('adldap_auth.login_fallback', true);
 
         EloquentUser::create([
-            'email' => 'jdoe@email.com',
-            'name' => 'John Doe',
+            'email'    => 'jdoe@email.com',
+            'name'     => 'John Doe',
             'password' => bcrypt('Password123'),
         ]);
 
         $credentials = [
-            'email' => 'jdoe@email.com',
+            'email'    => 'jdoe@email.com',
             'password' => 'Password123',
         ];
 
