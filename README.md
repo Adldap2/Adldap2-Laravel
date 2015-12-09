@@ -9,7 +9,7 @@
 ## Description
 
 Adldap2 - Laravel allows easy configuration, access, and management to active directory utilizing the root
-[Adldap2 Repository](http://wwww.github.com/Adldap2/Adldap2).
+[Adldap2 Repository](http://www.github.com/Adldap2/Adldap2).
 
 It includes:
 
