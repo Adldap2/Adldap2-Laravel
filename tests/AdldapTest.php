@@ -6,6 +6,7 @@ use Adldap\Laravel\Facades\Adldap;
 use Adldap\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Mockery;
 
 class AdldapTest extends FunctionalTestCase
@@ -155,7 +156,7 @@ class AdldapTest extends FunctionalTestCase
 
         Adldap::shouldReceive('users')->once()->andReturn($mockedUsers);
 
-        $nonExistantInputKey = 'non-existant-key';
+        $nonExistantInputKey = 'non-existent-key';
 
         $this->setExpectedException('ErrorException');
 
@@ -173,5 +174,24 @@ class AdldapTest extends FunctionalTestCase
         $user = \Auth::user();
 
         $this->assertEquals('handled', $user->name);
+    }
+
+    public function testConfigLoginFallback()
+    {
+        $this->app['config']->set('adldap_auth.login_fallback', true);
+
+        EloquentUser::create([
+            'email' => 'jdoe@email.com',
+            'name' => 'John Doe',
+            'password' => bcrypt('Password123'),
+        ]);
+
+        $outcome = Auth::attempt(['email' => 'jdoe@email.com', 'password' => 'Password123']);
+
+        $user = \Auth::user();
+
+        $this->assertTrue($outcome);
+        $this->assertInstanceOf('Adldap\Laravel\Tests\Models\User', $user);
+        $this->assertEquals('jdoe@email.com', $user->email);
     }
 }

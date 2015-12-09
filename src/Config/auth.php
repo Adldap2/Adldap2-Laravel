@@ -23,6 +23,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Login Fallback
+    |--------------------------------------------------------------------------
+    |
+    | The login fallback option allows you to login as a user located on the
+    | local database if active directory authentication fails.
+    |
+    | Set this to true if you would like to enable it.
+    |
+    */
+
+    'login_fallback' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Password Key
     |--------------------------------------------------------------------------
     |

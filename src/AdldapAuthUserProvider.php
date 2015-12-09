@@ -75,6 +75,12 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             }
         }
 
+        if ($this->getLoginFallback()) {
+            // Login failed. If login fallback is enabled
+            // we'll call the eloquent driver.
+            return parent::retrieveByCredentials($credentials);
+        }
+
         return;
     }
 
@@ -107,7 +113,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
 
         // Create the model instance of it isn't found.
-        if (!$model) {
+        if (!$model instanceof Model) {
             $model = $this->createModel();
         }
 
@@ -375,5 +381,16 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function getSelectAttributes()
     {
         return Config::get('adldap_auth.select_attributes', []);
+    }
+
+    /**
+     * Retrieves the Adldap login fallback option for falling back
+     * to the local database if AD authentication fails.
+     *
+     * @return bool
+     */
+    protected function getLoginFallback()
+    {
+        return Config::get('adldap_auth.login_fallback', false);
     }
 }
