@@ -283,3 +283,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $hidden = ['password', 'remember_token'];
 }
 ```
+
+#### Login Fallback
+
+> **Note**: Login fallback was added in `v1.3.9`. You'll will need to re-publish the Adldap Auth configuration file
+to receive this option.
+
+The login fallback option allows you to login as a local database user using the Eloquent authentication driver if 
+active directory authentication fails. This option would be handy in environments where:
+ 
+- You may have some active directory users and other users registering through the website itself (user does not exist in your AD).
+- Local development where your AD server may be unavailable
