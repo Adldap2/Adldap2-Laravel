@@ -186,12 +186,23 @@ class AdldapTest extends FunctionalTestCase
             'password' => bcrypt('Password123'),
         ]);
 
-        $outcome = Auth::attempt(['email' => 'jdoe@email.com', 'password' => 'Password123']);
+        $credentials = [
+            'email' => 'jdoe@email.com',
+            'password' => 'Password123',
+        ];
+
+        $outcome = Auth::attempt($credentials);
 
         $user = \Auth::user();
 
         $this->assertTrue($outcome);
         $this->assertInstanceOf('Adldap\Laravel\Tests\Models\User', $user);
         $this->assertEquals('jdoe@email.com', $user->email);
+
+        $this->app['config']->set('adldap_auth.login_fallback', false);
+
+        $outcome = Auth::attempt($credentials);
+
+        $this->assertFalse($outcome);
     }
 }
