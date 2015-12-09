@@ -294,3 +294,9 @@ active directory authentication fails. This option would be handy in environment
  
 - You may have some active directory users and other users registering through the website itself (user does not exist in your AD).
 - Local development where your AD server may be unavailable
+
+To enable it, simply set the option to true in your `adldap_auth.php` configuration file:
+
+```php
+'login_fallback' => false, // Set to true.
+```
