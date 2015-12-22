@@ -106,9 +106,9 @@ to the users as you would a regular laravel application.
 
 ### Installation
 
-[Laravel 5.1 & Lower](#laravel-5-1)
+[Laravel 5.1 & Lower](#laravel-51--lower)
 
-[Laravel 5.2](#laravel-5-2)
+[Laravel 5.2](#laravel-52)
 
 #### Laravel 5.1 & Lower
 
