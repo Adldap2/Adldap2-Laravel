@@ -44,7 +44,7 @@ class FunctionalTestCase extends TestCase
         $app['config']->set('auth.providers', [
             'adldap' => [
                 'driver' => 'adldap',
-                'model' => 'Adldap\Laravel\Tests\Models\User',
+                'model'  => 'Adldap\Laravel\Tests\Models\User',
             ],
         ]);
     }
