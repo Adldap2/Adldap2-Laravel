@@ -17,6 +17,13 @@ It includes:
 - An Auth driver for easily allowing users to login to your application using active directory
 - An Adldap facade (`Adldap\Laravel\Facades\Adldap`) for easily retrieving the Adldap instance from the IoC
 
+## Version Compatibility
+
+Laravel    | Adldap-Laravel
+:----------|:----------
+ 5.1.x     | 1.3.x
+ 5.2.x     | 1.4.x
+
 ## Installation
 
 Insert Adldap2-Laravel into your `composer.json` file:
