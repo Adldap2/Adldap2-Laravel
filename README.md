@@ -21,14 +21,22 @@ It includes:
 
 Laravel    | Adldap-Laravel
 :----------|:----------
- 5.1.x     | 1.3.x
- 5.2.x     | 1.4.x
+ 5.1.*     | 1.3.*
+ 5.2.*     | 1.4.*
 
 ## Installation
 
 Insert Adldap2-Laravel into your `composer.json` file:
+
+For Laravel 5.1
 ```json
 "adldap2/adldap2-laravel": "1.3.*",
+```
+
+For Laravel 5.2
+
+```json
+"adldap2/adldap2-laravel": "1.4.*",
 ```
 
 Then run `composer update`.
@@ -113,11 +121,7 @@ to the users as you would a regular laravel application.
 
 ### Installation
 
-[Laravel 5.1 & Lower](#laravel-51--lower)
-
-[Laravel 5.2](#laravel-52)
-
-#### Laravel 5.1 & Lower
+#### Laravel 5.1
 
 Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
 
