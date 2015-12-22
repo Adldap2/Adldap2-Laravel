@@ -39,8 +39,14 @@ class FunctionalTestCase extends TestCase
         $app['config']->set('adldap.auto_connect', false);
         $app['config']->set('adldap_auth.bind_user_to_model', true);
 
-        $app['config']->set('auth.driver', 'adldap');
-        $app['config']->set('auth.model', 'Adldap\Laravel\Tests\Models\User');
+        $app['config']->set('auth.guards.web.provider', 'adldap');
+
+        $app['config']->set('auth.providers', [
+            'adldap' => [
+                'driver' => 'adldap',
+                'model' => 'Adldap\Laravel\Tests\Models\User',
+            ],
+        ]);
     }
 
     /**
