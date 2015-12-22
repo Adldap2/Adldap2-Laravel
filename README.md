@@ -106,6 +106,12 @@ to the users as you would a regular laravel application.
 
 ### Installation
 
+[Laravel 5.1 & Lower](#laravel-5-1)
+
+[Laravel 5.2](#laravel-5-2)
+
+#### Laravel 5.1 & Lower
+
 Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
 
 ```php
@@ -135,6 +141,90 @@ Change the auth driver in `config/auth.php` to `adldap`:
 */
 
 'driver' => 'adldap',
+```
+
+#### Laravel 5.2
+
+Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
+
+```php
+Adldap\Laravel\AdldapAuthServiceProvider::class,
+```
+
+Publish the auth configuration:
+
+```bash
+php artisan vendor:publish --tag="adldap"
+```
+
+Open your `config/auth.php` configuration file and change the following:
+
+Change the `provider` entry inside the `web` authentication guard:
+
+```php
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Guards
+    |--------------------------------------------------------------------------
+    |
+    | Next, you may define every authentication guard for your application.
+    | Of course, a great default configuration has been defined for you
+    | here which uses session storage and the Eloquent user provider.
+    |
+    | All authentication drivers have a user provider. This defines how the
+    | users are actually retrieved out of your database or other storage
+    | mechanisms used by this application to persist your user's data.
+    |
+    | Supported: "session", "token"
+    |
+    */
+
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'adldap',
+        ],
+        'api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+        ],
+    ],
+```
+
+Now add the `adldap` provider to your `providers` array:
+
+```php
+/*
+    |--------------------------------------------------------------------------
+    | User Providers
+    |--------------------------------------------------------------------------
+    |
+    | All authentication drivers have a user provider. This defines how the
+    | users are actually retrieved out of your database or other storage
+    | mechanisms used by this application to persist your user's data.
+    |
+    | If you have multiple user tables or models you may configure multiple
+    | sources which represent each model / table. These sources may then
+    | be assigned to any extra authentication guards you have defined.
+    |
+    | Supported: "database", "eloquent"
+    |
+    */
+    'providers' => [
+        'adldap' => [
+            'driver' => 'adldap',
+            'model' => App\User::class,
+        ],
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\User::class,
+        ],
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
 ```
 
 ### Usage
