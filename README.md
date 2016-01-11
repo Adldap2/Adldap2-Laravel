@@ -331,6 +331,9 @@ class LdapAttributeHandler
 }
 ```
 
+> **Note**: Attribute handlers are constructed using the `app()` helper. This means you can type-hint any application
+> dependencies you may need in the handlers constructor.
+
 #### Binding the Adldap User Model to the Laravel User Model
 
 > **Note**: Before we begin, enabling this option will perform a single query on your AD server for a logged in user
