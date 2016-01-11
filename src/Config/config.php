@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'connection' => 'Adldap\Connections\Ldap',
+    'connection' => Adldap\Connections\Ldap::class,
 
     /*
     |--------------------------------------------------------------------------
