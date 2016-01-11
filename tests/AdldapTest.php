@@ -33,8 +33,8 @@ class AdldapTest extends FunctionalTestCase
 
     public function testRegistration()
     {
-        $this->assertTrue(app()->register('Adldap\Laravel\AdldapServiceProvider'));
-        $this->assertTrue(app()->register('Adldap\Laravel\AdldapAuthServiceProvider'));
+        $this->assertInstanceOf(\Adldap\Laravel\AdldapServiceProvider::class, app()->register(\Adldap\Laravel\AdldapServiceProvider::class));
+        $this->assertInstanceOf(\Adldap\Laravel\AdldapAuthServiceProvider::class, app()->register(\Adldap\Laravel\AdldapAuthServiceProvider::class));
     }
 
     public function testContractResolve()
