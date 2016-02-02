@@ -99,6 +99,20 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | Administrator Account Suffix
+        |--------------------------------------------------------------------------
+        |
+        | This option allows you to set a different account suffix for your
+        | configured administrator account upon binding.
+        |
+        | If left empty, your `account_suffix` option will be used.
+        |
+        */
+
+        'admin_account_suffix' => '@acme.org',
+
+        /*
+        |--------------------------------------------------------------------------
         | Administrator Username & Password
         |--------------------------------------------------------------------------
         |
