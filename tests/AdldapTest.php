@@ -11,6 +11,7 @@ use Adldap\Models\User;
 use Adldap\Query\Builder;
 use Adldap\Schemas\Schema;
 use Adldap\Search\Factory;
+use Adldap\Contracts\AdldapInterface;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,9 +48,9 @@ class AdldapTest extends FunctionalTestCase
 
     public function test_contract_resolve()
     {
-        $adldap = $this->app->make('Adldap\Contracts\AdldapInterface');
+        $adldap = $this->app->make(AdldapInterface::class);
 
-        $this->assertInstanceOf('Adldap\Contracts\AdldapInterface', $adldap);
+        $this->assertInstanceOf(AdldapInterface::class, $adldap);
     }
 
     public function test_auth_passes()
@@ -94,8 +95,8 @@ class AdldapTest extends FunctionalTestCase
     {
         $this->test_auth_passes();
 
-        $this->assertInstanceOf('Adldap\Models\User', \Auth::user()->adldapUser);
-        $this->assertInstanceOf('Adldap\Models\User', auth()->user()->adldapUser);
+        $this->assertInstanceOf(User::class, \Auth::user()->adldapUser);
+        $this->assertInstanceOf(User::class, auth()->user()->adldapUser);
     }
 
     public function test_auth_passes_without_persistent_adldap_user()
@@ -166,7 +167,7 @@ class AdldapTest extends FunctionalTestCase
     public function test_credentials_key_does_not_exist()
     {
         $mockedProvider = $this->mock(Provider::class);
-        $mockedSearch = $this->mock('Adldap\Search\Factory');
+        $mockedSearch = $this->mock(Factory::class);
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch);
 
         $manager = new Manager();
@@ -203,7 +204,7 @@ class AdldapTest extends FunctionalTestCase
         $this->app['config']->set('adldap_auth.login_fallback', true);
 
         $mockedProvider = $this->mock(Provider::class);
-        $mockedSearch = $this->mock('Adldap\Search\Factory');
+        $mockedSearch = $this->mock(Factory::class);
         $mockedSearch->shouldReceive('select')->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('whereEquals')->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('first')->andReturn(null);
