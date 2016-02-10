@@ -5,13 +5,13 @@ namespace Adldap\Laravel\Tests;
 use Adldap\Auth\Guard;
 use Adldap\Connections\Manager;
 use Adldap\Connections\Provider;
+use Adldap\Contracts\AdldapInterface;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Models\User;
 use Adldap\Query\Builder;
 use Adldap\Schemas\Schema;
 use Adldap\Search\Factory;
-use Adldap\Contracts\AdldapInterface;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
