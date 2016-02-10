@@ -16,13 +16,14 @@ It includes:
 - An Adldap contract (`Adldap\Contracts\Adldap`) for dependency injection through Laravel's IoC
 - An Auth driver for easily allowing users to login to your application using active directory
 - An Adldap facade (`Adldap\Laravel\Facades\Adldap`) for easily retrieving the Adldap instance from the IoC
+- Support for multiple LDAP connections
 
 ## Installation
 
 Insert Adldap2-Laravel into your `composer.json` file:
 
 ```json
-"adldap2/adldap2-laravel": "1.4.*",
+"adldap2/adldap2-laravel": "v2.0.*",
 ```
 
 Then run `composer update`.
@@ -49,13 +50,13 @@ Now you're all set!
 You can perform all methods on Adldap through its facade like so:
 ```php
 // Finding a user.
-$user = Adldap::users()->find('john doe');
+$user = Adldap::getProvider('default')->search()->users()->find('john doe');
 
 // Searching for a user.
-$search = Adldap::search()->where('cn', '=', 'John Doe')->get();
+$search = Adldap::getProvider('default')->search()->where('cn', '=', 'John Doe')->get();
 
 // Authenticating.
-if (Adldap::authenticate($username, $password)) {
+if (Adldap::getProvider('default')->auth()->attempt($username, $password)) {
     // Passed!
 }
 ```
@@ -88,7 +89,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->adldap->users()->all();
+        $users = $this->adldap->getProvider('default')->search()->users()->get();
         
         return view('users.index', compact('users'));
     }
@@ -400,4 +401,23 @@ To enable it, simply set the option to true in your `adldap_auth.php` configurat
 
 ```php
 'login_fallback' => false, // Set to true.
+```
+
+#### Multiple Authentication Connections
+
+To swap connections on the fly, set your configurations default connection and try re-authenticating the user:
+
+```php
+if (Auth::attempt($credentials)) {
+    // Logged in successfully
+} else {
+    // Login failed, swap and try other connection.
+    Config::set('adldap_auth.connection', 'other-connection');
+    
+    if (Auth::attempt($credentials)) {
+        // Passed logging in with other connection.
+    }
+}
+
+return 'Login incorrect!';
 ```
