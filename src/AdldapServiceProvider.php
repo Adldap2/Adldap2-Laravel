@@ -5,9 +5,9 @@ namespace Adldap\Laravel;
 use Adldap\Adldap;
 use Adldap\Connections\Configuration;
 use Adldap\Connections\Manager;
+use Adldap\Connections\Provider;
 use Adldap\Contracts\AdldapInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
-use Adldap\Connections\Provider;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
@@ -58,10 +58,9 @@ class AdldapServiceProvider extends ServiceProvider
 
             // Go through each connection and construct a Provider.
             foreach ($connections as $name => $settings) {
-
                 $ldap = new $settings['connection']();
                 $configuration = new Configuration($settings['connection_settings']);
-                $schema = new $settings['schema'];
+                $schema = new $settings['schema']();
 
                 // Construct a new connection Provider with its settings.
                 $provider = new Provider($ldap, $configuration, $schema);

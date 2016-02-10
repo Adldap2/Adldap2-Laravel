@@ -3,8 +3,8 @@
 namespace Adldap\Laravel\Tests;
 
 use Illuminate\Support\Facades\Schema;
-use Orchestra\Testbench\TestCase;
 use Mockery;
+use Orchestra\Testbench\TestCase;
 
 class FunctionalTestCase extends TestCase
 {
