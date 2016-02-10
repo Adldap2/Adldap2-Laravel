@@ -6,7 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=5.5.0",
-        "adldap2/adldap2": "5.2.*"
+        "adldap2/adldap2": "dev-master"
     },
     "require-dev": {
         "orchestra/testbench": "~3.2",
