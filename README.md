@@ -408,15 +408,21 @@ To enable it, simply set the option to true in your `adldap_auth.php` configurat
 To swap connections on the fly, set your configurations default connection and try re-authenticating the user:
 
 ```php
+$auth = false;
+
 if (Auth::attempt($credentials)) {
-    // Logged in successfully
+    $auth = true; // Logged in successfully
 } else {
     // Login failed, swap and try other connection.
     Config::set('adldap_auth.connection', 'other-connection');
     
     if (Auth::attempt($credentials)) {
-        // Passed logging in with other connection.
+        $auth = true; // Passed logging in with other connection.
     }
+}
+
+if ($auth === true) {
+    return $this->handleUserWasAuthenticated($request, $throttles);
 }
 
 return 'Login incorrect!';
