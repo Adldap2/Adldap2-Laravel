@@ -3,7 +3,11 @@
 namespace Adldap\Laravel;
 
 use Adldap\Adldap;
+use Adldap\Connections\Configuration;
+use Adldap\Connections\Manager;
+use Adldap\Contracts\AdldapInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
+use Adldap\Connections\Provider;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
@@ -37,31 +41,46 @@ class AdldapServiceProvider extends ServiceProvider
     {
         // Bind the Adldap instance to the IoC
         $this->app->bind('adldap', function (Application $app) {
-            $config = $app->make('config');
+            $config = $app->make('config')->get('adldap');
 
-            $settings = $config->get('adldap');
-
-            // Verify configuration.
-            if (is_null($settings)) {
+            // Verify configuration exists.
+            if (is_null($config)) {
                 $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish --tag="adldap"`.';
 
                 throw new ConfigurationMissingException($message);
             }
 
-            // Create a new Adldap instance.
-            $ad = new Adldap($settings['connection_settings'], new $settings['connection'](), $settings['auto_connect']);
+            // Create a new connection Manager.
+            $manager = new Manager();
 
-            if ($config->get('app.debug')) {
-                // If the application is set to debug mode, we'll display LDAP error messages.
-                $ad->getConnection()->showErrors();
+            // Retrieve the LDAP connections.
+            $connections = $config['connections'];
+
+            // Go through each connection and construct a Provider.
+            foreach ($connections as $name => $settings) {
+
+                $ldap = new $settings['connection']();
+                $configuration = new Configuration($settings['connection_settings']);
+                $schema = new $settings['schema'];
+
+                // Construct a new connection Provider with its settings.
+                $provider = new Provider($ldap, $configuration, $schema);
+
+                if ($settings['auto_connect'] === true) {
+                    // Try connecting to the provider if `auto_connect` is true.
+                    $provider->connect();
+                }
+
+                // Add the Provider to the Manager.
+                $manager->add($name, $provider);
             }
 
-            return $ad;
+            return new Adldap($manager);
         });
 
         // Bind the Adldap contract to the Adldap object
         // in the IoC for dependency injection.
-        $this->app->bind('Adldap\Contracts\Adldap', 'adldap');
+        $this->app->bind(AdldapInterface::class, 'adldap');
     }
 
     /**

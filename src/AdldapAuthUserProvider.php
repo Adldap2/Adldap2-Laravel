@@ -241,7 +241,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function newAdldapUserQuery()
     {
-        return Adldap::users()->search()->select($this->getSelectAttributes());
+        return $this->getAdldap()->search()->select($this->getSelectAttributes());
     }
 
     /**
@@ -254,7 +254,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function authenticate($username, $password)
     {
-        return Adldap::authenticate($username, $password);
+        return $this->getAdldap()->auth()->attempt($username, $password);
     }
 
     /**
@@ -302,7 +302,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function handleAttributeRetrieval(User $user, $field)
     {
-        if ($field === ActiveDirectory::THUMBNAIL) {
+        if ($field === $this->getSchema()->thumbnail()) {
             // If the field we're retrieving is the users thumbnail photo, we need
             // to retrieve it encoded so we're able to save it to the database.
             $value = $user->getThumbnailEncoded();
@@ -320,13 +320,42 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
+     * Returns Adldap's current attribute schema.
+     *
+     * @return \Adldap\Contracts\Schemas\SchemaInterface
+     */
+    protected function getSchema()
+    {
+        return $this->getAdldap()->getSchema();
+    }
+
+    /**
+     * Returns the root Adldap instance.
+     *
+     * @param string $provider
+     *
+     * @return \Adldap\Contracts\Connections\ProviderInterface
+     */
+    protected function getAdldap($provider = null)
+    {
+        /** @var \Adldap\Adldap $ad */
+        $ad = Adldap::getFacadeRoot();
+
+        if (is_null($provider)) {
+            $provider = $this->getDefaultConnectionName();
+        }
+
+        return $ad->getManager()->get($provider);
+    }
+
+    /**
      * Returns the username attribute for discovering LDAP users.
      *
      * @return array
      */
     protected function getUsernameAttribute()
     {
-        return Config::get('adldap_auth.username_attribute', ['username' => ActiveDirectory::ACCOUNT_NAME]);
+        return Config::get('adldap_auth.username_attribute', ['username' => $this->getSchema()->accountName()]);
     }
 
     /**
@@ -347,7 +376,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getLoginAttribute()
     {
-        return Config::get('adldap_auth.login_attribute', ActiveDirectory::ACCOUNT_NAME);
+        return Config::get('adldap_auth.login_attribute', $this->getSchema()->accountName());
     }
 
     /**
@@ -369,7 +398,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getSyncAttributes()
     {
-        return Config::get('adldap_auth.sync_attributes', ['name' => ActiveDirectory::COMMON_NAME]);
+        return Config::get('adldap_auth.sync_attributes', ['name' => $this->getSchema()->commonName()]);
     }
 
     /**
@@ -392,5 +421,15 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function getLoginFallback()
     {
         return Config::get('adldap_auth.login_fallback', false);
+    }
+
+    /**
+     * Retrieves the default connection name from the configuration.
+     *
+     * @return mixed
+     */
+    protected function getDefaultConnectionName()
+    {
+        return Config::get('adldap_auth.connection', 'default');
     }
 }

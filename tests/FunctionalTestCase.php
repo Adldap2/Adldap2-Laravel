@@ -4,6 +4,7 @@ namespace Adldap\Laravel\Tests;
 
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase;
+use Mockery;
 
 class FunctionalTestCase extends TestCase
 {
@@ -76,5 +77,17 @@ class FunctionalTestCase extends TestCase
         return [
             'Adldap' => 'Adldap\Laravel\Facades\Adldap',
         ];
+    }
+
+    /**
+     * Mocks the specified class.
+     *
+     * @param string $class
+     *
+     * @return Mockery\MockInterface
+     */
+    protected function mock($class)
+    {
+        return Mockery::mock($class);
     }
 }
