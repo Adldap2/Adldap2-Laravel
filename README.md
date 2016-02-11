@@ -401,3 +401,34 @@ To enable it, simply set the option to true in your `adldap_auth.php` configurat
 ```php
 'login_fallback' => false, // Set to true.
 ```
+
+#### Windows Authentication (SSO) Middleware
+
+> **Note**: This feature was introduced in `v1.4.3`. You will need to re-publish the Adldap Auth configuration file
+to receive this option.
+
+> **Requirements**: This feature assumes that you have enabled `Windows Authentication` in IIS, or have enabled it 
+in some other means with Apache. Adldap does not set this up for you. To enable Windows Authentication, visit:
+https://www.iis.net/configreference/system.webserver/security/authentication/windowsauthentication/providers/add
+
+SSO authentication allows you to authenticate your users by the pre-populated `$_SERVER['AUTH_USER']` (or `$_SERVER['REMOTE_USER`])
+that is filled when users visit your site when SSO is enabled on your server. This is configurable in your `adldap_auth.php`
+configuration file.
+
+To use the middleware, insert it on your middleware stack:
+
+```php
+protected $middlewareGroups = [
+        'web' => [
+            Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            Middleware\VerifyCsrfToken::class,
+            \Adldap\Laravel\Middleware\WindowsAuthenticate::class, // Inserted here.
+        ],
+];
+```
+
+Now when you visit your site, a user account will be created (if one doesn't exist already)
+with a random password and then automatically logged in. Neat huh?
