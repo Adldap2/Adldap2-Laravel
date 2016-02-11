@@ -50,9 +50,15 @@ class WindowsAuthenticate
 
         // Handle Windows Authentication.
         if ($account = $request->server($auth[$key])) {
-            // Usernames will be prefixed with their domain,
+            // Usernames may be prefixed with their domain,
             // we just need their account name.
-            list($domain, $username) = explode('\\', $account);
+            $username = explode('\\', $account);
+
+            if (count($username) === 2) {
+                list($domain, $username) = explode('\\', $account);
+            } else {
+                $username = $username[key($username)];
+            }
 
             // Create a new user LDAP user query.
             $query = $this->newAdldapUserQuery();
