@@ -85,7 +85,9 @@ class WindowsAuthenticate
      */
     public function createModel()
     {
-        $this->auth->model();
+        $model = $this->auth->getProvider()->getModel();
+
+        return new $model;
     }
 
     /**
