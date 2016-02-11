@@ -4,6 +4,7 @@ namespace Adldap\Laravel\Middleware;
 
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\User;
+use Adldap\Schemas\ActiveDirectory;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\Model;
@@ -44,8 +45,10 @@ class WindowsAuthenticate
         // Retrieve the SSO login attribute.
         $auth = $this->getWindowsAuthAttribute();
 
+        $key = key($auth);
+
         // Handle Windows Authentication.
-        if ($account = $request->server($auth)) {
+        if ($account = $request->server($auth[$key])) {
             // Usernames will be prefixed with their domain,
             // we just need their account name.
             list($domain, $username) = explode('\\', $account);
@@ -53,14 +56,11 @@ class WindowsAuthenticate
             // Create a new user LDAP user query.
             $query = $this->newAdldapUserQuery();
 
-            // Get the username input attributes
-            $attributes = $this->getUsernameAttribute();
-
             // Get the input key
-            $key = key($attributes);
+            $key = key($auth);
 
             // Filter the query by the username attribute
-            $query->whereEquals($attributes[$key], $username);
+            $query->whereEquals($key, $username);
 
             // Retrieve the first user result
             $user = $query->first();
@@ -70,7 +70,7 @@ class WindowsAuthenticate
 
                 if ($model instanceof Model && $this->auth->guest()) {
                     // Double check user instance before logging them in.
-                    $this->auth->login($user);
+                    $this->auth->login($model);
                 }
             }
         }
@@ -97,6 +97,6 @@ class WindowsAuthenticate
      */
     protected function getWindowsAuthAttribute()
     {
-        return Config::get('adldap_auth.windows_auth_attribute', 'AUTH_USER');
+        return Config::get('adldap_auth.windows_auth_attribute', [ActiveDirectory::ACCOUNT_NAME => 'AUTH_USER']);
     }
 }

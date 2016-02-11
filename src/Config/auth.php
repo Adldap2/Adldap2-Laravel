@@ -77,9 +77,11 @@ return [
     |
     | If your using Apache, this attribute must be named `REMOTE_USER`.
     |
+    | The key of the array is what the user will be discovered from in LDAP.
+    |
     */
 
-    'windows_auth_attribute' => 'AUTH_USER',
+    'windows_auth_attribute' => ['samaccountname' => 'AUTH_USER'],
 
     /*
     |--------------------------------------------------------------------------
