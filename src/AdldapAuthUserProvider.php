@@ -5,7 +5,6 @@ namespace Adldap\Laravel;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\User;
-use Adldap\Schemas\ActiveDirectory;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Arr;
