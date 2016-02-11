@@ -45,6 +45,7 @@ class WindowsAuthenticate
         // Retrieve the SSO login attribute.
         $auth = $this->getWindowsAuthAttribute();
 
+        // Retrieve the SSO input key.
         $key = key($auth);
 
         // Handle Windows Authentication.
@@ -55,9 +56,6 @@ class WindowsAuthenticate
 
             // Create a new user LDAP user query.
             $query = $this->newAdldapUserQuery();
-
-            // Get the input key
-            $key = key($auth);
 
             // Filter the query by the username attribute
             $query->whereEquals($key, $username);
