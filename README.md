@@ -16,6 +16,7 @@ It includes:
 - An Adldap contract (`Adldap\Contracts\Adldap`) for dependency injection through Laravel's IoC
 - An Auth driver for easily allowing users to login to your application using active directory
 - An Adldap facade (`Adldap\Laravel\Facades\Adldap`) for easily retrieving the Adldap instance from the IoC
+- A Windows Authentication middleware to easily authenticate users via SSO
 
 ## Installation
 
