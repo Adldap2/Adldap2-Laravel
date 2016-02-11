@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class WindowsAuthenticate
 {
@@ -40,8 +41,11 @@ class WindowsAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
+        // Retrieve the SSO login attribute.
+        $auth = $this->getWindowsAuthAttribute();
+
         // Handle Windows Authentication.
-        if ($account = $request->server('AUTH_USER')) {
+        if ($account = $request->server($auth)) {
             // Usernames will be prefixed with their domain,
             // we just need their account name.
             list($domain, $username) = explode('\\', $account);
@@ -82,5 +86,15 @@ class WindowsAuthenticate
     public function createModel()
     {
         $this->auth->model();
+    }
+
+    /**
+     * Returns the windows authentication attribute.
+     *
+     * @return string
+     */
+    protected function getWindowsAuthAttribute()
+    {
+        return Config::get('adldap_auth.windows_auth_attribute', 'AUTH_USER');
     }
 }
