@@ -87,7 +87,7 @@ class WindowsAuthenticate
     {
         $model = $this->auth->getProvider()->getModel();
 
-        return new $model;
+        return new $model();
     }
 
     /**
