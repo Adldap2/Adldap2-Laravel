@@ -2,9 +2,9 @@
 
 namespace Adldap\Laravel\Middleware;
 
-use Closure;
-use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
+use Adldap\Models\User;
+use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class WindowsAuthenticate
     /**
      * Create a new filter instance.
      *
-     * @param Guard  $auth
+     * @param Guard $auth
      */
     public function __construct(Guard $auth)
     {
