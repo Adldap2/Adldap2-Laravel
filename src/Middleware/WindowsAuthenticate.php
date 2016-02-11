@@ -73,6 +73,21 @@ class WindowsAuthenticate
             }
         }
 
+        return $this->returnNextRequest($request, $next);
+    }
+
+    /**
+     * Returns the next request.
+     *
+     * This method exists for override ability.
+     *
+     * @param Request $request
+     * @param Closure $next
+     *
+     * @return mixed
+     */
+    public function returnNextRequest(Request $request, Closure $next)
+    {
         return $next($request);
     }
 
