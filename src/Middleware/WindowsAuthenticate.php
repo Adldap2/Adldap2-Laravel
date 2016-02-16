@@ -44,7 +44,6 @@ class WindowsAuthenticate
     {
         // If the user is already logged in, no need to reauthenticate
         if (!$this->auth->check()) {
-
             // Retrieve the SSO login attribute.
             $auth = $this->getWindowsAuthAttribute();
 
