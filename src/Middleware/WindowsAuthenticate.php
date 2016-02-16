@@ -42,43 +42,47 @@ class WindowsAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
-        // Retrieve the SSO login attribute.
-        $auth = $this->getWindowsAuthAttribute();
-
-        // Retrieve the SSO input key.
-        $key = key($auth);
-
-        // Handle Windows Authentication.
-        if ($account = $request->server($auth[$key])) {
-            // Usernames may be prefixed with their domain,
-            // we just need their account name.
-            $username = explode('\\', $account);
-
-            if (count($username) === 2) {
-                list($domain, $username) = $username;
-            } else {
-                $username = $username[key($username)];
-            }
-
-            // Create a new user LDAP user query.
-            $query = $this->newAdldapUserQuery();
-
-            // Filter the query by the username attribute
-            $query->whereEquals($key, $username);
-
-            // Retrieve the first user result
-            $user = $query->first();
-
-            if ($user instanceof User) {
-                $model = $this->getModelFromAdldap($user, str_random());
-
-                if ($model instanceof Model && $this->auth->guest()) {
-                    // Double check user instance before logging them in.
-                    $this->auth->login($model);
+        // If the user is already logged in, no need to reauthenticate
+        if ( ! $this->auth->check() ) {
+            
+            // Retrieve the SSO login attribute.
+            $auth = $this->getWindowsAuthAttribute();
+    
+            // Retrieve the SSO input key.
+            $key = key($auth);
+    
+            // Handle Windows Authentication.
+            if ($account = $request->server($auth[$key])) {
+                // Usernames may be prefixed with their domain,
+                // we just need their account name.
+                $username = explode('\\', $account);
+    
+                if (count($username) === 2) {
+                    list($domain, $username) = $username;
+                } else {
+                    $username = $username[key($username)];
+                }
+    
+                // Create a new user LDAP user query.
+                $query = $this->newAdldapUserQuery();
+    
+                // Filter the query by the username attribute
+                $query->whereEquals($key, $username);
+    
+                // Retrieve the first user result
+                $user = $query->first();
+    
+                if ($user instanceof User) {
+                    $model = $this->getModelFromAdldap($user, str_random());
+    
+                    if ($model instanceof Model && $this->auth->guest()) {
+                        // Double check user instance before logging them in.
+                        $this->auth->login($model);
+                    }
                 }
             }
         }
-
+        
         return $this->returnNextRequest($request, $next);
     }
 
