@@ -42,7 +42,7 @@ class WindowsAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
-        // If the user is already logged in, no need to reauthenticate
+        // If the user is already logged in, we don't need to reauthenticate.
         if (!$this->auth->check()) {
             // Retrieve the SSO login attribute.
             $auth = $this->getWindowsAuthAttribute();
