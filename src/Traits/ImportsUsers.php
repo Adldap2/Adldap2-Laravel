@@ -207,7 +207,18 @@ trait ImportsUsers
      */
     protected function newAdldapUserQuery()
     {
-        return Adldap::users()->search()->select($this->getSelectAttributes());
+        /** @var \Adldap\Query\Builder $query */
+        $query = Adldap::users()->search();
+
+        $filter = $this->getLimitationFilter();
+
+        if (!empty($filter)) {
+            // If we're provided a login limitation filter,
+            // we'll add it to the user query.
+            $query->rawFilter($filter);
+        }
+
+        return $query->select($this->getSelectAttributes());
     }
 
     /**
@@ -261,5 +272,15 @@ trait ImportsUsers
     protected function getSyncAttributes()
     {
         return Config::get('adldap_auth.sync_attributes', ['name' => ActiveDirectory::COMMON_NAME]);
+    }
+
+    /**
+     * Returns the configured login limitation filter.
+     *
+     * @return string|null
+     */
+    protected function getLimitationFilter()
+    {
+        return Config::get('adldap_auth.limitation_filter');
     }
 }
