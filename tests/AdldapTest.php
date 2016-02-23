@@ -205,4 +205,35 @@ class AdldapTest extends FunctionalTestCase
 
         $this->assertFalse($outcome);
     }
+
+    public function testLimitationFilter()
+    {
+        $this->app['config']->set('adldap_auth.limitation_filter', '(mail=*)');
+
+        $credentials = [
+            'email'    => 'jdoe@email.com',
+            'password' => 'Password123',
+        ];
+
+        $mockedUser = Mockery::mock('Adldap\Models\User');
+
+        $mockedUser->shouldReceive('getAttribute')->andReturn('jdoe');
+
+        $mockedSearch = Mockery::mock('Adldap\Classes\Search');
+        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch)
+            ->shouldReceive('rawFilter')->once()->withArgs(['(mail=*)'])->andReturn($mockedSearch)
+            ->shouldReceive('whereEquals')->once()->andReturn($mockedSearch)
+            ->shouldReceive('first')->once()->andReturn($mockedUser);
+
+        $mockedUsers = Mockery::mock('Adldap\Classes\Users');
+
+        $mockedUsers->shouldReceive('search')->once()->andReturn($mockedSearch);
+
+        Adldap::shouldReceive('users')->once()->andReturn($mockedUsers)
+            ->shouldReceive('authenticate')->once()->andReturn(true);
+
+        $outcome = Auth::attempt($credentials);
+
+        $this->assertTrue($outcome);
+    }
 }
