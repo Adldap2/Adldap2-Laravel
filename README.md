@@ -433,3 +433,28 @@ protected $middlewareGroups = [
 
 Now when you visit your site, a user account will be created (if one doesn't exist already)
 with a random password and then automatically logged in. Neat huh?
+
+#### Login Limitation Filter
+
+> **Note**: This feature was introduced in `v1.4.6`. You will need to re-publish the Adldap Auth configuration file
+to receive this option.
+
+Inside of your `config/adldap_auth.php` configuration, you can now insert a raw LDAP filter to specify what users are allowed to authenticate.
+
+For example, to allow only users with an email address, insert the filter: `(mail=*)`:
+
+```php
+ /*
+ |--------------------------------------------------------------------------
+ | Limitation Filter
+ |--------------------------------------------------------------------------
+ |
+ | The limitation filter allows you to enter a raw filter to only allow
+ | specific users / groups / ous to authenticate.
+ |
+ | This should be a standard LDAP filter.
+ |
+ */
+
+ 'limitation_filter' => '(mail=*)',
+```
