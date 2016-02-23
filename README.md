@@ -441,6 +441,8 @@ to receive this option.
 
 Inside of your `config/adldap_auth.php` configuration, you can now insert a raw LDAP filter to specify what users are allowed to authenticate.
 
+This filter persists to the Windows Authentication Middleware as well.
+
 For example, to allow only users with an email address, insert the filter: `(mail=*)`:
 
 ```php
