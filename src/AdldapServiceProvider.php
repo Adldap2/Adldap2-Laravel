@@ -49,14 +49,7 @@ class AdldapServiceProvider extends ServiceProvider
             }
 
             // Create a new Adldap instance.
-            $ad = new Adldap($settings['connection_settings'], new $settings['connection'](), $settings['auto_connect']);
-
-            if ($config->get('app.debug')) {
-                // If the application is set to debug mode, we'll display LDAP error messages.
-                $ad->getConnection()->showErrors();
-            }
-
-            return $ad;
+            return new Adldap($settings['connection_settings'], new $settings['connection'](), $settings['auto_connect']);
         });
 
         // Bind the Adldap contract to the Adldap object
