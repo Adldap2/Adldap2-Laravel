@@ -74,7 +74,7 @@ class WindowsAuthenticate
                 if ($user instanceof User) {
                     $model = $this->getModelFromAdldap($user, str_random());
 
-                    if ($model instanceof Model && $this->auth->guest()) {
+                    if ($model instanceof Model) {
                         // Double check user instance before logging them in.
                         $this->auth->login($model);
                     }
