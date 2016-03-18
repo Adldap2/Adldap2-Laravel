@@ -14,13 +14,6 @@ use Illuminate\Support\ServiceProvider;
 class AdldapServiceProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    /**
      * Run service provider boot operations.
      */
     public function boot()
@@ -40,7 +33,7 @@ class AdldapServiceProvider extends ServiceProvider
     public function register()
     {
         // Bind the Adldap instance to the IoC
-        $this->app->bind('adldap', function (Application $app) {
+        $this->app->singleton('adldap', function (Application $app) {
             $config = $app->make('config')->get('adldap');
 
             // Verify configuration exists.
@@ -58,12 +51,12 @@ class AdldapServiceProvider extends ServiceProvider
 
             // Go through each connection and construct a Provider.
             foreach ($connections as $name => $settings) {
-                $ldap = new $settings['connection']();
                 $configuration = new Configuration($settings['connection_settings']);
+                $connection = new $settings['connection']();
                 $schema = new $settings['schema']();
 
                 // Construct a new connection Provider with its settings.
-                $provider = new Provider($ldap, $configuration, $schema);
+                $provider = new Provider($configuration, $connection, $schema);
 
                 if ($settings['auto_connect'] === true) {
                     // Try connecting to the provider if `auto_connect` is true.
@@ -79,7 +72,7 @@ class AdldapServiceProvider extends ServiceProvider
 
         // Bind the Adldap contract to the Adldap object
         // in the IoC for dependency injection.
-        $this->app->bind(AdldapInterface::class, 'adldap');
+        $this->app->singleton(AdldapInterface::class, 'adldap');
     }
 
     /**

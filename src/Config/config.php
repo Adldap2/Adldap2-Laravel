@@ -39,6 +39,8 @@ return [
             |
             | The connection class to use to run operations on.
             |
+            | You can also set this option to `null` to use the default connection class.
+            |
             | Custom connection classes must implement \Adldap\Contracts\Connections\ConnectionInterface
             |
             */
@@ -51,6 +53,8 @@ return [
             |--------------------------------------------------------------------------
             |
             | The schema class to use for retrieving attributes and generating models.
+            |
+            | You can also set this option to `null` to use the default schema class.
             |
             | Custom schema classes must implement \Adldap\Contracts\Schemas\SchemaInterface
             |
@@ -186,18 +190,6 @@ return [
 
                 'use_ssl' => false,
                 'use_tls' => false,
-
-                /*
-                |--------------------------------------------------------------------------
-                | SSO (Single Sign On)
-                |--------------------------------------------------------------------------
-                |
-                | If you enable single sign on, be sure you've properly set it up
-                | on your server before hand.
-                |
-                */
-
-                'use_sso' => false,
 
             ],
 
