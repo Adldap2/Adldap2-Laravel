@@ -79,8 +79,6 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             // we'll call the eloquent driver.
             return parent::retrieveByCredentials($credentials);
         }
-
-        return;
     }
 
     /**
