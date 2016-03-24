@@ -432,7 +432,7 @@ protected $middlewareGroups = [
 ```
 
 Now when you visit your site, a user account will be created (if one doesn't exist already)
-with a random password and then automatically logged in. Neat huh?
+with a random 16 character string password and then automatically logged in. Neat huh?
 
 #### Login Limitation Filter
 
