@@ -460,6 +460,14 @@ For example, to allow only users with an email address, insert the filter: `(mai
  'limitation_filter' => '(mail=*)',
 ```
 
+For another example, here's how you can limit users logging in that are apart of a specific group:
+
+> **Note**: This will also allow nested group users to login as well.
+
+```php
+'limitation_filter' => '(memberof:1.2.840.113556.1.4.1941:=CN=AppAllowed,DC=example,DC=com)',
+```
+
 #### Multiple Authentication Connections
 
 > **Note**: This feature was introduced in `v2.0.0`.
