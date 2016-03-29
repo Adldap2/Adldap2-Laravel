@@ -208,6 +208,7 @@ Now add the `adldap` provider to your `providers` array:
 | Supported: "database", "eloquent"
 |
 */
+
 'providers' => [
     'adldap' => [
         'driver' => 'adldap',
