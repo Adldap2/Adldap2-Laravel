@@ -346,9 +346,8 @@ You **must** insert the trait `Adldap\Laravel\Traits\AdldapUserModelTrait` onto 
 Add the public property `adldapUser` to your model.
 
 ```php
-// app/User.php
-
 <?php
+// app/User.php
 
 namespace App;
 
@@ -403,7 +402,67 @@ To enable it, simply set the option to true in your `adldap_auth.php` configurat
 'login_fallback' => false, // Set to true.
 ```
 
+#### Windows Authentication (SSO) Middleware
+
+> **Note**: This feature was introduced in `v1.4.3`. You will need to re-publish the Adldap Auth configuration file
+to receive this option.
+
+> **Requirements**: This feature assumes that you have enabled `Windows Authentication` in IIS, or have enabled it
+in some other means with Apache. Adldap does not set this up for you. To enable Windows Authentication, visit:
+https://www.iis.net/configreference/system.webserver/security/authentication/windowsauthentication/providers/add
+
+SSO authentication allows you to authenticate your users by the pre-populated `$_SERVER['AUTH_USER']` (or `$_SERVER['REMOTE_USER`])
+that is filled when users visit your site when SSO is enabled on your server. This is configurable in your `adldap_auth.php`
+configuration file.
+
+To use the middleware, insert it on your middleware stack:
+
+```php
+protected $middlewareGroups = [
+        'web' => [
+            Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            Middleware\VerifyCsrfToken::class,
+            \Adldap\Laravel\Middleware\WindowsAuthenticate::class, // Inserted here.
+        ],
+];
+```
+
+Now when you visit your site, a user account will be created (if one doesn't exist already)
+with a random 16 character string password and then automatically logged in. Neat huh?
+
+#### Login Limitation Filter
+
+> **Note**: This feature was introduced in `v1.4.6`. You will need to re-publish the Adldap Auth configuration file
+to receive this option.
+
+Inside of your `config/adldap_auth.php` configuration, you can now insert a raw LDAP filter to specify what users are allowed to authenticate.
+
+This filter persists to the Windows Authentication Middleware as well.
+
+For example, to allow only users with an email address, insert the filter: `(mail=*)`:
+
+```php
+ /*
+ |--------------------------------------------------------------------------
+ | Limitation Filter
+ |--------------------------------------------------------------------------
+ |
+ | The limitation filter allows you to enter a raw filter to only allow
+ | specific users / groups / ous to authenticate.
+ |
+ | This should be a standard LDAP filter.
+ |
+ */
+
+ 'limitation_filter' => '(mail=*)',
+```
+
 #### Multiple Authentication Connections
+
+> **Note**: This feature was introduced in `v2.0.0`.
 
 To swap connections on the fly, set your configurations default connection and try re-authenticating the user:
 
