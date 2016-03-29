@@ -466,6 +466,6 @@ For another example, here's how you can limit users logging in that are apart of
 > **Note**: This will also allow nested group users to login as well.
 
 ```php
-'limitation_filter' => '(memberof:1.2.840.113556.1.4.1941:=CN=AppAllowed,DC=example,DC=com)',
+'limitation_filter' => '(memberof:1.2.840.113556.1.4.1941:=CN=MyGroup,DC=example,DC=com)',
 ```
 
