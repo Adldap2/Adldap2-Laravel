@@ -36,6 +36,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Limitation Filter
+    |--------------------------------------------------------------------------
+    |
+    | The limitation filter allows you to enter a raw filter to only allow
+    | specific users / groups / ous to authenticate.
+    |
+    | This should be a standard LDAP filter.
+    |
+    */
+
+    'limitation_filter' => '',
+
+    /*
+    |--------------------------------------------------------------------------
     | Login Fallback
     |--------------------------------------------------------------------------
     |
