@@ -77,6 +77,20 @@ return [
 
                 /*
                 |--------------------------------------------------------------------------
+                | Account Prefix
+                |--------------------------------------------------------------------------
+                |
+                | The account prefix option is the prefix of your user accounts in AD.
+                |
+                | For example, if you'd prefer your users to use only their username instead
+                | of specifying a domain ('ACME\jdoe'), enter your domain name.
+                |
+                */
+
+                'account_prefix' => '',
+
+                /*
+                |--------------------------------------------------------------------------
                 | Account Suffix
                 |--------------------------------------------------------------------------
                 |
