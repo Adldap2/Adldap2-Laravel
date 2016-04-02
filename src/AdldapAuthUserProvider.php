@@ -320,35 +320,6 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
-     * Returns Adldap's current attribute schema.
-     *
-     * @return \Adldap\Contracts\Schemas\SchemaInterface
-     */
-    protected function getSchema()
-    {
-        return $this->getAdldap()->getSchema();
-    }
-
-    /**
-     * Returns the root Adldap instance.
-     *
-     * @param string $provider
-     *
-     * @return \Adldap\Contracts\Connections\ProviderInterface
-     */
-    protected function getAdldap($provider = null)
-    {
-        /** @var \Adldap\Adldap $ad */
-        $ad = Adldap::getFacadeRoot();
-
-        if (is_null($provider)) {
-            $provider = $this->getDefaultConnectionName();
-        }
-
-        return $ad->getManager()->get($provider);
-    }
-
-    /**
      * Returns the password key to retrieve the
      * password from the user input array.
      *

@@ -4,7 +4,6 @@ namespace Adldap\Laravel\Middleware;
 
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\User;
-use Adldap\Schemas\ActiveDirectory;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\Model;
@@ -119,6 +118,6 @@ class WindowsAuthenticate
      */
     protected function getWindowsAuthAttribute()
     {
-        return Config::get('adldap_auth.windows_auth_attribute', [ActiveDirectory::ACCOUNT_NAME => 'AUTH_USER']);
+        return Config::get('adldap_auth.windows_auth_attribute', [$this->getSchema()->accountName() => 'AUTH_USER']);
     }
 }

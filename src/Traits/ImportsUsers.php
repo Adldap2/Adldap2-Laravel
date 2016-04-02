@@ -221,6 +221,35 @@ trait ImportsUsers
     }
 
     /**
+     * Returns Adldap's current attribute schema.
+     *
+     * @return \Adldap\Contracts\Schemas\SchemaInterface
+     */
+    protected function getSchema()
+    {
+        return $this->getAdldap()->getSchema();
+    }
+
+    /**
+     * Returns the root Adldap instance.
+     *
+     * @param string $provider
+     *
+     * @return \Adldap\Contracts\Connections\ProviderInterface
+     */
+    protected function getAdldap($provider = null)
+    {
+        /** @var \Adldap\Adldap $ad */
+        $ad = Adldap::getFacadeRoot();
+
+        if (is_null($provider)) {
+            $provider = $this->getDefaultConnectionName();
+        }
+
+        return $ad->getManager()->get($provider);
+    }
+
+    /**
      * Retrieves the Aldldap select attributes when performing
      * queries for authentication and binding for users.
      *
