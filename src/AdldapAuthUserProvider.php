@@ -340,14 +340,4 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     {
         return Config::get('adldap_auth.login_fallback', false);
     }
-
-    /**
-     * Retrieves the default connection name from the configuration.
-     *
-     * @return mixed
-     */
-    protected function getDefaultConnectionName()
-    {
-        return Config::get('adldap_auth.connection', 'default');
-    }
 }

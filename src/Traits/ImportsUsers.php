@@ -311,4 +311,14 @@ trait ImportsUsers
     {
         return Config::get('adldap_auth.limitation_filter');
     }
+
+    /**
+     * Retrieves the default connection name from the configuration.
+     *
+     * @return mixed
+     */
+    protected function getDefaultConnectionName()
+    {
+        return Config::get('adldap_auth.connection', 'default');
+    }
 }
