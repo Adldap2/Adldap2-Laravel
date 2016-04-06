@@ -2,7 +2,6 @@
 
 namespace Adldap\Laravel;
 
-use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\User;
 use Illuminate\Auth\EloquentUserProvider;
@@ -40,40 +39,44 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        // Get the search query for users only
+        // Get the search query for users only.
         $query = $this->newAdldapUserQuery();
 
-        // Get the username input attributes
-        $attributes = $this->getUsernameAttribute();
+        // Make sure the connection is bound
+        // before we try to utilize it.
+        if ($query->getConnection()->isBound()) {
+            // Get the username input attributes.
+            $attributes = $this->getUsernameAttribute();
 
-        // Get the input key
-        $key = key($attributes);
+            // Get the input key.
+            $key = key($attributes);
 
-        // Filter the query by the username attribute
-        $query->whereEquals($attributes[$key], $credentials[$key]);
+            // Filter the query by the username attribute.
+            $query->whereEquals($attributes[$key], $credentials[$key]);
 
-        // Retrieve the first user result
-        $user = $query->first();
+            // Retrieve the first user result.
+            $user = $query->first();
 
-        // If the user is an Adldap User model instance.
-        if ($user instanceof User) {
-            // Retrieve the users login attribute.
-            $username = $user->{$this->getLoginAttribute()};
+            // If the user is an Adldap User model instance.
+            if ($user instanceof User) {
+                // Retrieve the users login attribute.
+                $username = $user->{$this->getLoginAttribute()};
 
-            if (is_array($username)) {
-                // We'll make sure we retrieve the users first username
-                // attribute if it's contained in an array.
-                $username = Arr::get($username, 0);
-            }
+                if (is_array($username)) {
+                    // We'll make sure we retrieve the users first username
+                    // attribute if it's contained in an array.
+                    $username = Arr::get($username, 0);
+                }
 
-            // Get the password input array key.
-            $key = $this->getPasswordKey();
+                // Get the password input array key.
+                $key = $this->getPasswordKey();
 
-            // Try to log the user in.
-            if ($this->authenticate($username, $credentials[$key])) {
-                // Login was successful, we'll create a new
-                // Laravel model with the Adldap user.
-                return $this->getModelFromAdldap($user, $credentials[$key]);
+                // Try to log the user in.
+                if ($this->authenticate($username, $credentials[$key])) {
+                    // Login was successful, we'll create a new
+                    // Laravel model with the Adldap user.
+                    return $this->getModelFromAdldap($user, $credentials[$key]);
+                }
             }
         }
 
