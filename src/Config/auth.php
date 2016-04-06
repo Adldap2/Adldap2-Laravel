@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'connection' => 'default',
+    'connection' => env('ADLDAP_CONNECTION', 'default'),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'limitation_filter' => '',
+    'limitation_filter' => env('ADLDAP_LIMITATION_FILTER', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -60,7 +60,7 @@ return [
     |
     */
 
-    'login_fallback' => false,
+    'login_fallback' => env('ADLDAP_LOGIN_FALLBACK', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -74,7 +74,7 @@ return [
     |
     */
 
-    'password_key' => 'password',
+    'password_key' => env('ADLDAP_PASSWORD_KEY', 'password'),
 
     /*
     |--------------------------------------------------------------------------
@@ -87,7 +87,7 @@ return [
     |
     */
 
-    'login_attribute' => 'samaccountname',
+    'login_attribute' => env('ADLDAP_LOGIN_ATTRIBUTE', 'samaccountname'),
 
     /*
     |--------------------------------------------------------------------------
@@ -108,7 +108,7 @@ return [
     |
     */
 
-    'bind_user_to_model' => false,
+    'bind_user_to_model' => env('ADLDAP_BIND_USER_TO_MODEL', false),
 
     /*
     |--------------------------------------------------------------------------
