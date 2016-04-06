@@ -437,7 +437,7 @@ with a random 16 character string password and then automatically logged in. Nea
 > **Note**: This feature was introduced in `v1.4.6`. You will need to re-publish the Adldap Auth configuration file
 to receive this option.
 
-Inside of your `config/adldap_auth.php` configuration, you can now insert a raw LDAP filter to specify what users are allowed to authenticate.
+Inside of your `config/adldap_auth.php` configuration, you can now insert a raw LDAP filter to specify which users are allowed to authenticate.
 
 This filter persists to the Windows Authentication Middleware as well.
 
