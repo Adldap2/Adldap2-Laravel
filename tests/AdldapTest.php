@@ -267,4 +267,44 @@ class AdldapTest extends FunctionalTestCase
 
         $this->assertFalse($outcome);
     }
+
+    public function test_config_login_fallback_no_connection()
+    {
+        $this->app['config']->set('adldap_auth.login_fallback', true);
+
+        $mockedProvider = $this->mock(Provider::class);
+        $mockedSearch = $this->mock(Factory::class);
+        $mockedConnection = $this->mock(ConnectionInterface::class);
+
+        $mockedConnection->shouldReceive('isBound')->once()->andReturn(false);
+
+        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch);
+        $mockedSearch->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
+
+        $manager = new Manager();
+
+        $manager->add('default', $mockedProvider);
+        $mockedProvider->shouldReceive('search')->once()->andReturn($mockedSearch);
+
+        Adldap::shouldReceive('getManager')->andReturn($manager);
+
+        EloquentUser::create([
+            'email'    => 'jdoe@email.com',
+            'name'     => 'John Doe',
+            'password' => bcrypt('Password123'),
+        ]);
+
+        $credentials = [
+            'email'    => 'jdoe@email.com',
+            'password' => 'Password123',
+        ];
+
+        $outcome = Auth::attempt($credentials);
+
+        $user = \Auth::user();
+
+        $this->assertTrue($outcome);
+        $this->assertInstanceOf('Adldap\Laravel\Tests\Models\User', $user);
+        $this->assertEquals('jdoe@email.com', $user->email);
+    }
 }
