@@ -6,6 +6,7 @@ use Adldap\Auth\Guard;
 use Adldap\Connections\Manager;
 use Adldap\Connections\Provider;
 use Adldap\Contracts\AdldapInterface;
+use Adldap\Contracts\Connections\ConnectionInterface;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Models\User;
@@ -59,8 +60,12 @@ class AdldapTest extends FunctionalTestCase
         $mockedBuilder = $this->mock(Builder::class);
         $mockedSearch = $this->mock(Factory::class);
         $mockedAuth = $this->mock(Guard::class);
+        $mockedConnection = $this->mock(ConnectionInterface::class);
+
+        $mockedConnection->shouldReceive('isBound')->once()->andReturn(true);
 
         $mockedBuilder->shouldReceive('getSchema')->once()->andReturn(Schema::get());
+        $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
 
         $adUser = (new User([], $mockedBuilder))->setRawAttributes([
             'samaccountname' => ['jdoe'],
@@ -115,8 +120,12 @@ class AdldapTest extends FunctionalTestCase
         $mockedBuilder = $this->mock(Builder::class);
         $mockedSearch = $this->mock(Factory::class);
         $mockedAuth = $this->mock(Guard::class);
+        $mockedConnection = $this->mock(ConnectionInterface::class);
+
+        $mockedConnection->shouldReceive('isBound')->once()->andReturn(true);
 
         $mockedBuilder->shouldReceive('getSchema')->once()->andReturn(Schema::get());
+        $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
 
         $adUser = (new User([], $mockedBuilder))->setRawAttributes([
             'samaccountname' => ['jdoe'],
@@ -147,6 +156,9 @@ class AdldapTest extends FunctionalTestCase
         $mockedProvider = $this->mock(Provider::class);
         $mockedBuilder = $this->mock(Builder::class);
         $mockedSearch = $this->mock(Factory::class);
+        $mockedConnection = $this->mock(ConnectionInterface::class);
+
+        $mockedConnection->shouldReceive('isBound')->once()->andReturn(true);
 
         $manager = new Manager();
 
@@ -158,6 +170,7 @@ class AdldapTest extends FunctionalTestCase
         $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
 
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
+        $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
         $mockedBuilder->shouldReceive('whereEquals')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('first')->once()->andReturn(null);
 
@@ -168,7 +181,14 @@ class AdldapTest extends FunctionalTestCase
     {
         $mockedProvider = $this->mock(Provider::class);
         $mockedSearch = $this->mock(Factory::class);
-        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch);
+        $mockedBuilder = $this->mock(Builder::class);
+        $mockedConnection = $this->mock(ConnectionInterface::class);
+
+        $mockedConnection->shouldReceive('isBound')->once()->andReturn(true);
+
+        $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
+
+        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
 
         $manager = new Manager();
 
@@ -205,15 +225,20 @@ class AdldapTest extends FunctionalTestCase
 
         $mockedProvider = $this->mock(Provider::class);
         $mockedSearch = $this->mock(Factory::class);
-        $mockedSearch->shouldReceive('select')->andReturn($mockedSearch);
-        $mockedSearch->shouldReceive('whereEquals')->andReturn($mockedSearch);
-        $mockedSearch->shouldReceive('first')->andReturn(null);
+        $mockedConnection = $this->mock(ConnectionInterface::class);
+
+        $mockedConnection->shouldReceive('isBound')->twice()->andReturn(true);
+
+        $mockedSearch->shouldReceive('select')->twice()->andReturn($mockedSearch);
+        $mockedSearch->shouldReceive('getConnection')->twice()->andReturn($mockedConnection);
+        $mockedSearch->shouldReceive('whereEquals')->twice()->andReturn($mockedSearch);
+        $mockedSearch->shouldReceive('first')->twice()->andReturn(null);
 
         $manager = new Manager();
 
         $manager->add('default', $mockedProvider);
-        $mockedProvider->shouldReceive('search')->andReturn($mockedSearch);
-        $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
+        $mockedProvider->shouldReceive('search')->twice()->andReturn($mockedSearch);
+        $mockedProvider->shouldReceive('getSchema')->twice()->andReturn(Schema::get());
 
         Adldap::shouldReceive('getManager')->andReturn($manager);
 
