@@ -206,8 +206,7 @@ trait ImportsUsers
      */
     protected function newAdldapUserQuery()
     {
-        /** @var \Adldap\Query\Builder $query */
-        $query = Adldap::getDefaultProvider()->search()->users();
+        $query = $this->getAdldap()->search()->users();
 
         $filter = $this->getLimitationFilter();
 
