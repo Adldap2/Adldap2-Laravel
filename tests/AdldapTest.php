@@ -83,6 +83,7 @@ class AdldapTest extends FunctionalTestCase
         $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
         $mockedProvider->shouldReceive('auth')->once()->andReturn($mockedAuth);
 
+        $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('whereEquals')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('first')->once()->andReturn($adUser);
@@ -143,6 +144,7 @@ class AdldapTest extends FunctionalTestCase
         $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
         $mockedProvider->shouldReceive('auth')->once()->andReturn($mockedAuth);
 
+        $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('whereEquals')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('first')->once()->andReturn($adUser);
@@ -169,6 +171,7 @@ class AdldapTest extends FunctionalTestCase
         $mockedProvider->shouldReceive('search')->once()->andReturn($mockedSearch);
         $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
 
+        $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
         $mockedBuilder->shouldReceive('whereEquals')->once()->andReturn($mockedBuilder);
@@ -197,6 +200,7 @@ class AdldapTest extends FunctionalTestCase
         Adldap::shouldReceive('getManager')->andReturn($manager);
 
         $mockedProvider->shouldReceive('search')->once()->andReturn($mockedSearch);
+        $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
         $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
 
         $nonExistantInputKey = 'non-existent-key';
@@ -229,6 +233,7 @@ class AdldapTest extends FunctionalTestCase
 
         $mockedConnection->shouldReceive('isBound')->twice()->andReturn(true);
 
+        $mockedSearch->shouldReceive('users')->twice()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('select')->twice()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('getConnection')->twice()->andReturn($mockedConnection);
         $mockedSearch->shouldReceive('whereEquals')->twice()->andReturn($mockedSearch);
@@ -279,6 +284,7 @@ class AdldapTest extends FunctionalTestCase
         $mockedConnection->shouldReceive('isBound')->once()->andReturn(false);
 
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedSearch);
+        $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
 
         $manager = new Manager();
