@@ -20,6 +20,8 @@ It includes:
 
 ## Installation
 
+[Quick Start - From Scratch](quick-start.md)
+
 Insert Adldap2-Laravel into your `composer.json` file:
 
 ```json
