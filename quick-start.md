@@ -80,7 +80,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
     ```
 
 15. Inside your `resources/views/auth/login.blade.php` file, if you're requiring the user logging in by username, you'll
-    need to modify the HTML input to `username` instead of `email`:
+    need to modify the HTML input to `username` instead of `email`. Ignore this step otherwise.
 
     From:
     ```
