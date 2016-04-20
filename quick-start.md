@@ -26,12 +26,18 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
 
 8. Insert the following providers in your `config/app.php` file:
 
-   * `Adldap\Laravel\AdldapServiceProvider::class`,
-   * `Adldap\Laravel\AdldapAuthServiceProvider::class`,
+```php
+Adldap\Laravel\AdldapServiceProvider::class,
+Adldap\Laravel\AdldapAuthServiceProvider::class,
+```
 
 9. Now, insert the facade into your `config/app.php` file:
 
-   * `'Adldap' => Adldap\Laravel\Facades\Adldap::class`,
+```php
+'Adldap' => Adldap\Laravel\Facades\Adldap::class`,
+```
+
+> **Note**: Insertion of the facade in your `app.php` file isn't necessary unless you're planning on utilizing it.
 
 10. Now run `php artisan vendor:publish` to publish Adldap2's configuration files.
 
