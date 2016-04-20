@@ -10,7 +10,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
 
 2. Insert `"adldap2/adldap2-laravel": "2.0.*"` in your `composer.json` file in the root directory of your project.
 
-3. Run `composer update` to pull in Adldap2 and its dependencies.
+3. Run the `composer update` command in the root directory of your project to pull in Adldap2 and its dependencies.
 
 4. Create a new database in your desired database interface (such as PhpMyAdmin, MySQL Workbench etc.)
 
