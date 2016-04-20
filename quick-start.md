@@ -43,7 +43,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
 13. Inside the generated `app/Http/Controllers/AuthController.php`, you'll need to change the `protected $username`
     property if you're logging in users by username. Otherwise ignore this step.
 
-    ```
+    ```php
     class AuthController extends Controller
     {
         protected $username = 'username';
@@ -51,7 +51,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
 
 14. Now insert a new auth driver inside your `config/auth.php` file:
 
-    ```
+    ```php
     'guards' => [
         'web' => [
             'driver'   => 'session',
@@ -83,13 +83,13 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
     need to modify the HTML input to `username` instead of `email`. Ignore this step otherwise.
 
     From:
-    ```
+    ```html
     <input type="email" class="form-control" name="email" value="{{ old('email') }}">
     ```
 
     To:
 
-    ```
+    ```html
     <input type="username" class="form-control" name="username" value="{{ old('username') }}">
     ```
 
