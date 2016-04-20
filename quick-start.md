@@ -18,10 +18,26 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
 
 6. If you're using Active Directory username's to login users **instead** of their emails, you will need to change
    the default `email` column in `database/migrations/2014_10_12_000000_create_users_table.php`.
-
-   * From: `$table->string('email')->unique();`
-   * To: `$table->string('username')->unique();`
-
+   
+   ```php
+   // database/migrations/2014_10_12_000000_create_users_table.php
+   
+   Schema::create('users', function (Blueprint $table) {
+      $table->increments('id');
+      $table->string('name');
+      
+      // From:
+      $table->string('email')->unique();
+      
+      // To:
+      $table->string('username')->unique();
+      
+      $table->string('password');
+      $table->rememberToken();
+      $table->timestamps();
+  });
+   ```
+   
 7. Now run `php artisan migrate`.
 
 8. Insert the following providers in your `config/app.php` file:
