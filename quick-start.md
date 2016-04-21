@@ -50,7 +50,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
 9. Now, insert the facade into your `config/app.php` file:
 
    ```php
-   'Adldap' => Adldap\Laravel\Facades\Adldap::class`,
+   'Adldap' => Adldap\Laravel\Facades\Adldap::class,
    ```
 
    > **Note**: Insertion of the facade in your `app.php` file isn't necessary unless you're planning on utilizing it.
