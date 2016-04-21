@@ -113,7 +113,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
     To:
 
     ```html
-    <input type="username" class="form-control" name="username" value="{{ old('username') }}">
+    <input type="text" class="form-control" name="username" value="{{ old('username') }}">
     ```
 
 16. You should now be able to login to your Laravel application using LDAP authentication!
