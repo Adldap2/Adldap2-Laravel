@@ -63,7 +63,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
 
 12. Run the command `php artisan make:auth` to scaffold authentication controllers and routes.
 
-13. Inside the generated `app/Http/Controllers/AuthController.php`, you'll need to change the `protected $username`
+13. Inside the generated `app/Http/Controllers/Auth/AuthController.php`, you'll need to change the `protected $username`
     property if you're logging in users by username. Otherwise ignore this step.
 
     ```php
