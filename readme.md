@@ -65,7 +65,7 @@ if (Adldap::getProvider('default')->auth()->attempt($username, $password)) {
 
 Or you can inject the Adldap contract:
 ```php
-use Adldap\Contracts\Adldap;
+use Adldap\Contracts\AdldapInterface;
 
 class UserController extends Controller
 {
@@ -77,9 +77,9 @@ class UserController extends Controller
     /**
      * Constructor.
      *
-     * @param Adldap $adldap
+     * @param AdldapInterface $adldap
      */
-    public function __construct(Adldap $adldap)
+    public function __construct(AdldapInterface $adldap)
     {
         $this->adldap = $adldap;
     }
