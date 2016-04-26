@@ -420,14 +420,14 @@ To use the middleware, insert it on your middleware stack:
 
 ```php
 protected $middlewareGroups = [
-        'web' => [
-            Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            Middleware\VerifyCsrfToken::class,
-            \Adldap\Laravel\Middleware\WindowsAuthenticate::class, // Inserted here.
-        ],
+    'web' => [
+        Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        Middleware\VerifyCsrfToken::class,
+        \Adldap\Laravel\Middleware\WindowsAuthenticate::class, // Inserted here.
+    ],
 ];
 ```
 
