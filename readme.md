@@ -13,7 +13,7 @@ Adldap2 - Laravel allows easy configuration, access, and management to active di
 
 It includes:
 
-- An Adldap contract (`Adldap\Contracts\Adldap`) for dependency injection through Laravel's IoC
+- An Adldap contract (`Adldap\Contracts\AdldapInterface`) for dependency injection through Laravel's IoC
 - An Auth driver for easily allowing users to login to your application using active directory
 - An Adldap facade (`Adldap\Laravel\Facades\Adldap`) for easily retrieving the Adldap instance from the IoC
 - Support for multiple LDAP connections
