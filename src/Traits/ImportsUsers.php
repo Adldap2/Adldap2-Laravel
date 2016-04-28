@@ -163,7 +163,7 @@ trait ImportsUsers
     protected function handleAttributeCallback(User $user, $callback)
     {
         // Explode the callback into its class and method.
-        list($class, $method) = explode('@', $callback);
+        list ($class, $method) = explode('@', $callback);
 
         // Create the handler.
         $handler = app($class);

@@ -56,7 +56,7 @@ class WindowsAuthenticate
                 $username = explode('\\', $account);
 
                 if (count($username) === 2) {
-                    list($domain, $username) = $username;
+                    list ($domain, $username) = $username;
                 } else {
                     $username = $username[key($username)];
                 }
