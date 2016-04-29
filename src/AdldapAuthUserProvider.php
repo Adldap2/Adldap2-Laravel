@@ -50,11 +50,8 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             // Get the input key.
             $key = key($attributes);
 
-            // Filter the query by the username attribute.
-            $query->whereEquals($attributes[$key], $credentials[$key]);
-
-            // Retrieve the first user result.
-            $user = $query->first();
+            // Filter the query by the username attribute and retrieve the first user result.
+            $user = $query->where([$attributes[$key] => $credentials[$key]])->first();
 
             // If the user is an Adldap User model instance.
             if ($user instanceof User) {
@@ -101,11 +98,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
 
             $key = key($attributes);
 
-            $query = $this->newAdldapUserQuery();
-
-            $query->whereEquals($attributes[$key], $model->{$key});
-
-            $user = $query->first();
+            $user = $this->newAdldapUserQuery()
+                ->where([$attributes[$key] => $model->{$key}])
+                ->first();
 
             if ($user instanceof User) {
                 $model = $this->bindAdldapToModel($user, $model);

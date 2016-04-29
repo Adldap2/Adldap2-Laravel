@@ -85,7 +85,7 @@ class AdldapTest extends FunctionalTestCase
 
         $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
-        $mockedBuilder->shouldReceive('whereEquals')->once()->andReturn($mockedBuilder);
+        $mockedBuilder->shouldReceive('where')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('first')->once()->andReturn($adUser);
         $mockedAuth->shouldReceive('attempt')->once()->andReturn(true);
 
@@ -146,7 +146,7 @@ class AdldapTest extends FunctionalTestCase
 
         $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
-        $mockedBuilder->shouldReceive('whereEquals')->once()->andReturn($mockedBuilder);
+        $mockedBuilder->shouldReceive('where')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('first')->once()->andReturn($adUser);
         $mockedAuth->shouldReceive('attempt')->once()->andReturn(false);
 
@@ -174,7 +174,7 @@ class AdldapTest extends FunctionalTestCase
         $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
-        $mockedBuilder->shouldReceive('whereEquals')->once()->andReturn($mockedBuilder);
+        $mockedBuilder->shouldReceive('where')->once()->andReturn($mockedBuilder);
         $mockedBuilder->shouldReceive('first')->once()->andReturn(null);
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
@@ -236,7 +236,7 @@ class AdldapTest extends FunctionalTestCase
         $mockedSearch->shouldReceive('users')->twice()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('select')->twice()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('getConnection')->twice()->andReturn($mockedConnection);
-        $mockedSearch->shouldReceive('whereEquals')->twice()->andReturn($mockedSearch);
+        $mockedSearch->shouldReceive('where')->twice()->andReturn($mockedSearch);
         $mockedSearch->shouldReceive('first')->twice()->andReturn(null);
 
         $manager = new Manager();
