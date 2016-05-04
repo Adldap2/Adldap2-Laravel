@@ -11,6 +11,8 @@ return [
     |
     | You must specify connections in your `config/adldap.php` configuration file.
     |
+    | This must be a string.
+    |
     */
 
     'connection' => env('ADLDAP_CONNECTION', 'default'),
@@ -29,6 +31,8 @@ return [
     | configuration below. However, if you'd like to login users
     | by their emails, then change `samaccountname` to `mail`.
     | and `username` to `email`.
+    |
+    | This must be an array with a key - value pair.
     |
     */
 
@@ -58,6 +62,8 @@ return [
     |
     | Set this to true if you would like to enable it.
     |
+    | This option must be true or false.
+    |
     */
 
     'login_fallback' => env('ADLDAP_LOGIN_FALLBACK', false),
@@ -72,6 +78,8 @@ return [
     |
     | Change this if you change your password fields input name.
     |
+    | This option must be a string.
+    |
     */
 
     'password_key' => env('ADLDAP_PASSWORD_KEY', 'password'),
@@ -85,6 +93,8 @@ return [
     | that you use to log users in. For example, if your company uses
     | email, then insert `mail`.
     |
+    | This option must be a string.
+    |
     */
 
     'login_attribute' => env('ADLDAP_LOGIN_ATTRIBUTE', 'samaccountname'),
@@ -94,7 +104,7 @@ return [
     | Bind User to Model
     |--------------------------------------------------------------------------
     |
-    | The bind User to Model option allows you to access the Adldap user model
+    | The bind user to model option allows you to access the Adldap user model
     | instance on your laravel database model to be able run operations
     | or retrieve extra attributes on the Adldap user model instance.
     |
@@ -106,9 +116,26 @@ return [
     |
     | Then use `Auth::user()->adldapUser` to access.
     |
+    | This option must be true or false.
+    |
     */
 
     'bind_user_to_model' => env('ADLDAP_BIND_USER_TO_MODEL', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Bind As User
+    |--------------------------------------------------------------------------
+    |
+    | The bind as user option will bind to your AD server as the
+    | authenticated user. This is useful if you don't want to
+    | provide administrator credentials.
+    |
+    | This option must be true or false.
+    |
+    */
+
+    'bind_as_user' => env('ADLDAP_BIND_AS_USER', false),
 
     /*
     |--------------------------------------------------------------------------

@@ -120,7 +120,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function authenticate($username, $password)
     {
-        return $this->getAdldap()->auth()->attempt($username, $password);
+        return $this->getAdldap()->auth()->attempt($username, $password, $this->getBindAsUser());
     }
 
     /**
@@ -143,5 +143,16 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function getLoginFallback()
     {
         return Config::get('adldap_auth.login_fallback', false);
+    }
+
+    /**
+     * Retrieves the Adldap bind as user option for binding
+     * as the authenticated user.
+     *
+     * @return bool
+     */
+    protected function getBindAsUser()
+    {
+        return Config::get('adldap_auth.bind_as_user', false);
     }
 }
