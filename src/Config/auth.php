@@ -124,21 +124,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Bind As User
-    |--------------------------------------------------------------------------
-    |
-    | The bind as user option will bind to your AD server as the
-    | authenticated user. This is useful if you want LDAP
-    | operations ran underneath the bound user.
-    |
-    | This option must be true or false.
-    |
-    */
-
-    'bind_as_user' => env('ADLDAP_BIND_AS_USER', false),
-
-    /*
-    |--------------------------------------------------------------------------
     | Sync Attributes
     |--------------------------------------------------------------------------
     |
