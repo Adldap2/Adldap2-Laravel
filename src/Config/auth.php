@@ -128,8 +128,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | The bind as user option will bind to your AD server as the
-    | authenticated user. This is useful if you don't want to
-    | provide administrator credentials.
+    | authenticated user. This is useful if you want LDAP
+    | operations ran underneath the bound user.
     |
     | This option must be true or false.
     |
