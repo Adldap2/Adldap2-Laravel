@@ -40,7 +40,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
    
 7. Now run `php artisan migrate`.
 
-8. Insert the following providers in your `config/app.php` file:
+8. Insert the following service providers in your `config/app.php` file (in the `providers` property):
 
    ```php
    Adldap\Laravel\AdldapServiceProvider::class,
