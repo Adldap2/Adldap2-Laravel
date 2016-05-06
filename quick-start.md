@@ -14,7 +14,7 @@ This guide is thanks to [@st-claude](https://github.com/st-claude).
 
 4. Create a new database in your desired database interface (such as PhpMyAdmin, MySQL Workbench etc.)
 
-5. Enter your database details and credentials inside the `.env` file located in your project root directory.
+5. Enter your database details and credentials inside the `.env` file located in your project root directory (if there is not one there, rename the `.env.example` to `.env`).
 
 6. If you're using Active Directory username's to login users **instead** of their emails, you will need to change
    the default `email` column in `database/migrations/2014_10_12_000000_create_users_table.php`.
