@@ -69,8 +69,9 @@ class AdldapServiceProvider extends ServiceProvider
      * @param Adldap $adldap
      * @param array  $connections
      *
-     * @return Adldap
      * @throws \Adldap\Exceptions\ConnectionException
+     *
+     * @return Adldap
      */
     protected function addProviders(Adldap $adldap, array $connections = [])
     {
