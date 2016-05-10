@@ -37,9 +37,7 @@ trait ImportsUsers
 
         // Make sure we retrieve the first username
         // result if it's an array.
-        if (is_array($username)) {
-            $username = Arr::get($username, 0);
-        }
+        $username = (is_array($username) ? Arr::get($username, 0) : $username);
 
         // Try to retrieve the model from the model key and AD username.
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
@@ -238,7 +236,6 @@ trait ImportsUsers
      */
     protected function getAdldap($provider = null)
     {
-        /** @var \Adldap\Adldap $ad */
         $ad = Adldap::getFacadeRoot();
 
         if (is_null($provider)) {

@@ -3,8 +3,6 @@
 namespace Adldap\Laravel;
 
 use Adldap\Adldap;
-use Adldap\Connections\Configuration;
-use Adldap\Connections\Manager;
 use Adldap\Connections\Provider;
 use Adldap\Contracts\AdldapInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
@@ -15,6 +13,8 @@ class AdldapServiceProvider extends ServiceProvider
 {
     /**
      * Run service provider boot operations.
+     *
+     * @return void
      */
     public function boot()
     {
@@ -29,6 +29,8 @@ class AdldapServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
+     *
+     * @return void
      */
     public function register()
     {
@@ -43,31 +45,7 @@ class AdldapServiceProvider extends ServiceProvider
                 throw new ConfigurationMissingException($message);
             }
 
-            // Create a new connection Manager.
-            $manager = new Manager();
-
-            // Retrieve the LDAP connections.
-            $connections = $config['connections'];
-
-            // Go through each connection and construct a Provider.
-            foreach ($connections as $name => $settings) {
-                $configuration = new Configuration($settings['connection_settings']);
-                $connection = new $settings['connection']();
-                $schema = new $settings['schema']();
-
-                // Construct a new connection Provider with its settings.
-                $provider = new Provider($configuration, $connection, $schema);
-
-                if ($settings['auto_connect'] === true) {
-                    // Try connecting to the provider if `auto_connect` is true.
-                    $provider->connect();
-                }
-
-                // Add the Provider to the Manager.
-                $manager->add($name, $provider);
-            }
-
-            return new Adldap($manager);
+            return $this->addProviders(new Adldap(), $config['connections']);
         });
 
         // Bind the Adldap contract to the Adldap object
@@ -83,5 +61,35 @@ class AdldapServiceProvider extends ServiceProvider
     public function provides()
     {
         return ['adldap'];
+    }
+
+    /**
+     * Adds providers to the specified Adldap instance.
+     *
+     * @param Adldap $adldap
+     * @param array  $connections
+     *
+     * @return Adldap
+     * @throws \Adldap\Exceptions\ConnectionException
+     */
+    protected function addProviders(Adldap $adldap, array $connections = [])
+    {
+        // Go through each connection and construct a Provider.
+        foreach ($connections as $name => $settings) {
+            $connection = new $settings['connection']();
+            $schema = new $settings['schema']();
+
+            // Construct a new connection Provider with its settings.
+            $provider = new Provider($settings['connection_settings'], $connection, $schema);
+
+            if ($settings['auto_connect'] === true) {
+                // Try connecting to the provider if `auto_connect` is true.
+                $provider->connect();
+            }
+
+            $adldap->addProvider($name, $provider);
+        }
+
+        return $adldap;
     }
 }
