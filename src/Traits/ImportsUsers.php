@@ -120,17 +120,15 @@ trait ImportsUsers
      */
     protected function syncModelPassword(Authenticatable $model, $password)
     {
-        if ($model instanceof Model && $model->hasSetMutator('password')) {
-            // If the model has a set mutator for the password then
-            // we'll assume that the dev is using their
-            // own encryption method for passwords.
-            $model->password = $password;
+        // If the developer doesn't want to synchronize AD passwords,
+        // we'll set the password to a random 16 character string.
+        $password = ($this->getPasswordSync() ? $password : str_random());
 
-            return $model;
-        }
-
-        // Always encrypt the model password by default.
-        $model->password = bcrypt($password);
+        // If the model has a set mutator for the password then
+        // we'll assume that the dev is using their own
+        // encryption method for passwords. Otherwise
+        // we'll bcrypt it normally.
+        $model->password = ($model->hasSetMutator('password') ? $password : bcrypt($password));
 
         return $model;
     }
@@ -246,7 +244,7 @@ trait ImportsUsers
     }
 
     /**
-     * Retrieves the Aldldap select attributes when performing
+     * Returns the configured select attributes when performing
      * queries for authentication and binding for users.
      *
      * @return array
@@ -257,7 +255,7 @@ trait ImportsUsers
     }
 
     /**
-     * Returns the username attribute for discovering LDAP users.
+     * Returns the configured username attribute for discovering LDAP users.
      *
      * @return array
      */
@@ -267,7 +265,7 @@ trait ImportsUsers
     }
 
     /**
-     * Retrieves the Adldap bind user to model config option for binding
+     * Returns the configured bind user to model option for binding
      * the Adldap user model instance to the laravel model.
      *
      * @return bool
@@ -278,7 +276,7 @@ trait ImportsUsers
     }
 
     /**
-     * Retrieves the Adldap login attribute for authenticating users.
+     * Returns the configured login attribute for authenticating users.
      *
      * @return string
      */
@@ -288,7 +286,7 @@ trait ImportsUsers
     }
 
     /**
-     * Retrieves the Adldap sync attributes for filling the
+     * Returns the configured sync attributes for filling the
      * Laravel user model with active directory fields.
      *
      * @return array
@@ -296,6 +294,16 @@ trait ImportsUsers
     protected function getSyncAttributes()
     {
         return Config::get('adldap_auth.sync_attributes', ['name' => $this->getSchema()->commonName()]);
+    }
+
+    /**
+     * Returns the configured password sync configuration option.
+     *
+     * @return bool
+     */
+    protected function getPasswordSync()
+    {
+        return Config::get('adldap_auth.password_sync', true);
     }
 
     /**
@@ -309,7 +317,7 @@ trait ImportsUsers
     }
 
     /**
-     * Retrieves the default connection name from the configuration.
+     * Returns the configured default connection name.
      *
      * @return mixed
      */
