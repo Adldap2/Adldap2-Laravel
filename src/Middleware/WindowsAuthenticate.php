@@ -60,14 +60,10 @@ class WindowsAuthenticate
                     $username = $username[key($username)];
                 }
 
-                // Create a new user LDAP user query.
-                $query = $this->newAdldapUserQuery();
-
-                // Filter the query by the username attribute
-                $query->whereEquals($key, $username);
-
-                // Retrieve the first user result
-                $user = $query->first();
+                // Find the user in AD.
+                $user = $this->newAdldapUserQuery()
+                    ->whereEquals($key, $username)
+                    ->first();
 
                 if ($user instanceof User) {
                     $model = $this->getModelFromAdldap($user, str_random());
