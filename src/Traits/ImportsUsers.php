@@ -43,9 +43,7 @@ trait ImportsUsers
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
 
         // Create the model instance of it isn't found.
-        if (!$model instanceof Model) {
-            $model = $this->createModel();
-        }
+        $model = ($model instanceof Model ? $model : $this->createModel());
 
         // Set the username and password in case
         // of changes in active directory.
@@ -58,9 +56,8 @@ trait ImportsUsers
         // attributes on the model.
         $model = $this->syncModelFromAdldap($user, $model);
 
-        if ($this->getBindUserToModel()) {
-            $model = $this->bindAdldapToModel($user, $model);
-        }
+        // Bind the Adldap model to the elqoquent model if configured.
+        $model = ($this->getBindUserToModel() ? $this->bindAdldapToModel($user, $model) : $model);
 
         return $model;
     }
@@ -185,11 +182,9 @@ trait ImportsUsers
         } else {
             $value = $user->{$field};
 
-            if (is_array($value)) {
-                // If the AD Value is an array, we'll
-                // retrieve the first value.
-                $value = Arr::get($value, 0);
-            }
+            // If the AD Value is an array, we'll
+            // retrieve the first value.
+            $value = (is_array($value) ? Arr::get($value, 0) : $value);
         }
 
         return $value;
@@ -236,9 +231,7 @@ trait ImportsUsers
     {
         $ad = Adldap::getFacadeRoot();
 
-        if (is_null($provider)) {
-            $provider = $this->getDefaultConnectionName();
-        }
+        $provider = (is_null($provider) ? $this->getDefaultConnectionName() : $provider);
 
         return $ad->getManager()->get($provider);
     }
