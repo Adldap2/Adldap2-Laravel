@@ -231,7 +231,7 @@ trait ImportsUsers
     {
         $ad = Adldap::getFacadeRoot();
 
-        $provider = (is_null($provider) ? $this->getDefaultConnectionName() : $provider);
+        $provider = $provider ?: $this->getDefaultConnectionName();
 
         return $ad->getManager()->get($provider);
     }
