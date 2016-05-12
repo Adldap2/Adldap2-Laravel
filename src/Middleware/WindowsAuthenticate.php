@@ -69,8 +69,9 @@ class WindowsAuthenticate
                     $model = $this->getModelFromAdldap($user, str_random());
 
                     if ($model instanceof Model) {
-                        // Double check user instance before logging them in.
                         $this->auth->login($model);
+
+                        $this->handleAuthenticatedUser($model);
                     }
                 }
             }
@@ -104,6 +105,20 @@ class WindowsAuthenticate
         $model = $this->auth->getProvider()->getModel();
 
         return new $model();
+    }
+
+    /**
+     * Handle the authenticated user model.
+     *
+     * This method exists to be overridden.
+     *
+     * @param Model $user
+     *
+     * @return void
+     */
+    protected function handleAuthenticatedUser(Model $user)
+    {
+        //
     }
 
     /**
