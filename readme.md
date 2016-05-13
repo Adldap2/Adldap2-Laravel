@@ -499,6 +499,7 @@ return 'Login incorrect!';
 #### Password Synchronization
 
 > **Note**: This feature was introduced in `v2.0.8`.
+>
 > You must delete and re-publish your Adldap2 Auth configuration
 > for this option to be present.
 
