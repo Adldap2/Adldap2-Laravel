@@ -2,8 +2,6 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Adldap\Laravel\AdldapAuthServiceProvider;
-use Mockery as m;
 use Adldap\Auth\Guard;
 use Adldap\Connections\Manager;
 use Adldap\Connections\Provider;
