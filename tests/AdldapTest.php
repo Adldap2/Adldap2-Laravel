@@ -2,6 +2,8 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Adldap\Laravel\AdldapAuthServiceProvider;
+use Mockery as m;
 use Adldap\Auth\Guard;
 use Adldap\Connections\Manager;
 use Adldap\Connections\Provider;
@@ -15,6 +17,7 @@ use Adldap\Schemas\Schema;
 use Adldap\Search\Factory;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdldapTest extends FunctionalTestCase
 {
@@ -54,47 +57,18 @@ class AdldapTest extends FunctionalTestCase
         $this->assertInstanceOf(AdldapInterface::class, $adldap);
     }
 
-    public function test_auth_passes()
+    public function test_auth_passes($credentials = null)
     {
-        $mockedProvider = $this->mock(Provider::class);
-        $mockedBuilder = $this->mock(Builder::class);
-        $mockedSearch = $this->mock(Factory::class);
-        $mockedAuth = $this->mock(Guard::class);
-        $mockedConnection = $this->mock(ConnectionInterface::class);
+        $credentials = $credentials ?: ['email' => 'jdoe@email.com', 'password' => '12345'];
 
-        $mockedConnection->shouldReceive('isBound')->once()->andReturn(true);
+        $this->getMockAuth()->shouldReceive('attempt')->once()->andReturn(true);
 
-        $mockedBuilder->shouldReceive('getSchema')->once()->andReturn(Schema::get());
-        $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
-
-        $adUser = (new User([], $mockedBuilder))->setRawAttributes([
-            'samaccountname' => ['jdoe'],
-            'mail'           => ['jdoe@email.com'],
-            'cn'             => ['John Doe'],
-        ]);
-
-        $manager = new Manager();
-
-        $manager->add('default', $mockedProvider);
-
-        Adldap::shouldReceive('getManager')->andReturn($manager);
-
-        $mockedProvider->shouldReceive('search')->once()->andReturn($mockedSearch);
-        $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
-        $mockedProvider->shouldReceive('auth')->once()->andReturn($mockedAuth);
-
-        $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
-        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
-        $mockedBuilder->shouldReceive('where')->once()->andReturn($mockedBuilder);
-        $mockedBuilder->shouldReceive('first')->once()->andReturn($adUser);
-        $mockedAuth->shouldReceive('attempt')->once()->andReturn(true);
-
-        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
+        $this->assertTrue(Auth::attempt($credentials));
 
         $user = Auth::user();
 
-        $this->assertEquals('jdoe@email.com', $user->email);
-        $this->assertTrue(\Hash::check('12345', $user->password));
+        $this->assertEquals($credentials['email'], $user->email);
+        $this->assertTrue(Hash::check($credentials['password'], $user->password));
     }
 
     public function test_auth_passes_with_persistent_adldap_user()
@@ -117,38 +91,7 @@ class AdldapTest extends FunctionalTestCase
 
     public function test_auth_fails()
     {
-        $mockedProvider = $this->mock(Provider::class);
-        $mockedBuilder = $this->mock(Builder::class);
-        $mockedSearch = $this->mock(Factory::class);
-        $mockedAuth = $this->mock(Guard::class);
-        $mockedConnection = $this->mock(ConnectionInterface::class);
-
-        $mockedConnection->shouldReceive('isBound')->once()->andReturn(true);
-
-        $mockedBuilder->shouldReceive('getSchema')->once()->andReturn(Schema::get());
-        $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
-
-        $adUser = (new User([], $mockedBuilder))->setRawAttributes([
-            'samaccountname' => ['jdoe'],
-            'mail'           => ['jdoe@email.com'],
-            'cn'             => ['John Doe'],
-        ]);
-
-        $manager = new Manager();
-
-        $manager->add('default', $mockedProvider);
-
-        Adldap::shouldReceive('getManager')->andReturn($manager);
-
-        $mockedProvider->shouldReceive('search')->once()->andReturn($mockedSearch);
-        $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
-        $mockedProvider->shouldReceive('auth')->once()->andReturn($mockedAuth);
-
-        $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
-        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
-        $mockedBuilder->shouldReceive('where')->once()->andReturn($mockedBuilder);
-        $mockedBuilder->shouldReceive('first')->once()->andReturn($adUser);
-        $mockedAuth->shouldReceive('attempt')->once()->andReturn(false);
+        $this->getMockAuth()->shouldReceive('attempt')->once()->andReturn(false);
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
@@ -258,19 +201,16 @@ class AdldapTest extends FunctionalTestCase
             'password' => 'Password123',
         ];
 
-        $outcome = Auth::attempt($credentials);
+        $this->assertTrue(Auth::attempt($credentials));
 
-        $user = \Auth::user();
+        $user = Auth::user();
 
-        $this->assertTrue($outcome);
         $this->assertInstanceOf('Adldap\Laravel\Tests\Models\User', $user);
         $this->assertEquals('jdoe@email.com', $user->email);
 
         $this->app['config']->set('adldap_auth.login_fallback', false);
 
-        $outcome = Auth::attempt($credentials);
-
-        $this->assertFalse($outcome);
+        $this->assertFalse(Auth::attempt($credentials));
     }
 
     public function test_config_login_fallback_no_connection()
@@ -305,12 +245,75 @@ class AdldapTest extends FunctionalTestCase
             'password' => 'Password123',
         ];
 
-        $outcome = Auth::attempt($credentials);
+        $this->assertTrue(Auth::attempt($credentials));
 
-        $user = \Auth::user();
+        $user = Auth::user();
 
-        $this->assertTrue($outcome);
         $this->assertInstanceOf('Adldap\Laravel\Tests\Models\User', $user);
         $this->assertEquals('jdoe@email.com', $user->email);
+    }
+
+    public function test_config_password_sync_enabled()
+    {
+        $this->app['config']->set('adldap_auth.password_sync', true);
+
+        $this->getMockAuth()->shouldReceive('attempt')->once()->andReturn(true);
+
+        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
+
+        $this->assertInstanceOf(EloquentUser::class, EloquentUser::first());
+    }
+
+    public function test_config_password_sync_disabled()
+    {
+        $this->app['config']->set('adldap_auth.password_sync', false);
+
+        $this->getMockAuth()->shouldReceive('attempt')->once()->andReturn(true);
+
+        $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
+
+        $this->assertInstanceOf(EloquentUser::class, EloquentUser::first());
+    }
+
+    protected function getMockAuth(User $user = null)
+    {
+        $mockedProvider = $this->mock(Provider::class);
+        $mockedBuilder = $this->mock(Builder::class);
+        $mockedSearch = $this->mock(Factory::class);
+        $mockedAuth = $this->mock(Guard::class);
+        $mockedConnection = $this->mock(ConnectionInterface::class);
+
+        $mockedConnection->shouldReceive('isBound')->once()->andReturn(true);
+
+        $mockedBuilder->shouldReceive('getSchema')->once()->andReturn(Schema::get());
+        $mockedBuilder->shouldReceive('getConnection')->once()->andReturn($mockedConnection);
+
+        $manager = new Manager();
+
+        $manager->add('default', $mockedProvider);
+
+        Adldap::shouldReceive('getManager')->andReturn($manager);
+
+        $mockedProvider->shouldReceive('search')->once()->andReturn($mockedSearch);
+        $mockedProvider->shouldReceive('getSchema')->andReturn(Schema::get());
+        $mockedProvider->shouldReceive('auth')->once()->andReturn($mockedAuth);
+
+        $mockedSearch->shouldReceive('users')->once()->andReturn($mockedSearch);
+        $mockedSearch->shouldReceive('select')->once()->andReturn($mockedBuilder);
+        $mockedBuilder->shouldReceive('where')->once()->andReturn($mockedBuilder);
+        $mockedBuilder->shouldReceive('first')->once()->andReturn($user ?: $this->getMockUser($mockedBuilder));
+
+        return $mockedAuth;
+    }
+
+    protected function getMockUser($builder, array $attributes = [])
+    {
+        $attributes = array_merge($attributes, [
+            'samaccountname' => ['jdoe'],
+            'mail'           => ['jdoe@email.com'],
+            'cn'             => ['John Doe'],
+        ]);
+
+        return (new User([], $builder))->setRawAttributes($attributes);
     }
 }
