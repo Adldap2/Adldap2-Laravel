@@ -515,6 +515,8 @@ If this option is disabled, the local user account is applied
 a random 16 character hashed password, and will lose access
 to this account upon loss of AD connectivity.
 
+This feature is enabled by default.
+
 ```php
 'password_sync' => env('ADLDAP_PASSWORD_SYNC', true),
 ```
