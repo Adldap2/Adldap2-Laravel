@@ -495,3 +495,25 @@ if ($auth === true) {
 
 return 'Login incorrect!';
 ```
+
+#### Password Synchronization
+
+> **Note**: This feature was introduced in `v2.0.8`.
+> You must delete and re-publish your Adldap2 Auth configuration
+> for this option to be present.
+
+The password sync option allows you to automatically synchronize
+users AD passwords to your local database. These passwords are
+hashed natively by laravel.
+
+Enabling this option would also allow users to login to their
+accounts using the password last used when an AD connection
+was present.
+
+If this option is disabled, the local user account is applied
+a random 16 character hashed password, and will lose access
+to this account upon loss of AD connectivity.
+
+```php
+'password_sync' => env('ADLDAP_PASSWORD_SYNC', true),
+```
