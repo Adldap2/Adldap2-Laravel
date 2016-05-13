@@ -100,9 +100,7 @@ trait ImportsUsers
             $model->{$modelField} = $value;
         }
 
-        if ($model instanceof Model) {
-            $model->save();
-        }
+        $model->save();
 
         return $model;
     }
