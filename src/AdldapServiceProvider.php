@@ -81,8 +81,8 @@ class AdldapServiceProvider extends ServiceProvider
         collect($connections)->each(function ($settings, $name) use ($adldap) {
             $provider = $this->newProvider(
                 $settings['connection_settings'],
-                new $settings['connection'],
-                new $settings['schema']
+                new $settings['connection'](),
+                new $settings['schema']()
             );
 
             if ($settings['auto_connect'] === true) {
