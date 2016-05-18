@@ -88,9 +88,7 @@ trait ImportsUsers
      */
     protected function syncModelFromAdldap(User $user, Authenticatable $model)
     {
-        $attributes = $this->getSyncAttributes();
-
-        foreach ($attributes as $modelField => $adField) {
+        foreach ($this->getSyncAttributes() as $modelField => $adField) {
             if ($this->isAttributeCallback($adField)) {
                 $value = $this->handleAttributeCallback($user, $adField);
             } else {
