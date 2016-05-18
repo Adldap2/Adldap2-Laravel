@@ -5,6 +5,8 @@ namespace Adldap\Laravel;
 use Adldap\Adldap;
 use Adldap\Connections\Provider;
 use Adldap\Contracts\AdldapInterface;
+use Adldap\Contracts\Connections\ConnectionInterface;
+use Adldap\Contracts\Schemas\SchemaInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -45,7 +47,7 @@ class AdldapServiceProvider extends ServiceProvider
                 throw new ConfigurationMissingException($message);
             }
 
-            return $this->addProviders(new Adldap(), $config['connections']);
+            return $this->addProviders($this->newAdldap(), $config['connections']);
         });
 
         // Bind the Adldap contract to the Adldap object
@@ -76,12 +78,12 @@ class AdldapServiceProvider extends ServiceProvider
     protected function addProviders(Adldap $adldap, array $connections = [])
     {
         // Go through each connection and construct a Provider.
-        foreach ($connections as $name => $settings) {
-            $connection = new $settings['connection']();
-            $schema = new $settings['schema']();
-
-            // Construct a new connection Provider with its settings.
-            $provider = new Provider($settings['connection_settings'], $connection, $schema);
+        collect($connections)->each(function ($settings, $name) use ($adldap) {
+            $provider = $this->newProvider(
+                $settings['connection_settings'],
+                new $settings['connection'],
+                new $settings['schema']
+            );
 
             if ($settings['auto_connect'] === true) {
                 // Try connecting to the provider if `auto_connect` is true.
@@ -89,8 +91,32 @@ class AdldapServiceProvider extends ServiceProvider
             }
 
             $adldap->addProvider($name, $provider);
-        }
+        });
 
         return $adldap;
+    }
+
+    /**
+     * Returns a new Adldap instance.
+     *
+     * @return Adldap
+     */
+    protected function newAdldap()
+    {
+        return new Adldap();
+    }
+
+    /**
+     * Returns a new Provider instance.
+     *
+     * @param array                    $configuration
+     * @param ConnectionInterface|null $connection
+     * @param SchemaInterface|null     $schema
+     *
+     * @return Provider
+     */
+    protected function newProvider($configuration = [], ConnectionInterface $connection = null, SchemaInterface $schema = null)
+    {
+        return new Provider($configuration, $connection, $schema);
     }
 }
