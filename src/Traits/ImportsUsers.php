@@ -48,11 +48,10 @@ trait ImportsUsers
         // Set the username in case of changes in active directory.
         $model->{$key} = $username;
 
-        // Sync the users password.
+        // Sync the users password (if enabled).
         $model = $this->syncModelPassword($model, $password);
 
-        // Synchronize other active directory
-        // attributes on the model.
+        // Synchronize other active directory attributes on the model.
         $model = $this->syncModelFromAdldap($user, $model);
 
         // Bind the Adldap model to the elqoquent model if configured.
