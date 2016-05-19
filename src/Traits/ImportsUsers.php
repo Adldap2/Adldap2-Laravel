@@ -54,7 +54,7 @@ trait ImportsUsers
         // Synchronize other active directory attributes on the model.
         $model = $this->syncModelFromAdldap($user, $model);
 
-        // Bind the Adldap model to the elqoquent model if configured.
+        // Bind the Adldap model to the eloquent model (if enabled).
         $model = ($this->getBindUserToModel() ? $this->bindAdldapToModel($user, $model) : $model);
 
         return $model;
