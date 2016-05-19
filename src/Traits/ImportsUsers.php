@@ -45,8 +45,7 @@ trait ImportsUsers
         // Create the model instance of it isn't found.
         $model = ($model instanceof Model ? $model : $this->createModel());
 
-        // Set the username and password in case
-        // of changes in active directory.
+        // Set the username in case of changes in active directory.
         $model->{$key} = $username;
 
         // Sync the users password.
