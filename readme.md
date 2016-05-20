@@ -55,10 +55,10 @@ You can perform all methods on Adldap through its facade like so:
 $user = Adldap::getProvider('default')->search()->users()->find('john doe');
 
 // Searching for a user.
-$search = Adldap::getProvider('default')->search()->where('cn', '=', 'John Doe')->get();
+$search = Adldap::getDefaultProvider()->search()->where('cn', '=', 'John Doe')->get();
 
 // Authenticating.
-if (Adldap::getProvider('default')->auth()->attempt($username, $password)) {
+if (Adldap::getDefaultProvider()->auth()->attempt($username, $password)) {
     // Passed!
 }
 ```
@@ -91,7 +91,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->adldap->getProvider('default')->search()->users()->get();
+        $users = $this->adldap->getDefaultProvider()->search()->users()->get();
         
         return view('users.index', compact('users'));
     }
