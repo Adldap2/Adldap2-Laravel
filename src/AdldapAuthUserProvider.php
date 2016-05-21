@@ -140,7 +140,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         if ($this->isConnected()) {
             // Retrieve the Adldap user.
             $user = $this->newAdldapUserQuery()->where([
-                $this->getUsernameValue() => $this->getUsernameFromCredentials($credentials)
+                $this->getUsernameValue() => $this->getUsernameFromCredentials($credentials),
             ])->first();
 
             if ($user instanceof User) {
