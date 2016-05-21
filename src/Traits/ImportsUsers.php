@@ -56,7 +56,7 @@ trait ImportsUsers
 
         // Bind the Adldap model to the eloquent model (if enabled).
         $model = ($this->getBindUserToModel() ? $this->bindAdldapToModel($user, $model) : $model);
-        
+
         return $model;
     }
 
