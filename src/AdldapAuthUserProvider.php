@@ -38,36 +38,15 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        // Get the search query for users only.
-        $query = $this->newAdldapUserQuery();
+        $user = $this->authenticateWithCredentials($credentials);
 
-        // Make sure the connection is bound
-        // before we try to utilize it.
-        if ($query->getConnection()->isBound()) {
-            // Get the username input attributes.
-            $attributes = $this->getUsernameAttribute();
+        // If the user is an Adldap User model instance.
+        if ($user instanceof User) {
+            // Retrieve the password from the submitted credentials.
+            $password = $this->getPasswordFromCredentials($credentials);
 
-            // Get the input key.
-            $key = key($attributes);
-
-            // Filter the query by the username attribute and retrieve the first user result.
-            $user = $query->where([$attributes[$key] => $credentials[$key]])->first();
-
-            // If the user is an Adldap User model instance.
-            if ($user instanceof User) {
-                // Retrieve the users login attribute.
-                $username = $this->getUsernameFromUser($user);
-
-                // Retrieve the password from the submitted credentials.
-                $password = $this->getPasswordFromCredentials($credentials);
-
-                // Try to log the user in.
-                if (!is_null($password) && $this->authenticate($username, $password)) {
-                    // Login was successful, we'll create a new
-                    // Laravel model with the Adldap user.
-                    return $this->getModelFromAdldap($user, $password);
-                }
-            }
+            // Construct / retrieve the eloquent model from our Adldap user.
+            return $this->getModelFromAdldap($user, $password);
         }
 
         if ($this->getLoginFallback()) {
@@ -82,17 +61,21 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-        if ($this->getPasswordSync()) {
-            // If password syncing is enabled. We can hit our
-            // local database to check the hashed password.
+        if ($this->authenticateWithCredentials($credentials)) {
+            // We've authenticated successfully, we'll finally
+            // save the user to our local database.
+            $this->saveModel($user);
+
+            return true;
+        }
+
+        if ($this->getLoginFallback() && $user->exists) {
+            // If the user exists in our local database already and fallback is
+            // enabled, we'll perform standard eloquent authentication.
             return parent::validateCredentials($user, $credentials);
         }
 
-        // We've already performed LDAP authentication on the user
-        // and password synchronization is disabled, therefore
-        // we can't validate the submitted password in our
-        // local database. We'll return true here.
-        return true;
+        return false;
     }
 
     /**
@@ -122,7 +105,17 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
-     * Authenticates a user against Active Directory.
+     * Checks if we're currently connected to our configured LDAP server.
+     *
+     * @return bool
+     */
+    protected function isConnected()
+    {
+        return $this->getAdldap()->getConnection()->isBound();
+    }
+
+    /**
+     * Authenticates a user against our LDAP connection.
      *
      * @param string $username
      * @param string $password
@@ -135,23 +128,49 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
-     * Returns the configured username from the specified AD user.
+     * Authenticates against Active Directory using the specified credentials.
      *
-     * @param User $user
+     * @param array $credentials
+     *
+     * @return User|false
+     */
+    protected function authenticateWithCredentials(array $credentials = [])
+    {
+        // Make sure we're connected to our LDAP server before we run any operations.
+        if ($this->isConnected()) {
+            // Retrieve the Adldap user.
+            $user = $this->newAdldapUserQuery()->where([
+                $this->getUsernameValue() => $this->getUsernameFromCredentials($credentials)
+            ])->first();
+
+            if ($user instanceof User) {
+                // Retrieve the authentication username for the AD user.
+                $username = $this->getUsernameFromAdUser($user);
+
+                // Retrieve the users password.
+                $password = $this->getPasswordFromCredentials($credentials);
+
+                // Perform LDAP authentication.
+                if ($this->authenticate($username, $password)) {
+                    // Passed, return the user instance.
+                    return $user;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the username from the specified credentials.
+     *
+     * @param array $credentials
      *
      * @return string
      */
-    protected function getUsernameFromUser(User $user)
+    protected function getUsernameFromCredentials(array $credentials = [])
     {
-        $username = $user->{$this->getLoginAttribute()};
-
-        if (is_array($username)) {
-            // We'll make sure we retrieve the users first username
-            // attribute if it's contained in an array.
-            $username = Arr::get($username, 0);
-        }
-
-        return $username;
+        return Arr::get($credentials, $this->getUsernameKey());
     }
 
     /**

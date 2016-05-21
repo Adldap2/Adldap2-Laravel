@@ -68,15 +68,18 @@ class WindowsAuthenticate
                 // Double check that we have the correct AD user instance.
                 if ($user instanceof User) {
                     // Retrieve the Eloquent user model from our AD user instance.
+                    // We'll assign the user a random password since we don't
+                    // have access to it through SSO auth.
                     $model = $this->getModelFromAdldap($user, str_random());
 
-                    if ($model instanceof Model) {
-                        // If we've been given the correct object instance, we'll log the user in.
-                        $this->auth->login($model);
+                    // Save model in case of changes.
+                    $this->saveModel($model);
 
-                        // Perform any further operations on the authenticated user model.
-                        $this->handleAuthenticatedUser($model);
-                    }
+                    // Manually log the user in.
+                    $this->auth->login($model);
+
+                    // Perform any further operations on the authenticated user model.
+                    $this->handleAuthenticatedUser($model);
                 }
             }
         }

@@ -4,7 +4,6 @@ namespace Adldap\Laravel\Traits;
 
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
@@ -17,7 +16,7 @@ trait ImportsUsers
     abstract public function createModel();
 
     /**
-     * Creates a local User from Active Directory.
+     * Returns an existing or new Eloquent user from the specified Adldap user instance.
      *
      * @param User   $user
      * @param string $password
@@ -26,7 +25,7 @@ trait ImportsUsers
      */
     protected function getModelFromAdldap(User $user, $password)
     {
-        // Get the username attributes.
+        // Get the model key.
         $attributes = $this->getUsernameAttribute();
 
         // Get the model key.
@@ -64,12 +63,12 @@ trait ImportsUsers
      * Binds the Adldap User instance to the Eloquent model instance
      * by setting its `adldapUser` public property.
      *
-     * @param User            $user
-     * @param Authenticatable $model
+     * @param User  $user
+     * @param Model $model
      *
-     * @return Authenticatable
+     * @return Model
      */
-    protected function bindAdldapToModel(User $user, Authenticatable $model)
+    protected function bindAdldapToModel(User $user, Model $model)
     {
         $model->adldapUser = $user;
 
@@ -79,12 +78,12 @@ trait ImportsUsers
     /**
      * Fills a models attributes by the specified Users attributes.
      *
-     * @param User            $user
-     * @param Authenticatable $model
+     * @param User  $user
+     * @param Model $model
      *
-     * @return Authenticatable
+     * @return Model
      */
-    protected function syncModelFromAdldap(User $user, Authenticatable $model)
+    protected function syncModelFromAdldap(User $user, Model $model)
     {
         foreach ($this->getSyncAttributes() as $modelField => $adField) {
             if ($this->isAttributeCallback($adField)) {
@@ -96,20 +95,18 @@ trait ImportsUsers
             $model->{$modelField} = $value;
         }
 
-        $model->save();
-
         return $model;
     }
 
     /**
      * Syncs the models password with the specified password.
      *
-     * @param Authenticatable $model
-     * @param string          $password
+     * @param Model  $model
+     * @param string $password
      *
-     * @return Authenticatable
+     * @return Model
      */
-    protected function syncModelPassword(Authenticatable $model, $password)
+    protected function syncModelPassword(Model $model, $password)
     {
         // If the developer doesn't want to synchronize AD passwords,
         // we'll set the password to a random 16 character string.
@@ -122,6 +119,18 @@ trait ImportsUsers
         $model->password = ($model->hasSetMutator('password') ? $password : bcrypt($password));
 
         return $model;
+    }
+
+    /**
+     * Saves the specified model.
+     *
+     * @param Model $model
+     *
+     * @return bool
+     */
+    protected function saveModel(Model $model)
+    {
+        return $model->save();
     }
 
     /**
@@ -228,6 +237,50 @@ trait ImportsUsers
         $provider = $provider ?: $this->getDefaultConnectionName();
 
         return $ad->getManager()->get($provider);
+    }
+
+    /**
+     * Returns the configured username from the specified AD user.
+     *
+     * @param User $user
+     *
+     * @return string
+     */
+    protected function getUsernameFromAdUser(User $user)
+    {
+        $username = $user->{$this->getLoginAttribute()};
+
+        if (is_array($username)) {
+            // We'll make sure we retrieve the users first username
+            // attribute if it's contained in an array.
+            $username = Arr::get($username, 0);
+        }
+
+        return $username;
+    }
+
+    /**
+     * Returns the configured username key.
+     *
+     * For example: 'email' or 'username'.
+     *
+     * @return string
+     */
+    protected function getUsernameKey()
+    {
+        return key($this->getUsernameAttribute());
+    }
+
+    /**
+     * Returns the configured username value.
+     *
+     * For example: 'samaccountname' or 'mail'.
+     *
+     * @return string
+     */
+    protected function getUsernameValue()
+    {
+        return Arr::get($this->getUsernameAttribute(), $this->getUsernameKey());
     }
 
     /**
