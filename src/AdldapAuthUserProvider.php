@@ -88,6 +88,10 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             return parent::validateCredentials($user, $credentials);
         }
 
+        // We've already performed LDAP authentication on the user
+        // and password synchronization is disabled, therefore
+        // we can't validate the submitted password in our
+        // local database. We'll return true here.
         return true;
     }
 
