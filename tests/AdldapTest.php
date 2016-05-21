@@ -159,7 +159,7 @@ class AdldapTest extends FunctionalTestCase
 
         $this->test_auth_passes();
 
-        $user = \Auth::user();
+        $user = Auth::user();
 
         $this->assertEquals('handled', $user->name);
     }
@@ -257,9 +257,17 @@ class AdldapTest extends FunctionalTestCase
 
         $this->getMockAuth()->shouldReceive('attempt')->once()->andReturn(true);
 
-        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
+        $email = 'joe@email.com';
+        $password = '12345';
 
-        $this->assertInstanceOf(EloquentUser::class, EloquentUser::first());
+        $this->assertTrue(Auth::attempt(compact('email', 'password')));
+
+        $user = EloquentUser::first();
+
+        $this->assertInstanceOf(EloquentUser::class, $user);
+
+        // This check will pass due to password synchronization being enabled.
+        $this->assertTrue(Hash::check($password, $user->password));
     }
 
     public function test_config_password_sync_disabled()
@@ -268,9 +276,17 @@ class AdldapTest extends FunctionalTestCase
 
         $this->getMockAuth()->shouldReceive('attempt')->once()->andReturn(true);
 
-        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
+        $email = 'joe@email.com';
+        $password = '12345';
 
-        $this->assertInstanceOf(EloquentUser::class, EloquentUser::first());
+        $this->assertTrue(Auth::attempt(compact('email', 'password')));
+
+        $user = EloquentUser::first();
+
+        $this->assertInstanceOf(EloquentUser::class, $user);
+
+        // This check will fail due to password synchronization being disabled.
+        $this->assertFalse(Hash::check($password, $user->password));
     }
 
     protected function getMockAuth(User $user = null)
