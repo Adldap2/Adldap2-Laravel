@@ -65,12 +65,16 @@ class WindowsAuthenticate
                     ->whereEquals($key, $username)
                     ->first();
 
+                // Double check that we have the correct AD user instance.
                 if ($user instanceof User) {
+                    // Retrieve the Eloquent user model from our AD user instance.
                     $model = $this->getModelFromAdldap($user, str_random());
 
                     if ($model instanceof Model) {
+                        // If we've been given the correct object instance, we'll log the user in.
                         $this->auth->login($model);
 
+                        // Perform any further operations on the authenticated user model.
                         $this->handleAuthenticatedUser($model);
                     }
                 }
