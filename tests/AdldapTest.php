@@ -268,7 +268,7 @@ class AdldapTest extends FunctionalTestCase
 
         $this->getMockAuth()->shouldReceive('attempt')->once()->andReturn(true);
 
-        $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
+        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
 
         $this->assertInstanceOf(EloquentUser::class, EloquentUser::first());
     }
