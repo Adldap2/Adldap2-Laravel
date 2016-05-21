@@ -56,16 +56,10 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             // If the user is an Adldap User model instance.
             if ($user instanceof User) {
                 // Retrieve the users login attribute.
-                $username = $user->{$this->getLoginAttribute()};
-
-                if (is_array($username)) {
-                    // We'll make sure we retrieve the users first username
-                    // attribute if it's contained in an array.
-                    $username = Arr::get($username, 0);
-                }
+                $username = $this->getUsernameFromUser($user);
 
                 // Retrieve the password from the submitted credentials.
-                $password = Arr::get($credentials, $this->getPasswordKey());
+                $password = $this->getPasswordFromCredentials($credentials);
 
                 // Try to log the user in.
                 if (!is_null($password) && $this->authenticate($username, $password)) {
@@ -84,8 +78,21 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
-     * Retrieves the Adldap User model from the
-     * specified Laravel model.
+     * {@inheritdoc}
+     */
+    public function validateCredentials(Authenticatable $user, array $credentials)
+    {
+        if ($this->getPasswordSync()) {
+            // If password syncing is enabled. We can hit our
+            // local database to check the hashed password.
+            return parent::validateCredentials($user, $credentials);
+        }
+
+        return true;
+    }
+
+    /**
+     * Retrieves the Adldap User model from the specified Laravel model.
      *
      * @param mixed $model
      *
@@ -121,6 +128,38 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function authenticate($username, $password)
     {
         return $this->getAdldap()->auth()->attempt($username, $password);
+    }
+
+    /**
+     * Returns the configured username from the specified AD user.
+     *
+     * @param User $user
+     *
+     * @return string
+     */
+    protected function getUsernameFromUser(User $user)
+    {
+        $username = $user->{$this->getLoginAttribute()};
+
+        if (is_array($username)) {
+            // We'll make sure we retrieve the users first username
+            // attribute if it's contained in an array.
+            $username = Arr::get($username, 0);
+        }
+
+        return $username;
+    }
+
+    /**
+     * Returns the configured users password from the credentials array.
+     *
+     * @param array $credentials
+     *
+     * @return string
+     */
+    protected function getPasswordFromCredentials(array $credentials = [])
+    {
+        return Arr::get($credentials, $this->getPasswordKey());
     }
 
     /**
