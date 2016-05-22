@@ -14,6 +14,13 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     use ImportsUsers;
 
     /**
+     * The authenticated LDAP user.
+     *
+     * @var User
+     */
+    protected $user = null;
+
+    /**
      * {@inheritdoc}
      */
     public function retrieveById($identifier)
@@ -40,8 +47,8 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     {
         $user = $this->authenticateWithCredentials($credentials);
 
-        // If the user is an Adldap User model instance.
-        if ($user instanceof User) {
+        // Check if we've authenticated and retrieved an AD user.
+        if ($user instanceof User && $this->user = $user) {
             // Retrieve the password from the submitted credentials.
             $password = $this->getPasswordFromCredentials($credentials);
 
@@ -61,9 +68,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-        if ($this->authenticateWithCredentials($credentials)) {
-            // We've authenticated successfully, we'll finally
-            // save the user to our local database.
+        // Check if we already have an authenticated AD user.
+        if ($this->user instanceof User) {
+            // We'll save the model in case of changes.
             $this->saveModel($user);
 
             return true;
@@ -138,7 +145,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     {
         // Make sure we're connected to our LDAP server before we run any operations.
         if ($this->isConnected()) {
-            // Retrieve the Adldap user.
+            // Due to having the ability of choosing which attribute we login users
+            // with, we actually need to retrieve the user from our LDAP server
+            // before hand so we can retrieve these attributes.
             $user = $this->newAdldapUserQuery()->where([
                 $this->getUsernameValue() => $this->getUsernameFromCredentials($credentials)
             ])->first();
