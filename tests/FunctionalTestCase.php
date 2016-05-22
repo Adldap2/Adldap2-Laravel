@@ -2,8 +2,9 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Adldap\Connections\Ldap;
+use Adldap\Schemas\ActiveDirectory;
 use Illuminate\Support\Facades\Schema;
-use Mockery;
 use Orchestra\Testbench\TestCase;
 
 class FunctionalTestCase extends TestCase
@@ -30,6 +31,7 @@ class FunctionalTestCase extends TestCase
      */
     protected function getEnvironmentSetup($app)
     {
+        // Laravel database setup.
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
@@ -37,11 +39,21 @@ class FunctionalTestCase extends TestCase
             'prefix'   => '',
         ]);
 
-        $app['config']->set('adldap.auto_connect', false);
+        // Adldap connection setup.
+        $app['config']->set('adldap.connections.default.auto_connect', false);
+        $app['config']->set('adldap.connections.default.connection', Ldap::class);
+        $app['config']->set('adldap.connections.default.schema', ActiveDirectory::class);
+        $app['config']->set('adldap.connections.default.connection_settings', [
+            'admin_username' => 'admin',
+            'admin_password' => 'password',
+        ]);
+
+        // Adldap auth setup.
         $app['config']->set('adldap_auth.bind_user_to_model', true);
+        $app['config']->set('adldap_auth.username_attribute', ['email' => 'mail']);
 
+        // Laravel auth setup.
         $app['config']->set('auth.guards.web.provider', 'adldap');
-
         $app['config']->set('auth.providers', [
             'adldap' => [
                 'driver' => 'adldap',
@@ -77,17 +89,5 @@ class FunctionalTestCase extends TestCase
         return [
             'Adldap' => 'Adldap\Laravel\Facades\Adldap',
         ];
-    }
-
-    /**
-     * Mocks the specified class.
-     *
-     * @param string $class
-     *
-     * @return Mockery\MockInterface
-     */
-    protected function mock($class)
-    {
-        return Mockery::mock($class);
     }
 }
