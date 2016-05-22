@@ -249,7 +249,7 @@ trait ImportsUsers
     protected function getUsernameFromAdUser(User $user)
     {
         $username = $user->{$this->getLoginAttribute()};
-        
+
         if (is_array($username)) {
             // We'll make sure we retrieve the users first username
             // attribute if it's contained in an array.

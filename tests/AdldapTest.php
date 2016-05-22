@@ -2,11 +2,11 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Adldap\Models\User;
 use Adldap\Connections\Ldap;
 use Adldap\Contracts\AdldapInterface;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
+use Adldap\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -40,8 +40,8 @@ class AdldapTest extends FunctionalTestCase
         $credentials = $credentials ?: ['email' => 'jdoe@email.com', 'password' => '12345'];
 
         $user = $this->getMockUser([
-            'cn' => '',
-            'mail' => 'jdoe@email.com',
+            'cn'             => '',
+            'mail'           => 'jdoe@email.com',
             'samaccountname' => 'jdoe',
         ]);
 
@@ -90,8 +90,8 @@ class AdldapTest extends FunctionalTestCase
     public function test_auth_fails_when_user_found()
     {
         $user = $this->getMockUser([
-            'cn' => '',
-            'mail' => 'jdoe@email.com',
+            'cn'             => '',
+            'mail'           => 'jdoe@email.com',
             'samaccountname' => 'jdoe',
         ]);
 
@@ -229,8 +229,8 @@ class AdldapTest extends FunctionalTestCase
         $this->app['config']->set('adldap_auth.password_sync', false);
 
         $user = $this->getMockUser([
-            'cn' => '',
-            'mail' => 'jdoe@email.com',
+            'cn'             => '',
+            'mail'           => 'jdoe@email.com',
             'samaccountname' => 'jdoe',
         ]);
 
@@ -258,7 +258,7 @@ class AdldapTest extends FunctionalTestCase
         $this->assertTrue(Auth::attempt(compact('email', 'password')));
 
         $user = Auth::user();
-        
+
         // This check will fail due to password synchronization being disabled.
         $this->assertFalse(Hash::check($password, $user->password));
     }
