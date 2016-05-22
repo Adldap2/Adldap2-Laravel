@@ -9,8 +9,7 @@
         "adldap2/adldap2": "6.0.*"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.2",
-        "mockery/mockery": "0.9.*"
+        "orchestra/testbench": "~3.2"
     },
     "archive": {
         "exclude": ["/tests"]
