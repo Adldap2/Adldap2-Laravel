@@ -144,7 +144,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function authenticateWithCredentials(array $credentials = [])
     {
         $username = $this->getUsernameFromCredentials($credentials);
-        
+
         // Make sure we're connected to our LDAP server before we run any operations.
         if ($this->isConnected() && !empty($username)) {
             // Due to having the ability of choosing which attribute we login users
