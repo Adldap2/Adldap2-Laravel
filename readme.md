@@ -18,6 +18,22 @@ It includes:
 - An Adldap facade (`Adldap\Laravel\Facades\Adldap`) for easily retrieving the Adldap instance from the IoC
 - Support for multiple LDAP connections
 
+## Index
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Auth Driver](#auth-driver)
+ - [Installation](#installation-1)
+ - [Usage](#usage-1)
+ - [Features](#features)
+  - [Synchronizing Attributes](#synchronizing-attributes)
+  - [Binding to the User Model](##binding-the-adldap-user-model-to-the-laravel-user-model)
+  - [Login Fallback](#login-fallback)
+  - [Windows Authentication - SSO](#windows-authentication-sso-middleware)
+  - [Login Limitation Filter](#login-limitation-filter)
+  - [Multiple Connections](#multiple-authentication-connections)
+  - [Password Synchronization](#password-synchronization)
+
 ## Installation
 
 [Quick Start - From Scratch](quick-start.md)
@@ -270,6 +286,8 @@ Inside `config/adldap_auth.php`
 
 Login a user regularly using `Auth::attempt($credentials);`. Using `Auth::user()` when a user is logged in
 will return your configured `App\User` model in `config/auth.php`.
+
+## Features
 
 #### Synchronizing Attributes
 
