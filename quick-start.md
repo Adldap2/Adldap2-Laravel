@@ -3,7 +3,7 @@
 Here is a step by step guide for configuring Adldap2 with a fresh new laravel project. This guide assumes you have
 knowledge working with Laravel, Active Directory, LDAP Protocol and command line tools (such as Composer and Artisan).
 
-This guide is thanks to [@st-claude](https://github.com/st-claude).
+This guide was created with the help of [@st-claude](https://github.com/st-claude).
 
 1. Create a new laravel project by running `laravel new my-app` or `composer create-project --prefer-dist laravel/laravel my-app`.
    [Laravel Installation](https://laravel.com/docs/5.2#installation)
