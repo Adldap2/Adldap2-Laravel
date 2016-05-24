@@ -47,22 +47,22 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
    
 7. Now run `php artisan migrate`.
 
-8. Insert the following service providers in your `config/app.php` file (in the `providers` property):
+8. Insert the following service providers in your `config/app.php` file (in the `providers` array):
 
    ```php
    Adldap\Laravel\AdldapServiceProvider::class,
    Adldap\Laravel\AdldapAuthServiceProvider::class,
    ```
 
-9. Now, insert the facade into your `config/app.php` file:
+9. Now, insert the facade into your `config/app.php` file (in the `aliases` array):
 
    ```php
    'Adldap' => Adldap\Laravel\Facades\Adldap::class,
    ```
 
-   > **Note**: Insertion of the facade in your `app.php` file isn't necessary unless you're planning on utilizing it.
+   > **Note**: Insertion of this facade in your `app.php` file isn't necessary unless you're planning on utilizing it.
 
-10. Now run `php artisan vendor:publish` to publish Adldap2's configuration files.
+10. Now run `php artisan vendor:publish` in your root project directory to publish Adldap2's configuration files.
 
     *  Two files will be published inside your `config` folder, `adldap.php` and `adldap_auth.php`.
 
@@ -123,4 +123,4 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
     <input type="text" class="form-control" name="username" value="{{ old('username') }}">
     ```
 
-16. You should now be able to login to your Laravel application using LDAP authentication!
+16. You should now be able to login to your Laravel application using LDAP authentication! Congratulations, you're awesome.
