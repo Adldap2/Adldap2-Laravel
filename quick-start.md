@@ -14,7 +14,7 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
   
    [Laravel Installation](https://laravel.com/docs/5.2#installation)
 
-2. Open up your Insert `composer.json` file and insert the following in the `require: {}` array:
+2. Open up your `composer.json` file and insert the following in the `require: {}` array:
   - `"adldap2/adldap2-laravel": "2.0.*"`
 
 3. Run the `composer update` command in the root directory of your project to pull in Adldap2 and its dependencies.
