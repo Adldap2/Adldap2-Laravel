@@ -8,6 +8,7 @@ use Adldap\Contracts\AdldapInterface;
 use Adldap\Contracts\Connections\ConnectionInterface;
 use Adldap\Contracts\Schemas\SchemaInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
+use Adldap\Schemas\Schema;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
@@ -79,17 +80,21 @@ class AdldapServiceProvider extends ServiceProvider
     {
         // Go through each connection and construct a Provider.
         collect($connections)->each(function ($settings, $name) use ($adldap) {
+            // Set the default schema.
+            Schema::set(new $settings['schema']());
+
+            // Create a new provider.
             $provider = $this->newProvider(
                 $settings['connection_settings'],
-                new $settings['connection'](),
-                new $settings['schema']()
+                new $settings['connection']()
             );
 
+            // Try connecting to the provider if `auto_connect` is true.
             if ($settings['auto_connect'] === true) {
-                // Try connecting to the provider if `auto_connect` is true.
                 $provider->connect();
             }
 
+            // Add the provider to the Adldap container.
             $adldap->addProvider($name, $provider);
         });
 
@@ -111,12 +116,11 @@ class AdldapServiceProvider extends ServiceProvider
      *
      * @param array                    $configuration
      * @param ConnectionInterface|null $connection
-     * @param SchemaInterface|null     $schema
      *
      * @return Provider
      */
-    protected function newProvider($configuration = [], ConnectionInterface $connection = null, SchemaInterface $schema = null)
+    protected function newProvider($configuration = [], ConnectionInterface $connection = null)
     {
-        return new Provider($configuration, $connection, $schema);
+        return new Provider($configuration, $connection);
     }
 }
