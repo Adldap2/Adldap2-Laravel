@@ -16,7 +16,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     /**
      * The authenticated LDAP user.
      *
-     * @var User
+     * @var User|null
      */
     protected $user = null;
 
