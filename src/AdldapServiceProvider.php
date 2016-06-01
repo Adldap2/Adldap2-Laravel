@@ -6,7 +6,6 @@ use Adldap\Adldap;
 use Adldap\Connections\Provider;
 use Adldap\Contracts\AdldapInterface;
 use Adldap\Contracts\Connections\ConnectionInterface;
-use Adldap\Contracts\Schemas\SchemaInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
 use Adldap\Schemas\Schema;
 use Illuminate\Contracts\Foundation\Application;
