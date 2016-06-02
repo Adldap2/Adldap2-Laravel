@@ -47,7 +47,7 @@ class AdldapTest extends FunctionalTestCase
 
         $connection = $this->getMockConnection();
 
-        $connection->expects($this->exactly(2))->method('isBound')->willReturn(true);
+        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
 
         $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
 
@@ -97,7 +97,7 @@ class AdldapTest extends FunctionalTestCase
 
         $connection = $this->getMockConnection(['getLastError', 'errNo']);
 
-        $connection->expects($this->exactly(2))->method('isBound')->willReturn(true);
+        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
 
         $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
 
@@ -236,7 +236,7 @@ class AdldapTest extends FunctionalTestCase
 
         $connection = $this->getMockConnection();
 
-        $connection->expects($this->exactly(2))->method('isBound')->willReturn(true);
+        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
 
         $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
 
