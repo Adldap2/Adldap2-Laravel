@@ -27,7 +27,7 @@ It includes:
   * [Usage](#usage-1)
   * [Features](#features)
     * [Synchronizing Attributes](#synchronizing-attributes)
-    * [Binding to the User Model](##binding-the-adldap-user-model-to-the-laravel-user-model)
+    * [Binding to the User Model](#binding-the-adldap-user-model-to-the-laravel-user-model)
     * [Login Fallback](#login-fallback)
     * [Windows Authentication - SSO](#windows-authentication-sso-middleware)
     * [Login Limitation Filter](#login-limitation-filter)
