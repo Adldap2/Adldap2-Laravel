@@ -146,7 +146,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         $username = $this->getUsernameFromCredentials($credentials);
 
         // Make sure we're connected to our LDAP server before we run any operations.
-        if ($this->isConnected() && !empty($username)) {
+        if ($username && $this->isConnected()) {
             // Due to having the ability of choosing which attribute we login users
             // with, we actually need to retrieve the user from our LDAP server
             // before hand so we can retrieve these attributes.
