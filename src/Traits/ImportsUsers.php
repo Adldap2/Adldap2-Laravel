@@ -202,9 +202,7 @@ trait ImportsUsers
     {
         $query = $this->getAdldap()->search()->users();
 
-        $filter = $this->getLimitationFilter();
-
-        if (!empty($filter)) {
+        if ($filter = $this->getLimitationFilter()) {
             // If we're provided a login limitation filter,
             // we'll add it to the user query.
             $query->rawFilter($filter);
@@ -224,7 +222,7 @@ trait ImportsUsers
     }
 
     /**
-     * Returns the root Adldap instance.
+     * Returns the root Adldap provider instance.
      *
      * @param string $provider
      *
@@ -232,11 +230,9 @@ trait ImportsUsers
      */
     protected function getAdldap($provider = null)
     {
-        $ad = Adldap::getFacadeRoot();
-
         $provider = $provider ?: $this->getDefaultConnectionName();
 
-        return $ad->getManager()->get($provider);
+        return Adldap::getManager()->get($provider);
     }
 
     /**
