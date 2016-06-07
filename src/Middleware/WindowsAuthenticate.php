@@ -50,7 +50,7 @@ class WindowsAuthenticate
 
             // Handle Windows Authentication.
             if ($account = $request->server($auth[$key])) {
-                // Usernames may be prefixed with their domain,
+                // Username's may be prefixed with their domain,
                 // we just need their account name.
                 $username = explode('\\', $account);
 
@@ -90,7 +90,7 @@ class WindowsAuthenticate
     /**
      * Returns the next request.
      *
-     * This method exists for override ability.
+     * This method exists to be overridden.
      *
      * @param Request $request
      * @param Closure $next
