@@ -133,10 +133,6 @@ class AdldapTest extends FunctionalTestCase
 
     public function test_credentials_key_does_not_exist()
     {
-        $connection = $this->getMockConnection();
-
-        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
-
         $this->assertFalse(Auth::attempt(['non-existent-key' => 'jdoe@email.com', 'password' => '12345']));
     }
 
