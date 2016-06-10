@@ -297,7 +297,11 @@ trait ImportsUsers
      */
     protected function getUsernameAttribute()
     {
-        return Config::get('adldap_auth.username_attribute', ['username' => $this->getSchema()->accountName()]);
+        $attribute = Config::get('adldap_auth.username_attribute');
+        if(is_null($attribute)) {
+            $attribute =  ['username' => $this->getSchema()->accountName()];
+        }
+        return $attribute;
     }
 
     /**
@@ -318,7 +322,11 @@ trait ImportsUsers
      */
     protected function getLoginAttribute()
     {
-        return Config::get('adldap_auth.login_attribute', $this->getSchema()->accountName());
+        $attribute = Config::get('adldap_auth.login_attribute');
+        if(is_null($attribute)) {
+            $attribute =  $this->getSchema()->accountName();
+        }
+        return $attribute;
     }
 
     /**
@@ -329,7 +337,11 @@ trait ImportsUsers
      */
     protected function getSyncAttributes()
     {
-        return Config::get('adldap_auth.sync_attributes', ['name' => $this->getSchema()->commonName()]);
+        $attribute = Config::get('adldap_auth.sync_attributes');
+        if(is_null($attribute)) {
+            $attribute =  ['name' => $this->getSchema()->commonName()];
+        }
+        return $attribute;
     }
 
     /**
