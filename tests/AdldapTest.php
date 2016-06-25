@@ -131,9 +131,43 @@ class AdldapTest extends FunctionalTestCase
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
 
-    public function test_credentials_key_does_not_exist()
+    public function test_config_limitation_filter()
     {
-        $this->assertFalse(Auth::attempt(['non-existent-key' => 'jdoe@email.com', 'password' => '12345']));
+        $filter = '(cn=John Doe)';
+
+        $expectedFilter = '(&(cn=John Doe)(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(mail=\6a\64\6f\65\40\65\6d\61\69\6c\2e\63\6f\6d))';
+
+        $this->app['config']->set('adldap_auth.limitation_filter', $filter);
+
+        $user = $this->getMockUser([
+            'cn'             => '',
+            'mail'           => 'jdoe@email.com',
+            'samaccountname' => 'jdoe',
+        ]);
+
+        $connection = $this->getMockConnection();
+
+        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
+
+        $connection->expects($this->exactly(1))->method('search')->with(
+            $this->equalTo(''),
+            $this->equalTo($expectedFilter),
+            $this->equalTo([])
+        )->willReturn('resource');
+
+        $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
+            'count' => 1,
+            $user->getAttributes(),
+        ]);
+
+        $connection->expects($this->exactly(2))->method('bind')
+            ->with($this->logicalOr(
+                $this->equalTo('jdoe'),
+                $this->equalTo('admin')
+            ))
+            ->willReturn(true);
+
+        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => 'password']));
     }
 
     public function test_config_callback_attribute_handler()
