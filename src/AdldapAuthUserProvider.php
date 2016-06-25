@@ -53,7 +53,12 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $password = $this->getPasswordFromCredentials($credentials);
 
             // Construct / retrieve the eloquent model from our Adldap user.
-            return $this->getModelFromAdldap($user, $password);
+            $model = $this->getModelFromAdldap($user, $password);
+
+            // Perform other authenticated tasks.
+            $this->handleAuthenticatedWithCredentials($user, $model);
+
+            return $model;
         }
 
         if ($this->getLoginFallback()) {
@@ -86,6 +91,21 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
+     * Handle an authenticated LDAP user with their model.
+     *
+     * This method exists to be overridden.
+     *
+     * @param \Adldap\Models\User $user
+     * @param Authenticatable     $model
+     *
+     * @return void
+     */
+    protected function handleAuthenticatedWithCredentials(User $user, $model)
+    {
+        //
+    }
+
+    /**
      * Retrieves the Adldap User model from the specified Laravel model.
      *
      * @param mixed $model
@@ -94,7 +114,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function discoverAdldapFromModel($model)
     {
-        if ($model instanceof Authenticatable && $this->getBindUserToModel()) {
+        if ($this->getBindUserToModel()) {
+            // If the developer wants to bind the Adldap User model
+            // to the Laravel model, we'll query to find it.
             $attributes = $this->getUsernameAttribute();
 
             $key = key($attributes);
