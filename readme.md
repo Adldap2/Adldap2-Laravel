@@ -430,7 +430,7 @@ to receive this option.
 in some other means with Apache. Adldap does not set this up for you. To enable Windows Authentication, visit:
 https://www.iis.net/configreference/system.webserver/security/authentication/windowsauthentication/providers/add
 
-SSO authentication allows you to authenticate your users by the pre-populated `$_SERVER['AUTH_USER']` (or `$_SERVER['REMOTE_USER`])
+SSO authentication allows you to authenticate your users by the pre-populated `$_SERVER['AUTH_USER']` (or `$_SERVER['REMOTE_USER']`)
 that is filled when users visit your site when SSO is enabled on your server. This is configurable in your `adldap_auth.php`
 configuration file.
 
