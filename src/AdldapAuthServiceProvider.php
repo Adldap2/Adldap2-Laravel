@@ -9,13 +9,6 @@ use Illuminate\Support\ServiceProvider;
 class AdldapAuthServiceProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    /**
      * Run service provider boot operations.
      *
      * @return void
