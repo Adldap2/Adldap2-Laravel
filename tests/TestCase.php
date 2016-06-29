@@ -5,9 +5,9 @@ namespace Adldap\Laravel\Tests;
 use Adldap\Connections\Ldap;
 use Adldap\Schemas\ActiveDirectory;
 use Illuminate\Support\Facades\Schema;
-use Orchestra\Testbench\TestCase;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
-class FunctionalTestCase extends TestCase
+class TestCase extends BaseTestCase
 {
     public function setUp()
     {

@@ -2,16 +2,16 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Adldap\Models\User;
 use Adldap\Connections\Ldap;
 use Adldap\Contracts\AdldapInterface;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
-use Adldap\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class AdldapTest extends FunctionalTestCase
+class AdldapTest extends TestCase
 {
     public function test_configuration_not_found_exception()
     {
