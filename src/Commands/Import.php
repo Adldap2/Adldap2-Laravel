@@ -4,8 +4,6 @@ namespace Adldap\Laravel\Commands;
 
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\User;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Console\Command;
 
 class Import extends Command
@@ -43,10 +41,8 @@ class Import extends Command
 
         // Retrieve all users.
         $users = $adldap->search()->users()->get();
-
-        $imported = $this->import($users);
-
-        $this->info("Successfully imported {$imported} user(s).");
+        
+        $this->info("Successfully imported {$this->import($users)} user(s).");
     }
 
     /**
@@ -67,15 +63,16 @@ class Import extends Command
                     // Import the user and then save the model.
                     $model = $this->getModelFromAdldap($user);
 
-                    $this->saveModel($model);
+                    if ($this->saveModel($model) && $model->wasRecentlyCreated) {
+                        // Only increment imported for new models.
+                        $imported++;
 
-                    $imported++;
-
-                    // Log the successful import.
-                    Log::info("Imported user {$user->getCommonName()}");
+                        // Log the successful import.
+                        logger()->info("Imported user {$user->getCommonName()}");
+                    }
                 } catch (\Exception $e) {
                     // Log the unsuccessful import.
-                    Log::error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
+                    logger()->error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
                 }
             }
         }
@@ -88,7 +85,7 @@ class Import extends Command
      */
     public function createModel()
     {
-        $model = Auth::getProvider()->getModel();
+        $model = auth()->getProvider()->getModel();
 
         return new $model();
     }
