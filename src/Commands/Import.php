@@ -3,6 +3,7 @@
 namespace Adldap\Laravel\Commands;
 
 use Adldap\Laravel\Traits\ImportsUsers;
+use Adldap\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Console\Command;
@@ -43,27 +44,43 @@ class Import extends Command
         // Retrieve all users.
         $users = $adldap->search()->users()->get();
 
+        $imported = $this->import($users);
+
+        $this->info("Successfully imported {$imported} user(s).");
+    }
+
+    /**
+     * Imports the specified users and returns the total
+     * number of users successfully imported.
+     *
+     * @param mixed $users
+     *
+     * @return int
+     */
+    public function import($users = [])
+    {
         $imported = 0;
 
-        /** @var \Adldap\Models\User $user */
         foreach ($users as $user) {
-            try {
-                // Import the user and then save the model.
-                $model = $this->getModelFromAdldap($user);
+            if ($user instanceof User) {
+                try {
+                    // Import the user and then save the model.
+                    $model = $this->getModelFromAdldap($user);
 
-                $this->saveModel($model);
+                    $this->saveModel($model);
 
-                $imported++;
+                    $imported++;
 
-                // Log the successful import.
-                Log::info("Imported user {$user->getCommonName()}");
-            } catch (\Exception $e) {
-                // Log the unsuccessful import.
-                Log::error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
+                    // Log the successful import.
+                    Log::info("Imported user {$user->getCommonName()}");
+                } catch (\Exception $e) {
+                    // Log the unsuccessful import.
+                    Log::error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
+                }
             }
         }
 
-        $this->info("Successfully imported {$imported} user(s).");
+        return $imported;
     }
 
     /**
