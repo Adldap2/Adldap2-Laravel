@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel;
 
+use Adldap\Laravel\Commands\Import;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
@@ -39,6 +40,8 @@ class AdldapAuthServiceProvider extends ServiceProvider
                 return $this->newAdldapAuthUserProvider($app['hash'], $app['config']['auth.model']);
             });
         }
+
+        $this->commands([Import::class]);
     }
 
     /**
