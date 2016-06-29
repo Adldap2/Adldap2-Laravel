@@ -3,9 +3,9 @@
 namespace Adldap\Laravel\Commands;
 
 use Adldap\Laravel\Traits\ImportsUsers;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class Import extends Command
 {
