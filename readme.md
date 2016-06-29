@@ -33,6 +33,7 @@ It includes:
     * [Login Limitation Filter](#login-limitation-filter)
     * [Multiple Connections](#multiple-authentication-connections)
     * [Password Synchronization](#password-synchronization)
+    * [Importing Users](#importing-users)
 
 ## Installation
 
@@ -538,3 +539,31 @@ This feature is enabled by default.
 ```php
 'password_sync' => env('ADLDAP_PASSWORD_SYNC', true),
 ```
+
+#### Importing Users
+
+> **Note**: This feature was introduced in `v2.0.13`.
+
+You can now import all users manually by running the artisan command:
+
+```cmd
+php artisan adldap:import
+```
+
+The command requires that you have the Adldap auth driver setup and configured before running.
+
+When users are imported, they are given a random 16 character hashed password to ensure they are secure upon import.
+
+After running the import, you will receive information of how many users were imported:
+
+```cmd
+Successfully imported 249 user(s).
+```
+
+Tips:
+
+ - Users who already exist inside your database will be updated with your configured `sync_attributes`
+ - Users are never deleted from the import command, you will need to clear users regularely through your model
+ - Successfully imported (new) users are reported in your log files: `[2016-06-29 14:51:51] local.INFO: Imported user johndoe`
+ - Unsuccessful imported users are also reported in your log files, with the message of the exception:
+  - `[2016-06-29 14:51:51] local.ERROR: Unable to import user janedoe. SQLSTATE[23000]: Integrity constraint violation: 1048`
