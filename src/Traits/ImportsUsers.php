@@ -18,12 +18,12 @@ trait ImportsUsers
     /**
      * Returns an existing or new Eloquent user from the specified Adldap user instance.
      *
-     * @param User   $user
-     * @param string $password
+     * @param User        $user
+     * @param string|null $password
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function getModelFromAdldap(User $user, $password)
+    protected function getModelFromAdldap(User $user, $password = null)
     {
         // Get the model key.
         $attributes = $this->getUsernameAttribute();
@@ -47,8 +47,9 @@ trait ImportsUsers
         // Set the username in case of changes in active directory.
         $model->{$key} = $username;
 
-        // Sync the users password (if enabled).
-        $model = $this->syncModelPassword($model, $password);
+        // Sync the users password (if enabled). If no password is
+        // given, we'll assign a random 16 character string.
+        $model = $this->syncModelPassword($model, $password ?: str_random());
 
         // Synchronize other active directory attributes on the model.
         $model = $this->syncModelFromAdldap($user, $model);
