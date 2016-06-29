@@ -15,7 +15,9 @@ class Import extends Command
      *
      * @var string
      */
-    protected $signature = 'adldap:import';
+    protected $signature = 'adldap:import
+                            {user?}
+                            {--log=true : Log successful and unsuccessful imported users.}';
 
     /**
      * The console command description.
@@ -39,8 +41,14 @@ class Import extends Command
             $adldap->connect();
         }
 
-        // Retrieve all users.
-        $users = $adldap->search()->users()->get();
+        $user = $this->argument('user');
+
+        if ($user) {
+            $users = [$adldap->search()->users()->findOrFail($user)];
+        } else {
+            // Retrieve all users.
+            $users = $adldap->search()->users()->get();
+        }
 
         $this->info("Successfully imported {$this->import($users)} user(s).");
     }
@@ -68,11 +76,17 @@ class Import extends Command
                         $imported++;
 
                         // Log the successful import.
-                        logger()->info("Imported user {$user->getCommonName()}");
+                        if ($this->option('log') == 'true') {
+                            logger()->info("Imported user {$user->getCommonName()}");
+                        }
                     }
                 } catch (\Exception $e) {
+                    $message = "Unable to import user {$user->getCommonName()}. {$e->getMessage()}";
+
                     // Log the unsuccessful import.
-                    logger()->error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
+                    if ($this->option('log') == 'true') {
+                        logger()->error($message);
+                    }
                 }
             }
         }
