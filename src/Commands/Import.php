@@ -55,8 +55,10 @@ class Import extends Command
 
                 $imported++;
 
+                // Log the successful import.
                 Log::info("Imported user {$user->getCommonName()}");
             } catch (\Exception $e) {
+                // Log the unsuccessful import.
                 Log::error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
             }
         }
