@@ -41,7 +41,7 @@ class Import extends Command
 
         // Retrieve all users.
         $users = $adldap->search()->users()->get();
-        
+
         $this->info("Successfully imported {$this->import($users)} user(s).");
     }
 
