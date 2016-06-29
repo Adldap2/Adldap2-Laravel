@@ -563,7 +563,7 @@ Successfully imported 249 user(s).
 Tips:
 
  - Users who already exist inside your database will be updated with your configured `sync_attributes`
- - Users are never deleted from the import command, you will need to clear users regularely through your model
+ - Users are never deleted from the import command, you will need to clear users regularly through your model
  - Successfully imported (new) users are reported in your log files: `[2016-06-29 14:51:51] local.INFO: Imported user johndoe`
  - Unsuccessful imported users are also reported in your log files, with the message of the exception:
   - `[2016-06-29 14:51:51] local.ERROR: Unable to import user janedoe. SQLSTATE[23000]: Integrity constraint violation: 1048`
