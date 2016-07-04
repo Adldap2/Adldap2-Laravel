@@ -568,6 +568,6 @@ Tips:
   - `[2016-06-29 14:51:51] local.INFO: Imported user johndoe`
  - Unsuccessful imported users are also reported in your log files, with the message of the exception:
   - `[2016-06-29 14:51:51] local.ERROR: Unable to import user janedoe. SQLSTATE[23000]: Integrity constraint violation: 1048`
- - To run the import without logging, use `php artisan adldap:import --log=false
+ - To run the import without logging, use `php artisan adldap:import --log=false`
  - To import a single user, insert their username `php artisan adldap:import jdoe`
   - Specifying a username uses ambiguous naming resolution, so you're able to specify attributes other than their username, such as their email (`php artisan adldap:import jdoe@mail.com`).
