@@ -26,6 +26,8 @@ return [
     | attribute to discover the user by. The reason for this is to hide
     | the attribute that you're using to login users.
     |
+    | For example, if your HTML input name is `email` and you'd like users
+    | to login by their LDAP `mail` attribute, then keep the
     | configuration below. However, if you'd like to login users
     | by their usernames, then change `mail` to `samaccountname`.
     | and `email` to `username`.
