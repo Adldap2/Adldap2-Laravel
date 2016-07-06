@@ -571,3 +571,4 @@ Tips:
  - To run the import without logging, use `php artisan adldap:import --log=false`
  - To import a single user, insert their username: `php artisan adldap:import jdoe`
   - Specifying a username uses ambiguous naming resolution, so you're able to specify attributes other than their username, such as their email (`php artisan adldap:import jdoe@mail.com`).
+  - If you have a password mutator (setter) on your User model, it will not override it. This way, you can hash the random 16 characters any way you please.
