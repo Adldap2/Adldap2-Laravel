@@ -45,9 +45,13 @@ class Import extends Command
 
         if ($user) {
             $users = [$adldap->search()->users()->findOrFail($user)];
+
+            $this->info("Found user '{$users[0]->getCommonName()}'. Importing...");
         } else {
             // Retrieve all users.
             $users = $adldap->search()->users()->get();
+
+            $this->info("Found {$users->count()} user(s). Starting import...");
         }
 
         $this->info("Successfully imported {$this->import($users)} user(s).");
