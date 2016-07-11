@@ -106,6 +106,18 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     }
 
     /**
+     * Handle discovered LDAP users before they are authenticated.
+     *
+     * @param \Adldap\Models\User $user
+     *
+     * @return void
+     */
+    protected function handleDiscoveredUserWithCredentials(User $user)
+    {
+        //
+    }
+
+    /**
      * Retrieves the Adldap User model from the specified Laravel model.
      *
      * @param mixed $model
@@ -177,6 +189,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             ])->first();
 
             if ($user instanceof User) {
+                // Perform operations on the discovered user.
+                $this->handleDiscoveredUserWithCredentials($user);
+
                 // Retrieve the authentication username for the AD user.
                 $username = $this->getUsernameFromAdUser($user);
 
