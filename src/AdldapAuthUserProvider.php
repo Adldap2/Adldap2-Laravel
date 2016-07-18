@@ -126,7 +126,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function discoverAdldapFromModel($model)
     {
-        if ($this->getBindUserToModel()) {
+        if ($this->getBindUserToModel() && $model) {
             // If the developer wants to bind the Adldap User model
             // to the Laravel model, we'll query to find it.
             $attributes = $this->getUsernameAttribute();
