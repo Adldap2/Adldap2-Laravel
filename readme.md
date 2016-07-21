@@ -69,15 +69,18 @@ Now you're all set!
 You can perform all methods on Adldap through its facade like so:
 ```php
 // Finding a user.
-$user = Adldap::getDefaultProvider()->search()->users()->find('john doe');
+$user = Adldap::search()->users()->find('john doe');
 
 // Searching for a user.
-$search = Adldap::getDefaultProvider()->search()->where('cn', '=', 'John Doe')->get();
+$search = Adldap::search()->where('cn', '=', 'John Doe')->get();
 
 // Authenticating.
-if (Adldap::getDefaultProvider()->auth()->attempt($username, $password)) {
+if (Adldap::auth()->attempt($username, $password)) {
     // Passed!
 }
+
+// Running an operation under a different connection:
+$users = Adldap::getProvider('other-connection')->search()->users()->get();
 ```
 
 Or you can inject the Adldap contract:
