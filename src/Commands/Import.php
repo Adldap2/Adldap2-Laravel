@@ -17,6 +17,7 @@ class Import extends Command
      */
     protected $signature = 'adldap:import
                             {user?}
+                            {--filter= : A raw filter for limiting users imported.}
                             {--log=true : Log successful and unsuccessful imported users.}';
 
     /**
@@ -41,17 +42,25 @@ class Import extends Command
             $adldap->connect();
         }
 
-        $user = $this->argument('user');
+        $search = $adldap->search()->users();
 
-        if ($user) {
-            $users = [$adldap->search()->users()->findOrFail($user)];
+        if ($filter = $this->option('filter')) {
+            // If the filter option was given, we'll
+            // insert it into our search query.
+            $search->rawFilter($filter);
+        }
+
+        if ($user = $this->argument('user')) {
+            $users = [$search->findOrFail($user)];
 
             $this->info("Found user '{$users[0]->getCommonName()}'. Importing...");
         } else {
             // Retrieve all users.
-            $users = $adldap->search()->users()->get();
+            $users = $search->paginate()->getResults();
 
-            $this->info("Found {$users->count()} user(s). Starting import...");
+            $count = count($users);
+
+            $this->info("Found {$count} user(s). Starting import...");
         }
 
         $this->info("Successfully imported {$this->import($users)} user(s).");
