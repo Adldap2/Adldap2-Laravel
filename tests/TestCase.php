@@ -3,6 +3,10 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\Connections\Ldap;
+use Adldap\Laravel\AdldapAuthServiceProvider;
+use Adldap\Laravel\AdldapServiceProvider;
+use Adldap\Laravel\Facades\Adldap;
+use Adldap\Laravel\Tests\Models\User;
 use Adldap\Schemas\ActiveDirectory;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -57,7 +61,7 @@ class TestCase extends BaseTestCase
         $app['config']->set('auth.providers', [
             'adldap' => [
                 'driver' => 'adldap',
-                'model'  => 'Adldap\Laravel\Tests\Models\User',
+                'model'  => User::class,
             ],
         ]);
     }
@@ -72,8 +76,8 @@ class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            'Adldap\Laravel\AdldapServiceProvider',
-            'Adldap\Laravel\AdldapAuthServiceProvider',
+            AdldapServiceProvider::class,
+            AdldapAuthServiceProvider::class,
         ];
     }
 
@@ -87,7 +91,7 @@ class TestCase extends BaseTestCase
     protected function getPackageAliases($app)
     {
         return [
-            'Adldap' => 'Adldap\Laravel\Facades\Adldap',
+            'Adldap' => Adldap::class,
         ];
     }
 }
