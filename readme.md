@@ -42,7 +42,7 @@ It includes:
 Insert Adldap2-Laravel into your `composer.json` file:
 
 ```json
-"adldap2/adldap2-laravel": "2.0.*",
+"adldap2/adldap2-laravel": "2.1.*",
 ```
 
 Then run `composer update`.
