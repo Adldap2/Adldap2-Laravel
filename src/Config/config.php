@@ -131,6 +131,19 @@ return [
 
                 /*
                 |--------------------------------------------------------------------------
+                | Timeout
+                |--------------------------------------------------------------------------
+                |
+                | The timeout option allows you to configure the amount of time in
+                | seconds that your application waits until a response
+                | is received from your LDAP server.
+                |
+                */
+
+                'timeout' => 5,
+
+                /*
+                |--------------------------------------------------------------------------
                 | Base Distinguished Name
                 |--------------------------------------------------------------------------
                 |
