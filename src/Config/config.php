@@ -177,10 +177,11 @@ return [
                 | Administrator Username & Password
                 |--------------------------------------------------------------------------
                 |
-                | When connecting to your AD server, an administrator username and
-                | password is required to be able to query and run operations on
-                | your server(s). You can use any user account that has
-                | these permissions.
+                | When connecting to your AD server, a username and password is required
+                | to be able to query and run operations on your server(s). You can
+                | use any user account that has these permissions. This account
+                | does not need to be a domain administrator unless you
+                | require changing and resetting user passwords.
                 |
                 */
 
