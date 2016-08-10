@@ -114,6 +114,8 @@ return [
                 | as little as you'd like depending on your forest (with the
                 | minimum of one of course).
                 |
+                | These can be IP addresses of your server(s), or the host name.
+                |
                 */
 
                 'domain_controllers' => ['corp-dc1.corp.acme.org', 'corp-dc2.corp.acme.org'],
