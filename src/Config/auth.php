@@ -128,7 +128,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This array represents how a user is found when
-    | using the Windows Auth Middleware.
+    | utilizing the Adldap Windows Auth Middleware.
     |
     | The key of the array represents the attribute that the user is located by.
     |
