@@ -3,9 +3,9 @@
 namespace Adldap\Laravel;
 
 use Adldap\Laravel\Commands\Import;
-use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Hashing\Hasher;
 
 class AdldapAuthServiceProvider extends ServiceProvider
 {

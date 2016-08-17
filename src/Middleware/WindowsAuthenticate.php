@@ -2,13 +2,13 @@
 
 namespace Adldap\Laravel\Middleware;
 
-use Adldap\Laravel\Traits\ImportsUsers;
-use Adldap\Models\User;
 use Closure;
-use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Database\Eloquent\Model;
+use Adldap\Models\User;
+use Adldap\Laravel\Traits\ImportsUsers;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 
 class WindowsAuthenticate
 {

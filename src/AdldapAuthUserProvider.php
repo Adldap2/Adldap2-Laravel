@@ -2,12 +2,12 @@
 
 namespace Adldap\Laravel;
 
-use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\User;
-use Illuminate\Auth\EloquentUserProvider;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Adldap\Laravel\Traits\ImportsUsers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class AdldapAuthUserProvider extends EloquentUserProvider
 {

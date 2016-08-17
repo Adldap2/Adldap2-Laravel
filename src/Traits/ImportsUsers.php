@@ -2,11 +2,11 @@
 
 namespace Adldap\Laravel\Traits;
 
-use Adldap\Laravel\Facades\Adldap;
 use Adldap\Models\User;
-use Illuminate\Database\Eloquent\Model;
+use Adldap\Laravel\Facades\Adldap;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 
 trait ImportsUsers
 {

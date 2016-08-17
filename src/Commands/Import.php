@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Commands;
 
-use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\User;
+use Adldap\Laravel\Traits\ImportsUsers;
 use Illuminate\Console\Command;
 
 class Import extends Command

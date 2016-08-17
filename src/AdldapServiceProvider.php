@@ -5,12 +5,11 @@ namespace Adldap\Laravel;
 use Adldap\Adldap;
 use Adldap\Connections\Provider;
 use Adldap\Contracts\AdldapInterface;
-use Adldap\Contracts\Connections\ConnectionInterface;
 use Adldap\Contracts\Schemas\SchemaInterface;
+use Adldap\Contracts\Connections\ConnectionInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
-use Adldap\Schemas\Schema;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Foundation\Application;
 
 class AdldapServiceProvider extends ServiceProvider
 {
