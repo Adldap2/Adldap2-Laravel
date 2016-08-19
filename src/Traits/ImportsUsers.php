@@ -36,7 +36,7 @@ trait ImportsUsers
 
         // Make sure we retrieve the first username
         // result if it's an array.
-        $username = (is_array($username) ? Arr::get($username, 0) : $username);
+        $username = strtolower(is_array($username) ? Arr::get($username, 0) : $username);
 
         // Try to retrieve the model from the model key and AD username.
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
