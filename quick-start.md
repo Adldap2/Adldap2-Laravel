@@ -5,10 +5,10 @@ knowledge working with Laravel, Active Directory, LDAP Protocol and command line
 
 This guide was created with the help of [@st-claude](https://github.com/st-claude) and other awesome contributors.
 
-1. Create a new laravel project by running
+1. Create a new laravel project by running the command:
   - `laravel new my-app`
   
-  **Or**
+  **Or (if you don't have the Laravel installer)**
  
   - `composer create-project --prefer-dist laravel/laravel my-app`.
   
