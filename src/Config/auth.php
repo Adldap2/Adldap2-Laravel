@@ -185,7 +185,7 @@ return [
     | The array key represents the Laravel model key, and the value
     | represents the Active Directory attribute to set it to.
     |
-    | The users email is already synchronized and does not need to be
+    | Your login attribute is already synchronized and does not need to be
     | added to this array.
     |
     */
