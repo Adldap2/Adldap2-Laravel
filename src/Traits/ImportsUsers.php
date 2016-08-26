@@ -36,7 +36,11 @@ trait ImportsUsers
 
         // Make sure we retrieve the first username
         // result if it's an array.
-        $username = (is_array($username) ? Arr::get($username, 0) : $username);
+        $username = strtolower(is_array($username) ? Arr::get($username, 0) : $username);
+
+        if (array_key_exists($key, $this->getSyncAttributes())) {
+            $username = $this->syncModelFromAdldap1record($user,$this->getSyncAttributes()[$key]);
+        }
 
         // Try to retrieve the model from the model key and AD username.
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
@@ -76,6 +80,17 @@ trait ImportsUsers
         return $model;
     }
 
+    protected function syncModelFromAdldap1record(User $user, $adField)
+    {
+        if ($this->isAttributeCallback($adField)) {
+            $value=$this->handleAttributeCallback($user, $adField);
+        } else {
+            $value=$this->handleAttributeRetrieval($user, $adField);
+        }
+
+        return $value;
+    }
+
     /**
      * Fills a models attributes by the specified Users attributes.
      *
@@ -87,13 +102,7 @@ trait ImportsUsers
     protected function syncModelFromAdldap(User $user, Model $model)
     {
         foreach ($this->getSyncAttributes() as $modelField => $adField) {
-            if ($this->isAttributeCallback($adField)) {
-                $value = $this->handleAttributeCallback($user, $adField);
-            } else {
-                $value = $this->handleAttributeRetrieval($user, $adField);
-            }
-
-            $model->{$modelField} = $value;
+            $model->{$modelField} = $this->syncModelFromAdldap1record($user,$adField);
         }
 
         return $model;
