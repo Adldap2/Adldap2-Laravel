@@ -206,7 +206,7 @@ Change the `provider` entry inside the `web` authentication guard:
 'guards' => [
     'web' => [
         'driver' => 'session',
-        'provider' => 'adldap',
+        'provider' => 'users',
     ],
     'api' => [
         'driver' => 'token',
