@@ -82,28 +82,9 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 14. Now insert a new auth driver inside your `config/auth.php` file:
 
     ```php
-    'guards' => [
-        'web' => [
-            'driver'   => 'session',
-            'provider' => 'adldap', // Switched to 'adldap'
-        ],
-
-        'api' => [
-            'driver'   => 'token',
-            'provider' => 'users',
-        ],
-    ],
-
-
     'providers' => [
-        // New 'adldap' provider:
-        'adldap' => [
-            'driver' => 'adldap',
-            'model'  => App\User::class,
-        ],
-
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'adldap', // Was 'eloquent'.
             'model'  => App\User::class,
         ],
     ],
