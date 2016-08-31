@@ -104,6 +104,8 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
     <input type="text" class="form-control" name="username" value="{{ old('username') }}">
     ```
 
-16. You should now be able to login to your Laravel application using LDAP authentication!
+16. You should now be able to login to your Laravel application using LDAP authentication! If you check out your database
+  in your `users` table, you'll see that your LDAP account was synchronized to a local user account. This means that
+  you can attach data regularly to this user as you would with standard Laravel authentication.
 
 17. Congratulations, you're awesome.
