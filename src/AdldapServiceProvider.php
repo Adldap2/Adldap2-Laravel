@@ -87,7 +87,7 @@ class AdldapServiceProvider extends ServiceProvider
             );
 
             // Try connecting to the provider if `auto_connect` is true.
-            if ($settings['auto_connect'] === true) {
+            if (isset($settings['auto_connect']) && $settings['auto_connect'] === true) {
                 $provider->connect();
             }
 
