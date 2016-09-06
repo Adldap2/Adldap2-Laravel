@@ -34,7 +34,7 @@ class Import extends Command
     public function handle()
     {
         // Retrieve the Adldap instance.
-        $adldap = $this->getAdldap();
+        $adldap = $this->getAdldap($this->option('connection'));
 
         if (!$adldap->getConnection()->isBound()) {
             // If the connection isn't bound yet, we'll connect to the server manually.
@@ -136,7 +136,9 @@ class Import extends Command
         return [
             ['filter', null, InputOption::VALUE_OPTIONAL, 'The raw filter for limiting users imported.'],
 
-            ['log', true, InputOption::VALUE_OPTIONAL, 'Log successful and unsuccessful imported users.']
+            ['log', true, InputOption::VALUE_OPTIONAL, 'Log successful and unsuccessful imported users.'],
+
+            ['connection', null, InputOption::VALUE_OPTIONAL, 'The LDAP connection to use to import users.'],
         ];
     }
 
