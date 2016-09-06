@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 trait ImportsUsers
 {
     /**
-     * {@inheritdoc}
+     * Returns the authentication users model instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
      */
     abstract public function createModel();
 
