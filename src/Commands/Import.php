@@ -5,6 +5,8 @@ namespace Adldap\Laravel\Commands;
 use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class Import extends Command
 {
@@ -15,17 +17,14 @@ class Import extends Command
      *
      * @var string
      */
-    protected $signature = 'adldap:import
-                            {user?}
-                            {--filter= : A raw filter for limiting users imported.}
-                            {--log=true : Log successful and unsuccessful imported users.}';
+    protected $name = 'adldap:import';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Imports users into the local database with a random 16 character hashed password.';
+    protected $description = 'Imports LDAP users into the local database with a random 16 character hashed password.';
 
     /**
      * Execute the console command.
@@ -113,6 +112,32 @@ class Import extends Command
     public function isLogging()
     {
         return $this->option('log') == 'true';
+    }
+
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    public function getArguments()
+    {
+        return [
+            ['user', InputArgument::OPTIONAL, 'The specific user to import using ANR.'],
+        ];
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return [
+            ['filter', null, InputOption::VALUE_OPTIONAL, 'The raw filter for limiting users imported.'],
+
+            ['log', true, InputOption::VALUE_OPTIONAL, 'Log successful and unsuccessful imported users.']
+        ];
     }
 
     /**
