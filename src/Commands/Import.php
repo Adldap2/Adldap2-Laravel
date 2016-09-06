@@ -89,22 +89,30 @@ class Import extends Command
                         $imported++;
 
                         // Log the successful import.
-                        if ($this->option('log') == 'true') {
+                        if ($this->isLogging()) {
                             logger()->info("Imported user {$user->getCommonName()}");
                         }
                     }
                 } catch (\Exception $e) {
-                    $message = "Unable to import user {$user->getCommonName()}. {$e->getMessage()}";
-
                     // Log the unsuccessful import.
-                    if ($this->option('log') == 'true') {
-                        logger()->error($message);
+                    if ($this->isLogging()) {
+                        logger()->error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
                     }
                 }
             }
         }
 
         return $imported;
+    }
+
+    /**
+     * Returns true / false if the current import is being logged.
+     *
+     * @return bool
+     */
+    public function isLogging()
+    {
+        return $this->option('log') == 'true';
     }
 
     /**
