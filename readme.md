@@ -212,9 +212,17 @@ By default this is set to `email`:
 <input type="password" name="password" />
 ```
 
-You'll also need to add the following to your AuthController if you're not overriding the default postLogin method.
+You'll also need to add the following to your AuthController if you're not overriding the default postLogin method:
+
 ```php
+// In Laravel <= 5.2
 protected $username = 'email';
+
+// In Laravel >= 5.3
+public function username()
+{
+    return 'email';
+}
 ```
 
 If you'd like to use the users `samaccountname` to login instead, just change your input name and auth configuration:
