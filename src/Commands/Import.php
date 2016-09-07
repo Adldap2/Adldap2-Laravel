@@ -13,14 +13,14 @@ class Import extends Command
     use ImportsUsers;
 
     /**
-     * The name and signature of the console command.
+     * The name of the console command.
      *
      * @var string
      */
     protected $name = 'adldap:import';
 
     /**
-     * The console command description.
+     * The description of the console command.
      *
      * @var string
      */
@@ -59,7 +59,7 @@ class Import extends Command
 
             $count = count($users);
 
-            $this->info("Found {$count} user(s). Starting import...");
+            $this->info("Found {$count} user(s). Importing...");
         }
 
         $this->info("Successfully imported {$this->import($users)} user(s).");
