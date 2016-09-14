@@ -8,7 +8,7 @@
 
 ## Description
 
-Adldap2 - Laravel allows easy configuration, access, and management to LDAP connections utilizing the root
+Adldap2 - Laravel allows easy configuration, access, management and authentication to LDAP connections utilizing the root
 [Adldap2 Repository](http://www.github.com/Adldap2/Adldap2).
 
 ## Index
