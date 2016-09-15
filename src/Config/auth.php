@@ -217,4 +217,18 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Database Sync
+    |--------------------------------------------------------------------------
+    |
+    | Enable/Disable the database synchronizing
+    |
+    | If this option is true, users will be created in users table in database.
+    | If this options is false, users will be only retrieve from ldap servers.
+    |
+    */
+
+    'database_sync' => env('ADLDAP_DATABASE_SYNC', true),
+
 ];

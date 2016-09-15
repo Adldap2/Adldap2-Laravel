@@ -76,7 +76,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         // Check if we already have an authenticated AD user.
         if ($this->user instanceof User) {
             // We'll save the model in case of changes.
-            $this->saveModel($user);
+            if(Config::get('adldap_auth.database_sync')) {
+                $this->saveModel($user);
+            }
 
             return true;
         }
