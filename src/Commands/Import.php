@@ -43,7 +43,7 @@ class Import extends Command
 
         $search = $adldap->search()->users();
 
-        if ($filter = $this->option('filter')) {
+        if ($filter = $this->getFilter()) {
             // If the filter option was given, we'll
             // insert it into our search query.
             $search->rawFilter($filter);
@@ -113,6 +113,16 @@ class Import extends Command
     public function isLogging()
     {
         return $this->option('log') == 'true';
+    }
+
+    /**
+     * Returns the limitation filter for importing users.
+     *
+     * @return string
+     */
+    public function getFilter()
+    {
+        return $this->getLimitationFilter() ?: $this->option('filter');
     }
 
     /**
