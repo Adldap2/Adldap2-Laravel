@@ -54,7 +54,8 @@ class Import extends Command
 
             $this->info("Found user '{$users[0]->getCommonName()}'. Importing...");
         } else {
-            // Retrieve all users.
+            // Retrieve all users. We'll paginate our search in case we hit
+            // the 1000 record hard limit of active directory.
             $users = $search->paginate()->getResults();
 
             $count = count($users);
