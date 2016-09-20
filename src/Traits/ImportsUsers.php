@@ -40,28 +40,25 @@ trait ImportsUsers
         // result if it's an array.
         $username = (is_array($username) ? Arr::get($username, 0) : $username);
 
+        if (array_key_exists($key, $this->getSyncAttributes())) {
+            $username = $this->syncModelFromAdldap1record($user,$this->getSyncAttributes()[$key]);
+        }
         // Try to retrieve the model from the model key and AD username.
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
-
         // Create the model instance of it isn't found.
         $model = ($model instanceof Model ? $model : $this->createModel());
-
         // Set the username in case of changes in active directory.
         $model->{$key} = $username;
-
         // Sync the users password (if enabled). If no password is
         // given, we'll assign a random 16 character string.
         $model = $this->syncModelPassword($model, $password ?: str_random());
-
         // Synchronize other active directory attributes on the model.
         $model = $this->syncModelFromAdldap($user, $model);
-
         // Bind the Adldap model to the eloquent model (if enabled).
         $model = ($this->getBindUserToModel() ? $this->bindAdldapToModel($user, $model) : $model);
-
         return $model;
     }
-
+    
     /**
      * Binds the Adldap User instance to the Eloquent model instance
      * by setting its `adldapUser` public property.
@@ -74,10 +71,21 @@ trait ImportsUsers
     protected function bindAdldapToModel(User $user, Model $model)
     {
         $model->adldapUser = $user;
-
+        
         return $model;
     }
-
+    
+    protected function syncModelFromAdldap1record(User $user, $adField)
+    {
+        if ($this->isAttributeCallback($adField)) {
+            $value=$this->handleAttributeCallback($user, $adField);
+        } else {
+            $value=$this->handleAttributeRetrieval($user, $adField);
+        }
+        
+        return $value;
+    }
+    
     /**
      * Fills a models attributes by the specified Users attributes.
      *
@@ -89,15 +97,9 @@ trait ImportsUsers
     protected function syncModelFromAdldap(User $user, Model $model)
     {
         foreach ($this->getSyncAttributes() as $modelField => $adField) {
-            if ($this->isAttributeCallback($adField)) {
-                $value = $this->handleAttributeCallback($user, $adField);
-            } else {
-                $value = $this->handleAttributeRetrieval($user, $adField);
-            }
-
-            $model->{$modelField} = $value;
+            $model->{$modelField} = $this->syncModelFromAdldap1record($user,$adField);
         }
-
+        
         return $model;
     }
 
