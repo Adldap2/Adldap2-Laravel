@@ -4,6 +4,8 @@ namespace Adldap\Laravel;
 
 use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
+use Adldap\Laravel\Events\DiscoveredWithCredentials;
+use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\EloquentUserProvider;
@@ -93,8 +95,6 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     /**
      * Handle an authenticated LDAP user with their model.
      *
-     * This method exists to be overridden.
-     *
      * @param \Adldap\Models\User $user
      * @param Authenticatable     $model
      *
@@ -102,7 +102,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function handleAuthenticatedWithCredentials(User $user, $model)
     {
-        //
+        event(new AuthenticatedWithCredentials($user, $model));
     }
 
     /**
@@ -114,7 +114,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function handleDiscoveredUserWithCredentials(User $user)
     {
-        //
+        event(new DiscoveredWithCredentials($user));
     }
 
     /**
