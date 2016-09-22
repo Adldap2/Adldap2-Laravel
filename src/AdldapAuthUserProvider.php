@@ -6,8 +6,6 @@ use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -218,7 +216,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getUsernameFromCredentials(array $credentials = [])
     {
-        return Arr::get($credentials, $this->getUsernameKey());
+        return array_get($credentials, $this->getUsernameKey());
     }
 
     /**
@@ -230,7 +228,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getPasswordFromCredentials(array $credentials = [])
     {
-        return Arr::get($credentials, $this->getPasswordKey());
+        return array_get($credentials, $this->getPasswordKey());
     }
 
     /**
@@ -241,7 +239,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getPasswordKey()
     {
-        return Config::get('adldap_auth.password_key', 'password');
+        return config('adldap_auth.password_key', 'password');
     }
 
     /**
@@ -252,6 +250,6 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getLoginFallback()
     {
-        return Config::get('adldap_auth.login_fallback', false);
+        return config('adldap_auth.login_fallback', false);
     }
 }

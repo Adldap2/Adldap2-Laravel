@@ -7,7 +7,6 @@ use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
 class WindowsAuthenticate
@@ -135,6 +134,6 @@ class WindowsAuthenticate
      */
     protected function getWindowsAuthAttribute()
     {
-        return Config::get('adldap_auth.windows_auth_attribute', [$this->getSchema()->accountName() => 'AUTH_USER']);
+        return config('adldap_auth.windows_auth_attribute', [$this->getSchema()->accountName() => 'AUTH_USER']);
     }
 }

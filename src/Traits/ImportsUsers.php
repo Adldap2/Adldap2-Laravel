@@ -4,8 +4,6 @@ namespace Adldap\Laravel\Traits;
 
 use Adldap\Models\User;
 use Adldap\Laravel\Facades\Adldap;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
 trait ImportsUsers
@@ -38,7 +36,7 @@ trait ImportsUsers
 
         // Make sure we retrieve the first username
         // result if it's an array.
-        $username = (is_array($username) ? Arr::get($username, 0) : $username);
+        $username = (is_array($username) ? array_get($username, 0) : $username);
 
         // Try to retrieve the model from the model key and AD username.
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
@@ -188,7 +186,7 @@ trait ImportsUsers
 
             // If the AD Value is an array, we'll
             // retrieve the first value.
-            $value = (is_array($value) ? Arr::get($value, 0) : $value);
+            $value = (is_array($value) ? array_get($value, 0) : $value);
         }
 
         return $value;
@@ -250,7 +248,7 @@ trait ImportsUsers
         if (is_array($username)) {
             // We'll make sure we retrieve the users first username
             // attribute if it's contained in an array.
-            $username = Arr::get($username, 0);
+            $username = array_get($username, 0);
         }
 
         return $username;
@@ -277,7 +275,7 @@ trait ImportsUsers
      */
     protected function getUsernameValue()
     {
-        return Arr::get($this->getUsernameAttribute(), $this->getUsernameKey());
+        return array_get($this->getUsernameAttribute(), $this->getUsernameKey());
     }
 
     /**
@@ -288,7 +286,7 @@ trait ImportsUsers
      */
     protected function getSelectAttributes()
     {
-        return Config::get('adldap_auth.select_attributes', []);
+        return config('adldap_auth.select_attributes', []);
     }
 
     /**
@@ -298,7 +296,7 @@ trait ImportsUsers
      */
     protected function getUsernameAttribute()
     {
-        return Config::get('adldap_auth.username_attribute', ['username' => $this->getSchema()->accountName()]);
+        return config('adldap_auth.username_attribute', ['username' => $this->getSchema()->accountName()]);
     }
 
     /**
@@ -309,7 +307,7 @@ trait ImportsUsers
      */
     protected function getBindUserToModel()
     {
-        return Config::get('adldap_auth.bind_user_to_model', false);
+        return config('adldap_auth.bind_user_to_model', false);
     }
 
     /**
@@ -319,7 +317,7 @@ trait ImportsUsers
      */
     protected function getLoginAttribute()
     {
-        return Config::get('adldap_auth.login_attribute', $this->getSchema()->accountName());
+        return config('adldap_auth.login_attribute', $this->getSchema()->accountName());
     }
 
     /**
@@ -330,7 +328,7 @@ trait ImportsUsers
      */
     protected function getSyncAttributes()
     {
-        return Config::get('adldap_auth.sync_attributes', ['name' => $this->getSchema()->commonName()]);
+        return config('adldap_auth.sync_attributes', ['name' => $this->getSchema()->commonName()]);
     }
 
     /**
@@ -340,7 +338,7 @@ trait ImportsUsers
      */
     protected function getPasswordSync()
     {
-        return Config::get('adldap_auth.password_sync', true);
+        return config('adldap_auth.password_sync', true);
     }
 
     /**
@@ -350,7 +348,7 @@ trait ImportsUsers
      */
     protected function getLimitationFilter()
     {
-        return Config::get('adldap_auth.limitation_filter');
+        return config('adldap_auth.limitation_filter');
     }
 
     /**
@@ -360,6 +358,6 @@ trait ImportsUsers
      */
     protected function getDefaultConnectionName()
     {
-        return Config::get('adldap_auth.connection', 'default');
+        return config('adldap_auth.connection', 'default');
     }
 }
