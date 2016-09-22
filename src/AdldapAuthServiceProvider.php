@@ -16,14 +16,14 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $auth = __DIR__.'/Config/auth.php';
+        $config = __DIR__.'/Config/auth.php';
 
         // Add publishable configuration.
         $this->publishes([
-            $auth => config_path('adldap_auth.php'),
+            $config => config_path('adldap_auth.php'),
         ], 'adldap');
 
-        $this->mergeConfigFrom($auth, 'adldap_auth');
+        $this->mergeConfigFrom($config, 'adldap_auth');
 
         $auth = $this->getAuth();
 
