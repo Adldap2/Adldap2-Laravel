@@ -7,7 +7,7 @@ return [
     | Connection
     |--------------------------------------------------------------------------
     |
-    | The connection to use for authentication.
+    | The LDAP connection to use for laravel authentication.
     |
     | You must specify connections in your `config/adldap.php` configuration file.
     |
@@ -26,11 +26,10 @@ return [
     | attribute to discover the user by. The reason for this is to hide
     | the attribute that you're using to login users.
     |
-    | For example, if your HTML input name is `email` and you'd like users
-    | to login by their LDAP `mail` attribute, then keep the
-    | configuration below. However, if you'd like to login users
-    | by their usernames, then change `mail` to `samaccountname`.
-    | and `email` to `username`.
+    | For example, if your HTML input name is `email` and you'd like users to login
+    | by their LDAP `mail` attribute, then keep the configuration below. However,
+    | if you'd like to login users by their usernames, then change `mail`
+    | to `samaccountname`. and `email` to `username`.
     |
     | This must be an array with a key - value pair.
     |
@@ -46,7 +45,13 @@ return [
     | The limitation filter allows you to enter a raw filter to only allow
     | specific users / groups / ous to authenticate.
     |
-    | This should be a standard LDAP filter.
+    | For an example, to only allow users inside of a group
+    | named 'Accounting', you would insert the Accounting
+    | groups full distinguished name inside the filter:
+    |
+    | '(memberof=cn=Accounting,dc=corp,dc=acme,dc=org)'
+    |
+    | This value must be a standard LDAP filter.
     |
     */
 
@@ -91,7 +96,7 @@ return [
     |
     | The password sync option allows you to automatically synchronize
     | users AD passwords to your local database. These passwords are
-    | hashed natively by laravel.
+    | hashed natively by laravel using the bcrypt() method.
     |
     | Enabling this option would also allow users to login to their
     | accounts using the password last used when an AD connection
@@ -155,15 +160,14 @@ return [
     | Bind User to Model
     |--------------------------------------------------------------------------
     |
-    | The bind user to model option allows you to access the Adldap user model
-    | instance on your laravel database model to be able run operations
-    | or retrieve extra attributes on the Adldap user model instance.
+    | The 'bind user to model' option allows you to access the authenticated
+    | Adldap user model instance on your laravel User model.
     |
     | If this option is true, you must insert the trait:
     |
     |   `Adldap\Laravel\Traits\AdldapUserModelTrait`
     |
-    | Onto your User model configured in `config/auth.php`.
+    | Onto your User model that is configured in `config/auth.php`.
     |
     | Then use `Auth::user()->adldapUser` to access.
     |
@@ -185,8 +189,8 @@ return [
     | The array key represents the Laravel model key, and the value
     | represents the Active Directory attribute to set it to.
     |
-    | Your login attribute is already synchronized and does not need to be
-    | added to this array.
+    | Your login attribute (configured above) is already synchronized
+    | and does not need to be added to this array.
     |
     */
 
@@ -205,6 +209,9 @@ return [
     |
     | If no attributes are given inside the array, all attributes on the
     | user are selected.
+    |
+    | This is configurable to allow for faster LDAP queries, rather
+    | than retrieving all attributes on every login.
     |
     | ** Note ** : Keep in mind you must include attributes that you would
     | like to synchronize, as well as your login attribute.
