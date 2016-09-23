@@ -195,13 +195,16 @@ trait ImportsUsers
     /**
      * Returns a new Adldap user query.
      *
+     * @param string|null $provider
+     * @param string|null $filter
+     *
      * @return \Adldap\Query\Builder
      */
-    protected function newAdldapUserQuery()
+    protected function newAdldapUserQuery($provider = null, $filter = null)
     {
-        $query = $this->getAdldap()->search()->users();
+        $query = $this->getAdldap($provider)->search()->users();
 
-        if ($filter = $this->getLimitationFilter()) {
+        if ($filter = $this->getLimitationFilter() ?: $filter) {
             // If we're provided a login limitation filter,
             // we'll add it to the user query.
             $query->rawFilter($filter);
