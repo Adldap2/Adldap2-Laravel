@@ -308,7 +308,9 @@ class AdldapTest extends TestCase
     protected function getMockConnection($methods = [])
     {
         $defaults = ['isBound', 'search', 'getEntries', 'bind', 'close'];
-        $connection = $this->getMock(Ldap::class, array_merge($defaults, $methods));
+        $connection = $this->getMockBuilder(Ldap::class)
+            ->setMethods(array_merge($defaults, $methods))
+            ->getMock();
 
         $this->app['adldap']->getDefaultProvider()->setConnection($connection);
 
