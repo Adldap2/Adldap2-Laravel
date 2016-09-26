@@ -64,7 +64,7 @@ class AdldapTest extends TestCase
             ))
             ->willReturn(true);
 
-        Event::shouldReceive('fire')->times(5)->withAnyArgs();
+        Event::shouldReceive('fire')->atLeast()->times(5)->withAnyArgs();
 
         $this->assertTrue(Auth::attempt($credentials));
 
