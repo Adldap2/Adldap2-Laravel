@@ -9,6 +9,7 @@ use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
 class AdldapTest extends TestCase
@@ -62,6 +63,8 @@ class AdldapTest extends TestCase
                 $this->equalTo('admin')
             ))
             ->willReturn(true);
+
+        Event::shouldReceive('fire')->times(5)->withAnyArgs();
 
         $this->assertTrue(Auth::attempt($credentials));
 

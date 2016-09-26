@@ -6,6 +6,7 @@ use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -100,7 +101,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function handleAuthenticatedWithCredentials(User $user, $model)
     {
-        event(new AuthenticatedWithCredentials($user, $model));
+        Event::fire(new AuthenticatedWithCredentials($user, $model));
     }
 
     /**
@@ -112,7 +113,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function handleDiscoveredUserWithCredentials(User $user)
     {
-        event(new DiscoveredWithCredentials($user));
+        Event::fire(new DiscoveredWithCredentials($user));
     }
 
     /**
