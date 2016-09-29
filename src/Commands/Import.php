@@ -116,7 +116,7 @@ class Import extends Command
     }
 
     /**
-     * Returns the limitation filter for importing users.
+     * Returns the limitation filter for the user query.
      *
      * @return string
      */

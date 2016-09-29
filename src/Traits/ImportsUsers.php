@@ -25,6 +25,30 @@ trait ImportsUsers
      */
     protected function getModelFromAdldap(User $user, $password = null)
     {
+        $model = $this->findOrCreateModelFromAdldap($user);
+
+        // Sync the users password (if enabled). If no password is
+        // given, we'll pass in a random 16 character string.
+        $model = $this->syncModelPassword($model, $password ?: str_random());
+
+        // Synchronize other active directory attributes on the model.
+        $model = $this->syncModelFromAdldap($user, $model);
+
+        // Bind the Adldap model to the eloquent model (if enabled).
+        $model = ($this->getBindUserToModel() ? $this->bindAdldapToModel($user, $model) : $model);
+
+        return $model;
+    }
+
+    /**
+     * Finds an Eloquent model from the specified Adldap user.
+     *
+     * @param \Adldap\Models\User $user
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    protected function findOrCreateModelFromAdldap(User $user)
+    {
         // Get the model key.
         $attributes = $this->getUsernameAttribute();
 
@@ -34,28 +58,17 @@ trait ImportsUsers
         // Get the username from the AD model.
         $username = $user->{$attributes[$key]};
 
-        // Make sure we retrieve the first username
-        // result if it's an array.
+        // Make sure we retrieve the first username result if it's an array.
         $username = (is_array($username) ? array_get($username, 0) : $username);
 
-        // Try to retrieve the model from the model key and AD username.
-        $model = $this->createModel()->newQuery()->where([$key => $username])->first();
+        // Try to find the local database user record.
+        $model = $this->newEloquentQuery($key, $username)->first();
 
-        // Create the model instance of it isn't found.
+        // Create a new model instance of it isn't found.
         $model = ($model instanceof Model ? $model : $this->createModel());
 
         // Set the username in case of changes in active directory.
         $model->{$key} = $username;
-
-        // Sync the users password (if enabled). If no password is
-        // given, we'll assign a random 16 character string.
-        $model = $this->syncModelPassword($model, $password ?: str_random());
-
-        // Synchronize other active directory attributes on the model.
-        $model = $this->syncModelFromAdldap($user, $model);
-
-        // Bind the Adldap model to the eloquent model (if enabled).
-        $model = ($this->getBindUserToModel() ? $this->bindAdldapToModel($user, $model) : $model);
 
         return $model;
     }
@@ -211,6 +224,28 @@ trait ImportsUsers
         }
 
         return $query->select($this->getSelectAttributes());
+    }
+
+    /**
+     * Returns a new Eloquent user query.
+     *
+     * @param string $key
+     * @param string $username
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function newEloquentQuery($key, $username)
+    {
+        $model = $this->createModel();
+
+        if (method_exists($model, 'trashed')) {
+            // If the trashed method exists on our User model, then we must be
+            // using soft deletes. We need to make sure we include these
+            // results so we don't create duplicate user records.
+            $model = $model->withTrashed();
+        }
+
+        return $model->where([$key => $username]);
     }
 
     /**

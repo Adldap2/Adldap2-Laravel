@@ -56,6 +56,11 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             // Construct / retrieve the eloquent model from our Adldap user.
             $model = $this->getModelFromAdldap($user, $password);
 
+            if (method_exists($model, 'trashed') && $model->trashed()) {
+                // We won't allow deleted users to authenticate.
+                return;
+            }
+
             // Perform other authenticated tasks.
             $this->handleAuthenticatedWithCredentials($user, $model);
 
@@ -74,9 +79,9 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-        // Check if we already have an authenticated AD user.
+        // Check if we have an authenticated AD user.
         if ($this->user instanceof User) {
-            // We'll save the model in case of changes.
+            // We'll save the authenticated model in case of changes.
             $this->saveModel($user);
 
             return true;
