@@ -5,8 +5,8 @@ namespace Adldap\Laravel\Commands;
 use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 
 class Import extends Command
 {
@@ -41,6 +41,7 @@ class Import extends Command
             $adldap->connect();
         }
 
+        // Generate a new user search.
         $search = $adldap->search()->users();
 
         if ($filter = $this->getFilter()) {
@@ -70,11 +71,11 @@ class Import extends Command
      * Imports the specified users and returns the total
      * number of users successfully imported.
      *
-     * @param mixed $users
+     * @param array $users
      *
      * @return int
      */
-    public function import($users = [])
+    public function import(array $users = [])
     {
         $imported = 0;
 
@@ -91,6 +92,22 @@ class Import extends Command
                         // Log the successful import.
                         if ($this->isLogging()) {
                             logger()->info("Imported user {$user->getCommonName()}");
+                        }
+                    }
+
+                    if (
+                        $this->isDeleting() &&
+                        method_exists($model, 'trashed') &&
+                        ! $model->trashed() &&
+                        $user->isDisabled()
+                    ) {
+                        // If deleting is enabled, the model supports soft deletes, the model
+                        // isn't already deleted, and the AD user is disabled, we'll
+                        // go ahead and delete the users model.
+                        $model->delete();
+
+                        if ($this->isLogging()) {
+                            logger()->info("Soft-deleted user {$user->getCommonName()}. Their AD user account is disabled.");
                         }
                     }
                 } catch (\Exception $e) {
@@ -113,6 +130,16 @@ class Import extends Command
     public function isLogging()
     {
         return $this->option('log') == 'true';
+    }
+
+    /**
+     * Returns true / false if users are being deleted if they are disabled in AD.
+     *
+     * @return bool
+     */
+    public function isDeleting()
+    {
+        return $this->option('delete') == 'true';
     }
 
     /**
@@ -150,6 +177,8 @@ class Import extends Command
             ['log', true, InputOption::VALUE_OPTIONAL, 'Log successful and unsuccessful imported users.'],
 
             ['connection', null, InputOption::VALUE_OPTIONAL, 'The LDAP connection to use to import users.'],
+
+            ['delete', false, InputOption::VALUE_OPTIONAL, 'Soft-delete the users model if the AD user is disabled.'],
         ];
     }
 
