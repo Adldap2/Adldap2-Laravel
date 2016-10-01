@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel;
 
+use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
@@ -57,7 +58,11 @@ class AdldapAuthUserProvider extends EloquentUserProvider
             $model = $this->getModelFromAdldap($user, $password);
 
             if (method_exists($model, 'trashed') && $model->trashed()) {
-                // We won't allow deleted users to authenticate.
+                // If the model is soft-deleted, we'll fire an event
+                // with the affected LDAP user and their model.
+                $this->handleAuthenticatedModelTrashed($user, $model);
+
+                // We also won't allow soft-deleted users to authenticate.
                 return;
             }
 
@@ -107,6 +112,17 @@ class AdldapAuthUserProvider extends EloquentUserProvider
     protected function handleAuthenticatedWithCredentials(User $user, $model)
     {
         Event::fire(new AuthenticatedWithCredentials($user, $model));
+    }
+
+    /**
+     * Handle an authenticated users model that has been soft deleted.
+     *
+     * @param \Adldap\Models\User $user
+     * @param Authenticatable     $model
+     */
+    protected function handleAuthenticatedModelTrashed(User $user, $model)
+    {
+        Event::fire(new AuthenticatedModelTrashed($user, $model));
     }
 
     /**
