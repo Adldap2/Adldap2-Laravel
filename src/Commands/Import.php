@@ -65,7 +65,7 @@ class Import extends Command
             $this->info("Found {$count} user(s). Importing...");
         }
 
-        $this->info("Successfully imported {$this->import($users)} user(s).");
+        $this->info("\nSuccessfully imported / synchronized {$this->import($users)} user(s).");
     }
 
     /**
@@ -80,32 +80,37 @@ class Import extends Command
     {
         $imported = 0;
 
+        // We need to filter our results to make sure they are
+        // only users. In some cases, Contact models may be
+        // returned due the possibility of the
+        // existing in the same scope.
+        $users = collect($users)->filter(function($user) {
+            return $user instanceof User;
+        });
+
+        $bar = $this->output->createProgressBar(count($users));
+
         foreach ($users as $user) {
-            if ($user instanceof User) {
-                try {
-                    // Import the user and then save the model.
-                    $model = $this->getModelFromAdldap($user);
+            try {
+                // Import the user and retrieve it's model.
+                $model = $this->getModelFromAdldap($user);
 
-                    if ($this->saveModel($model) && $model->wasRecentlyCreated) {
-                        // Only increment imported for new models.
-                        $imported++;
+                // Save the returned model.
+                $this->save($user, $model);
 
-                        // Log the successful import.
-                        if ($this->isLogging()) {
-                            logger()->info("Imported user {$user->getCommonName()}");
-                        }
-                    }
+                if ($this->isDeleting()) {
+                    $this->delete($user, $model);
+                }
 
-                    if ($this->isDeleting()) {
-                        $this->delete($user, $model);
-                    }
-                } catch (\Exception $e) {
-                    // Log the unsuccessful import.
-                    if ($this->isLogging()) {
-                        logger()->error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
-                    }
+                $imported++;
+            } catch (\Exception $e) {
+                // Log the unsuccessful import.
+                if ($this->isLogging()) {
+                    logger()->error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
                 }
             }
+
+            $bar->advance();
         }
 
         return $imported;
@@ -179,6 +184,30 @@ class Import extends Command
         $model = auth()->getProvider()->getModel();
 
         return new $model();
+    }
+
+    /**
+     * Saves the specified user with its model.
+     *
+     * @param User  $user
+     * @param Model $model
+     *
+     * @return bool
+     */
+    protected function save(User $user, Model $model)
+    {
+        $imported = false;
+
+        if ($this->saveModel($model) && $model->wasRecentlyCreated) {
+            $imported = true;
+
+            // Log the successful import.
+            if ($this->isLogging()) {
+                logger()->info("Imported user {$user->getCommonName()}");
+            }
+        }
+
+        return $imported;
     }
 
     /**
