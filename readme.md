@@ -505,7 +505,9 @@ When users are imported, they are given a random 16 character hashed password to
 After running the import, you will receive information of how many users were imported:
 
 ```cmd
-Successfully imported 249 user(s).
+Found 378 user(s). Importing...
+ 370/370 [============================] 100%
+Successfully imported / synchronized 251 user(s).
 ```
 
 Tips:
