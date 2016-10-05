@@ -4,9 +4,11 @@ namespace Adldap\Laravel\Middleware;
 
 use Closure;
 use Adldap\Models\User;
+use Adldap\Laravel\Events\AuthenticatedWithWindows;
 use Adldap\Laravel\Traits\ImportsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
 
 class WindowsAuthenticate
@@ -78,7 +80,7 @@ class WindowsAuthenticate
                     $this->auth->login($model);
 
                     // Perform any further operations on the authenticated user model.
-                    $this->handleAuthenticatedUser($model);
+                    $this->handleAuthenticatedUser($user, $model);
                 }
             }
         }
@@ -118,13 +120,14 @@ class WindowsAuthenticate
      *
      * This method exists to be overridden.
      *
-     * @param Model $user
+     * @param User  $user
+     * @param Model $model
      *
      * @return void
      */
-    protected function handleAuthenticatedUser(Model $user)
+    protected function handleAuthenticatedUser(User $user, Model $model)
     {
-        //
+        Event::fire(new AuthenticatedWithWindows($user, $model));
     }
 
     /**
