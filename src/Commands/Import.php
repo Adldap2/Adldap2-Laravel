@@ -60,9 +60,15 @@ class Import extends Command
             // the 1000 record hard limit of active directory.
             $users = $search->paginate()->getResults();
 
-            $count = count($users);
+            // We need to filter our results to make sure they are
+            // only users. In some cases, Contact models may be
+            // returned due the possibility of the
+            // existing in the same scope.
+            $users = collect($users)->filter(function($user) {
+                return $user instanceof User;
+            });
 
-            $this->info("Found {$count} user(s). Importing...");
+            $this->info("Found {$users->count()} user(s). Importing...");
         }
 
         $this->info("\nSuccessfully imported / synchronized {$this->import($users)} user(s).");
@@ -79,14 +85,6 @@ class Import extends Command
     public function import(array $users = [])
     {
         $imported = 0;
-
-        // We need to filter our results to make sure they are
-        // only users. In some cases, Contact models may be
-        // returned due the possibility of the
-        // existing in the same scope.
-        $users = collect($users)->filter(function($user) {
-            return $user instanceof User;
-        });
 
         $bar = $this->output->createProgressBar(count($users));
 
