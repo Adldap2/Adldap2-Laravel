@@ -269,7 +269,7 @@ trait ImportsUsers
     {
         $provider = $provider ?: $this->getDefaultConnectionName();
 
-        return Adldap::getManager()->get($provider);
+        return Adldap::getProvider($provider);
     }
 
     /**
