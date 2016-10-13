@@ -156,7 +156,7 @@ Change the auth driver in `config/auth.php` to `adldap`:
 'driver' => 'adldap',
 ```
 
-#### Laravel 5.2
+#### Laravel 5.2 & Up
 
 Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
 
