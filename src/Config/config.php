@@ -24,9 +24,12 @@ return [
             | Auto Connect
             |--------------------------------------------------------------------------
             |
-            | If auto connect is true, anytime Adldap is instantiated it will automatically
-            | connect to your AD server. If this is set to false, you must connect manually
-            | using: Adldap::connect().
+            | If auto connect is true, Adldap will try to automatically connect to your
+            | LDAP server in your configuration. This allows you to assume
+            | connectivity rather than having to connectmanually in your application.
+            |
+            | If this is set to false, you must connect manually before running
+            | LDAP operations using: Adldap::connect();
             |
             */
 
@@ -37,11 +40,10 @@ return [
             | Connection
             |--------------------------------------------------------------------------
             |
-            | The connection class to use to run operations on.
+            | The connection class to use to run raw LDAP operations on.
             |
-            | You can also set this option to `null` to use the default connection class.
-            |
-            | Custom connection classes must implement \Adldap\Contracts\Connections\ConnectionInterface
+            | Custom connection classes must implement:
+            |  \Adldap\Contracts\Connections\ConnectionInterface
             |
             */
 
