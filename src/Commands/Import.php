@@ -62,7 +62,7 @@ class Import extends Command
 
             // We need to filter our results to make sure they are
             // only users. In some cases, Contact models may be
-            // returned due the possibility of the
+            // returned due the possibility of them
             // existing in the same scope.
             $users = collect($users)->filter(function($user) {
                 return $user instanceof User;
