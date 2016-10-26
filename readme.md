@@ -39,7 +39,7 @@ Insert Adldap2-Laravel into your `composer.json` file:
 "adldap2/adldap2-laravel": "2.1.*",
 ```
 
-or install via execute
+Or via command line:
 
 ```bash
 composer require adldap2/adldap2-laravel
