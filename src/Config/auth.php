@@ -19,6 +19,26 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Provider
+    |--------------------------------------------------------------------------
+    |
+    | The LDAP authentication provider to use depending
+    | if you require database synchronization.
+    |
+    | For synchronizing LDAP users to your local applications database, use the provider:
+    |
+    | Adldap\Laravel\Auth\DatabaseUserProvider::class
+    |
+    | Otherwise, if you just require LDAP authentication, use the provider:
+    |
+    | Adldap\Laravel\Auth\NoDatabaseUserProvider::class
+    |
+    */
+
+    'provider' => Adldap\Laravel\Auth\DatabaseUserProvider::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Username Attribute
     |--------------------------------------------------------------------------
     |
