@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel;
 
+use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Commands\Import;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
@@ -65,16 +66,18 @@ class AdldapAuthServiceProvider extends ServiceProvider
     }
 
     /**
-     * Returns a new instance of the AdldapAuthUserProvider.
+     * Returns a new Adldap user provider.
      *
      * @param Hasher $hasher
      * @param string $model
      *
-     * @return AdldapAuthUserProvider
+     * @return \Illuminate\Contracts\Auth\UserProvider
      */
     protected function newAdldapAuthUserProvider(Hasher $hasher, $model)
     {
-        return new AdldapAuthUserProvider($hasher, $model);
+        $provider = $this->getAdldapUserProvider();
+
+        return new $provider($hasher, $model);
     }
 
     /**
@@ -85,5 +88,15 @@ class AdldapAuthServiceProvider extends ServiceProvider
     protected function getAuth()
     {
         return Auth::getFacadeRoot();
+    }
+
+    /**
+     * Returns the configured user provider.
+     *
+     * @return string
+     */
+    protected function getAdldapUserProvider()
+    {
+        return config('adldap_auth.provider', DatabaseUserProvider::class);
     }
 }
