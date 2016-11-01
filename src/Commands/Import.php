@@ -196,7 +196,7 @@ class Import extends Command
     {
         $imported = false;
 
-        if ($this->saveModel($model) && $model->wasRecentlyCreated) {
+        if ($model->save() && $model->wasRecentlyCreated) {
             $imported = true;
 
             // Log the successful import.
