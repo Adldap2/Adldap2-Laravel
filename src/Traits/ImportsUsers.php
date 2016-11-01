@@ -3,11 +3,12 @@
 namespace Adldap\Laravel\Traits;
 
 use Adldap\Models\User;
-use Adldap\Laravel\Facades\Adldap;
 use Illuminate\Database\Eloquent\Model;
 
 trait ImportsUsers
 {
+    use AuthenticatesUsers;
+
     /**
      * Returns the authentication users model instance.
      *
@@ -134,18 +135,6 @@ trait ImportsUsers
     }
 
     /**
-     * Saves the specified model.
-     *
-     * @param Model $model
-     *
-     * @return bool
-     */
-    protected function saveModel(Model $model)
-    {
-        return $model->save();
-    }
-
-    /**
      * Returns true / false if the specified string
      * is a callback for an attribute handler.
      *
@@ -206,27 +195,6 @@ trait ImportsUsers
     }
 
     /**
-     * Returns a new Adldap user query.
-     *
-     * @param string|null $provider
-     * @param string|null $filter
-     *
-     * @return \Adldap\Query\Builder
-     */
-    protected function newAdldapUserQuery($provider = null, $filter = null)
-    {
-        $query = $this->getAdldap($provider)->search()->users();
-
-        if ($filter = $this->getLimitationFilter() ?: $filter) {
-            // If we're provided a login limitation filter,
-            // we'll add it to the user query.
-            $query->rawFilter($filter);
-        }
-
-        return $query->select($this->getSelectAttributes());
-    }
-
-    /**
      * Returns a new Eloquent user query.
      *
      * @param string $key
@@ -249,95 +217,6 @@ trait ImportsUsers
     }
 
     /**
-     * Returns Adldap's current attribute schema.
-     *
-     * @return \Adldap\Contracts\Schemas\SchemaInterface
-     */
-    protected function getSchema()
-    {
-        return $this->getAdldap()->getSchema();
-    }
-
-    /**
-     * Returns the root Adldap provider instance.
-     *
-     * @param string $provider
-     *
-     * @return \Adldap\Contracts\Connections\ProviderInterface
-     */
-    protected function getAdldap($provider = null)
-    {
-        $provider = $provider ?: $this->getDefaultConnectionName();
-
-        return Adldap::getProvider($provider);
-    }
-
-    /**
-     * Returns the configured username from the specified AD user.
-     *
-     * @param User $user
-     *
-     * @return string
-     */
-    protected function getUsernameFromAdUser(User $user)
-    {
-        $username = $user->{$this->getLoginAttribute()};
-
-        if (is_array($username)) {
-            // We'll make sure we retrieve the users first username
-            // attribute if it's contained in an array.
-            $username = array_get($username, 0);
-        }
-
-        return $username;
-    }
-
-    /**
-     * Returns the configured username key.
-     *
-     * For example: 'email' or 'username'.
-     *
-     * @return string
-     */
-    protected function getUsernameKey()
-    {
-        return key($this->getUsernameAttribute());
-    }
-
-    /**
-     * Returns the configured username value.
-     *
-     * For example: 'samaccountname' or 'mail'.
-     *
-     * @return string
-     */
-    protected function getUsernameValue()
-    {
-        return array_get($this->getUsernameAttribute(), $this->getUsernameKey());
-    }
-
-    /**
-     * Returns the configured select attributes when performing
-     * queries for authentication and binding for users.
-     *
-     * @return array
-     */
-    protected function getSelectAttributes()
-    {
-        return config('adldap_auth.select_attributes', []);
-    }
-
-    /**
-     * Returns the configured username attribute for discovering LDAP users.
-     *
-     * @return array
-     */
-    protected function getUsernameAttribute()
-    {
-        return config('adldap_auth.username_attribute', ['username' => $this->getSchema()->accountName()]);
-    }
-
-    /**
      * Returns the configured bind user to model option for binding
      * the Adldap user model instance to the laravel model.
      *
@@ -346,16 +225,6 @@ trait ImportsUsers
     protected function getBindUserToModel()
     {
         return config('adldap_auth.bind_user_to_model', false);
-    }
-
-    /**
-     * Returns the configured login attribute for authenticating users.
-     *
-     * @return string
-     */
-    protected function getLoginAttribute()
-    {
-        return config('adldap_auth.login_attribute', $this->getSchema()->accountName());
     }
 
     /**
@@ -377,25 +246,5 @@ trait ImportsUsers
     protected function getPasswordSync()
     {
         return config('adldap_auth.password_sync', true);
-    }
-
-    /**
-     * Returns the configured login limitation filter.
-     *
-     * @return string|null
-     */
-    protected function getLimitationFilter()
-    {
-        return config('adldap_auth.limitation_filter');
-    }
-
-    /**
-     * Returns the configured default connection name.
-     *
-     * @return mixed
-     */
-    protected function getDefaultConnectionName()
-    {
-        return config('adldap_auth.connection', 'default');
     }
 }
