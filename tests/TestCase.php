@@ -5,6 +5,7 @@ namespace Adldap\Laravel\Tests;
 use Adldap\Connections\Ldap;
 use Adldap\Laravel\AdldapAuthServiceProvider;
 use Adldap\Laravel\AdldapServiceProvider;
+use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Tests\Models\User;
 use Adldap\Schemas\ActiveDirectory;
@@ -55,6 +56,7 @@ class TestCase extends BaseTestCase
         // Adldap auth setup.
         $app['config']->set('adldap_auth.bind_user_to_model', true);
         $app['config']->set('adldap_auth.username_attribute', ['email' => 'mail']);
+        $app['config']->set('adldap_auth.provider', DatabaseUserProvider::class);
 
         // Laravel auth setup.
         $app['config']->set('auth.guards.web.provider', 'adldap');
