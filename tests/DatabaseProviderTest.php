@@ -64,7 +64,7 @@ class DatabaseProviderTest extends TestCase
             ))
             ->willReturn(true);
 
-        Event::shouldReceive('fire')->atLeast()->times(5)->withAnyArgs();
+        Event::shouldReceive('fire')->atLeast()->times(4)->withAnyArgs();
 
         $this->assertTrue(Auth::attempt($credentials));
 
