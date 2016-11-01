@@ -71,7 +71,7 @@ class AdldapServiceProvider extends ServiceProvider
      * @param Adldap $adldap
      * @param array  $connections
      *
-     * @throws \Adldap\Exceptions\ConnectionException
+     * @throws \Adldap\Auth\BindException
      *
      * @return Adldap
      */
