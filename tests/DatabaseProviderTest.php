@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
-class AdldapTest extends TestCase
+class DatabaseProviderTest extends TestCase
 {
     public function test_configuration_not_found_exception()
     {
