@@ -74,7 +74,7 @@ class WindowsAuthenticate
                     $model = $this->getModelFromAdldap($user, str_random());
 
                     // Save model in case of changes.
-                    $this->saveModel($model);
+                    $model->save();
 
                     // Manually log the user in.
                     $this->auth->login($model);
