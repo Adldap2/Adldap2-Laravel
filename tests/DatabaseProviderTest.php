@@ -295,26 +295,4 @@ class DatabaseProviderTest extends DatabaseTestCase
         // This check will fail due to password synchronization being disabled.
         $this->assertFalse(Hash::check($password, $user->password));
     }
-
-    protected function getMockUser(array $attributes = [])
-    {
-        return Adldap::getDefaultProvider()->make()->user($attributes ?: [
-            'samaccountname' => ['jdoe'],
-            'mail'           => ['jdoe@email.com'],
-            'cn'             => ['John Doe'],
-        ]);
-    }
-
-    protected function getMockConnection($methods = [])
-    {
-        $defaults = ['isBound', 'search', 'getEntries', 'bind', 'close'];
-
-        $connection = $this->getMockBuilder(Ldap::class)
-            ->setMethods(array_merge($defaults, $methods))
-            ->getMock();
-
-        Adldap::getDefaultProvider()->setConnection($connection);
-
-        return $connection;
-    }
 }
