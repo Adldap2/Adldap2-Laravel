@@ -2,7 +2,9 @@
 
 namespace Adldap\Laravel;
 
+use InvalidArgumentException;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Adldap\Laravel\Commands\Import;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
@@ -32,7 +34,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
             // If the provider method exists, we're running Laravel 5.2.
             // Register the adldap auth user provider.
             $auth->provider('adldap', function ($app, array $config) {
-                return $this->newAdldapAuthUserProvider($app['hash'], $config['model']);
+                return $this->newAdldapAuthUserProvider($app['hash'], $config);
             });
         } else {
             // Otherwise we're using 5.0 || 5.1
@@ -69,15 +71,27 @@ class AdldapAuthServiceProvider extends ServiceProvider
      * Returns a new Adldap user provider.
      *
      * @param Hasher $hasher
-     * @param string $model
+     * @param array  $config
      *
      * @return \Illuminate\Contracts\Auth\UserProvider
+     *
+     * @throws InvalidArgumentException
      */
-    protected function newAdldapAuthUserProvider(Hasher $hasher, $model)
+    protected function newAdldapAuthUserProvider(Hasher $hasher, array $config)
     {
         $provider = $this->getAdldapUserProvider();
 
-        return new $provider($hasher, $model);
+        // We need to verify if the provider we've been given is supported.
+        switch ($provider) {
+            case DatabaseUserProvider::class:
+                return new $provider($hasher, $config['model']);
+            case NoDatabaseUserProvider::class:
+                return new $provider;
+        }
+
+        throw new InvalidArgumentException(
+            "The given Adldap provider {$provider} is not supported or does not exist."
+        );
     }
 
     /**
