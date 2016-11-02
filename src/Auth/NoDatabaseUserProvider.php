@@ -19,7 +19,7 @@ class NoDatabaseUserProvider implements UserProvider
     public function retrieveById($identifier)
     {
         $user = $this->newAdldapUserQuery()->where([
-            $this->getSchema()->objectGuid() => Utilities::stringGuidToHex($identifier),
+            $this->getSchema()->objectSid() => $identifier,
         ])->first();
 
         if ($user instanceof Authenticatable) {
@@ -57,7 +57,7 @@ class NoDatabaseUserProvider implements UserProvider
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
         // Retrieve the authentication username for the AD user.
-        $username = $this->getUsernameFromAuthenticatable($user);
+        $username = $this->getLoginUsernameFromUser($user);
 
         // Retrieve the users password.
         $password = $this->getPasswordFromCredentials($credentials);
