@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
-class DatabaseProviderTest extends TestCase
+class DatabaseProviderTest extends DatabaseTestCase
 {
     public function test_configuration_not_found_exception()
     {
