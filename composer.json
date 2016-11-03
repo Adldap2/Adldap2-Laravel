@@ -6,7 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "adldap2/adldap2": "6.1.*"
+        "adldap2/adldap2": "dev-master"
     },
     "require-dev": {
         "mockery/mockery": "0.9.*",
