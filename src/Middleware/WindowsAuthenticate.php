@@ -65,7 +65,6 @@ class WindowsAuthenticate
                 }
 
                 if ($user = $this->retrieveAuthenticatedUser($key, $username)) {
-                    // Manually log the user in.
                     $this->auth->login($user);
                 }
             }
