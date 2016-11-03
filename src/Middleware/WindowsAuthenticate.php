@@ -2,6 +2,9 @@
 
 namespace Adldap\Laravel\Middleware;
 
+use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Adldap\Models\ModelNotFoundException;
 use Closure;
 use Adldap\Models\User;
 use Adldap\Laravel\Events\AuthenticatedWithWindows;
@@ -61,26 +64,9 @@ class WindowsAuthenticate
                     $username = $username[key($username)];
                 }
 
-                // Find the user in AD.
-                $user = $this->newAdldapUserQuery()
-                    ->whereEquals($key, $username)
-                    ->first();
-
-                // Double check that we have the correct AD user instance.
-                if ($user instanceof User) {
-                    // Retrieve the Eloquent user model from our AD user instance.
-                    // We'll assign the user a random password since we don't
-                    // have access to it through SSO auth.
-                    $model = $this->getModelFromAdldap($user, str_random());
-
-                    // Save model in case of changes.
-                    $model->save();
-
+                if ($user = $this->retrieveAuthenticatedUser($key, $username)) {
                     // Manually log the user in.
-                    $this->auth->login($model);
-
-                    // Perform any further operations on the authenticated user model.
-                    $this->handleAuthenticatedUser($user, $model);
+                    $this->auth->login($user);
                 }
             }
         }
@@ -120,14 +106,54 @@ class WindowsAuthenticate
      *
      * This method exists to be overridden.
      *
-     * @param User  $user
-     * @param Model $model
+     * @param User       $user
+     * @param Model|null $model
      *
      * @return void
      */
-    protected function handleAuthenticatedUser(User $user, Model $model)
+    protected function handleAuthenticatedUser(User $user, Model $model = null)
     {
         Event::fire(new AuthenticatedWithWindows($user, $model));
+    }
+
+    /**
+     * Returns the authenticatable user instance.
+     *
+     * @param string $key
+     * @param string $username
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    protected function retrieveAuthenticatedUser($key, $username)
+    {
+        $provider = $this->auth->getProvider();
+
+        try {
+            // Find the user in AD.
+            $user = $this->newAdldapUserQuery()
+                ->where([$key => $username])
+                ->firstOrFail();
+
+            if ($provider instanceof NoDatabaseUserProvider) {
+                $this->handleAuthenticatedUser($user);
+
+                return $user;
+            } elseif ($provider instanceof DatabaseUserProvider) {
+                // Retrieve the Eloquent user model from our AD user instance.
+                // We'll assign the user a random password since we don't
+                // have access to it through SSO auth.
+                $model = $this->getModelFromAdldap($user, str_random());
+
+                // Save model in case of changes.
+                $model->save();
+
+                $this->handleAuthenticatedUser($user, $model);
+
+                return $model;
+            }
+        } catch (ModelNotFoundException $e) {
+            //
+        }
     }
 
     /**
