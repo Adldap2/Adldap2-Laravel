@@ -42,7 +42,7 @@ return [
     | Username Attribute
     |--------------------------------------------------------------------------
     |
-    | The username attribute is an array of the html input name and the LDAP
+    | The username attribute is an array of the HTML input name and the LDAP
     | attribute to discover the user by. The reason for this is to hide
     | the attribute that you're using to login users.
     |
@@ -87,7 +87,8 @@ return [
     |
     | Set this to true if you would like to enable it.
     |
-    | This option must be true or false.
+    | This option must be true or false and is only
+    | applicable to the DatabaseUserProvider.
     |
     */
 
@@ -101,7 +102,7 @@ return [
     | The password key is the name of the input array key located inside
     | the user input array given to the auth driver.
     |
-    | Change this if you change your password fields input name.
+    | Change this if you change your HTML password fields input name.
     |
     | This option must be a string.
     |
@@ -126,7 +127,8 @@ return [
     | a random 16 character hashed password, and will lose access
     | to this account upon loss of AD connectivity.
     |
-    | This option must be true or false.
+    | This option must be true or false and is only applicable
+    | to the DatabaseUserProvider.
     |
     */
 
@@ -137,9 +139,10 @@ return [
     | Login Attribute
     |--------------------------------------------------------------------------
     |
-    | The login attribute is the name of the active directory user property
-    | that you use to log users in. For example, if your company uses
-    | email, then insert `mail`.
+    | The login attribute is the name of the LDAP users attribute that you use
+    | to authenticate against your LDAP server.
+    |
+    | This is usually the users `sAMAccountName`.
     |
     | This option must be a string.
     |
@@ -158,11 +161,11 @@ return [
     | The key of the array represents the attribute that the user is located by.
     |
     |     For example, if 'samaccountname' is the key, then your LDAP server is
-    |     queried for a user with the 'samaccountname' equal to the
-    |     $_SERVER['AUTH_USER'] variable.
+    |     queried for a user with the 'samaccountname' equal to the value of
+    |     $_SERVER['AUTH_USER'].
     |
-    |     If a user is found, they are imported into your
-    |     local database, then logged in.
+    |     If a user is found, they are imported (if using the DatabaseUserProvider)
+    |     into your local database, then logged in.
     |
     | The value of the array represents the 'key' of the $_SERVER
     | array to pull the users username from.
@@ -191,7 +194,8 @@ return [
     |
     | Then use `Auth::user()->adldapUser` to access.
     |
-    | This option must be true or false.
+    | This option must be true or false and is only
+    | applicable to the DatabaseUserProvider.
     |
     */
 
@@ -211,6 +215,9 @@ return [
     |
     | Your login attribute (configured above) is already synchronized
     | and does not need to be added to this array.
+    |
+    | This option must be an array and is only applicable
+    | to the DatabaseUserProvider.
     |
     */
 
