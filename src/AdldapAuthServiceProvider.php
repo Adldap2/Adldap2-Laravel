@@ -3,9 +3,9 @@
 namespace Adldap\Laravel;
 
 use InvalidArgumentException;
+use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
-use Adldap\Laravel\Commands\Import;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Hashing\Hasher;
@@ -28,19 +28,19 @@ class AdldapAuthServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom($config, 'adldap_auth');
 
-        $auth = $this->getAuth();
+        $auth = Auth::getFacadeRoot();
 
         if (method_exists($auth, 'provider')) {
             // If the provider method exists, we're running Laravel 5.2.
             // Register the adldap auth user provider.
             $auth->provider('adldap', function ($app, array $config) {
-                return $this->newAdldapAuthUserProvider($app['hash'], $config);
+                return $this->newUserProvider($app['hash'], $config);
             });
         } else {
             // Otherwise we're using 5.0 || 5.1
             // Extend Laravel authentication with Adldap driver.
             $auth->extend('adldap', function ($app) {
-                return $this->newAdldapAuthUserProvider($app['hash'], $app['config']['auth']);
+                return $this->newUserProvider($app['hash'], $app['config']['auth']);
             });
         }
 
@@ -77,9 +77,9 @@ class AdldapAuthServiceProvider extends ServiceProvider
      *
      * @throws InvalidArgumentException
      */
-    protected function newAdldapAuthUserProvider(Hasher $hasher, array $config)
+    protected function newUserProvider(Hasher $hasher, array $config)
     {
-        $provider = $this->getAdldapUserProvider();
+        $provider = $this->getUserProvider();
 
         // We need to verify if the provider we've been given is supported.
         switch ($provider) {
@@ -90,18 +90,8 @@ class AdldapAuthServiceProvider extends ServiceProvider
         }
 
         throw new InvalidArgumentException(
-            "The given Adldap provider {$provider} is not supported or does not exist."
+            "The given Adldap provider [{$provider}] is not supported or does not exist."
         );
-    }
-
-    /**
-     * Returns the root Auth instance.
-     *
-     * @return mixed
-     */
-    protected function getAuth()
-    {
-        return Auth::getFacadeRoot();
     }
 
     /**
@@ -109,7 +99,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
      *
      * @return string
      */
-    protected function getAdldapUserProvider()
+    protected function getUserProvider()
     {
         return config('adldap_auth.provider', DatabaseUserProvider::class);
     }
