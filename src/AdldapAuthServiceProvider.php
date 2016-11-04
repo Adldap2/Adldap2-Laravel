@@ -40,7 +40,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
             // Otherwise we're using 5.0 || 5.1
             // Extend Laravel authentication with Adldap driver.
             $auth->extend('adldap', function ($app) {
-                return $this->newAdldapAuthUserProvider($app['hash'], $app['config']['auth.model']);
+                return $this->newAdldapAuthUserProvider($app['hash'], $app['config']['auth']);
             });
         }
 
