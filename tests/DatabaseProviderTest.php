@@ -2,11 +2,9 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Adldap\Connections\Ldap;
-use Adldap\Contracts\AdldapInterface;
-use Adldap\Laravel\Facades\Adldap;
-use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Models\User;
+use Adldap\AdldapInterface;
+use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;

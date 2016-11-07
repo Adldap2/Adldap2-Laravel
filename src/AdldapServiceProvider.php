@@ -3,10 +3,10 @@
 namespace Adldap\Laravel;
 
 use Adldap\Adldap;
+use Adldap\AdldapInterface;
 use Adldap\Connections\Provider;
-use Adldap\Contracts\AdldapInterface;
-use Adldap\Contracts\Schemas\SchemaInterface;
-use Adldap\Contracts\Connections\ConnectionInterface;
+use Adldap\Schemas\SchemaInterface;
+use Adldap\Connections\ConnectionInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
