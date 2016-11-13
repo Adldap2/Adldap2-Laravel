@@ -28,6 +28,7 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
     * [Multiple Connections](#multiple-authentication-connections)
     * [Password Synchronization](#password-synchronization)
     * [Importing Users](#importing-users)
+    * [Developing without an AD connection](#developing-locally-without-an-ad-connection)
 
 ## Installation
 
@@ -529,3 +530,19 @@ Tips:
  - To import a single user, insert their username: `php artisan adldap:import jdoe`
   - Specifying a username uses ambiguous naming resolution, so you're able to specify attributes other than their username, such as their email (`php artisan adldap:import jdoe@mail.com`).
   - If you have a password mutator (setter) on your User model, it will not override it. This way, you can hash the random 16 characters any way you please.
+
+#### Developing Locally without an AD connection
+
+You can continue to develop and login to your application without a connection to your AD server in the following scenario:
+
+* You have `auto_connect` set to `false` in your `adldap.php` configuration
+ > This is necessary so we don't automatically try and bind to your AD server when your application boots.
+
+* You have `login_fallback` set to `true` in your `adldap_auth.php` configuration
+ > This is necessary so we fallback to the standard `eloquent` auth driver.
+
+* You have `password_sync` set to `true` in your `adldap_auth.php` configuration
+ > This is necessary so we can login to the account with the last password that was used when an AD connection was present.
+
+* You have logged into the synchronized AD account previously
+ > This is necessary so the account actually exists in your local app's database.
