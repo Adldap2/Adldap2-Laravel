@@ -66,9 +66,11 @@ class Import extends Command
             // existing in the same scope.
             $users = collect($users)->filter(function($user) {
                 return $user instanceof User;
-            });
+            })->toArray();
 
-            $this->info("Found {$users->count()} user(s). Importing...");
+            $count = count($users);
+
+            $this->info("Found {$count} user(s). Importing...");
         }
 
         $this->info("\nSuccessfully imported / synchronized {$this->import($users)} user(s).");
