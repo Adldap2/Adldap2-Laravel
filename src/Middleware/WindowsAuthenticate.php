@@ -2,13 +2,13 @@
 
 namespace Adldap\Laravel\Middleware;
 
-use Adldap\Laravel\Auth\DatabaseUserProvider;
-use Adldap\Laravel\Auth\NoDatabaseUserProvider;
-use Adldap\Models\ModelNotFoundException;
 use Closure;
 use Adldap\Models\User;
-use Adldap\Laravel\Events\AuthenticatedWithWindows;
 use Adldap\Laravel\Traits\ImportsUsers;
+use Adldap\Models\ModelNotFoundException;
+use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Adldap\Laravel\Events\AuthenticatedWithWindows;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Event;
