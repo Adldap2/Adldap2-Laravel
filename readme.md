@@ -241,8 +241,27 @@ Inside `config/adldap_auth.php`
 
 #### Logging In
 
-Login a user regularly using `Auth::attempt($credentials);`. Using `Auth::user()` when a user is logged in
-will return your configured `App\User` model in `config/auth.php`.
+Login a user regularly using `Auth::attempt($credentials);`.
+
+Once a user is authenticated, retrieve them as you would regularly:
+
+```php
+public function login(Request $request)
+{
+    if (Auth::attempt($request->only(['email', 'password'])) {
+        
+        // Returns \App\User model configured in `config/auth.php`.
+        $user = Auth::user();
+        
+        
+        return redirect()->to('home')
+            ->withMessage('Logged in!');
+    }
+    
+    return redirect()->to('login')
+        ->withMessage('Hmm... Your username or password is incorrect');
+}
+```
 
 ## Features
 
