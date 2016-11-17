@@ -29,6 +29,9 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
     * [Password Synchronization](#password-synchronization)
     * [Importing Users](#importing-users)
     * [Developing without an AD connection](#developing-locally-without-an-ad-connection)
+  * [Providers](#auth-providers)
+    * [DatabaseUserProvider](#databaseuserprovider)
+    * [NoDatabaseUserProvider](#nodatabaseuserprovider)
 
 ## Installation
 
@@ -576,3 +579,27 @@ You can continue to develop and login to your application without a connection t
 
 * You have logged into the synchronized AD account previously
  > This is necessary so the account actually exists in your local app's database.
+
+### Auth Providers
+
+> **Note**: This feature in coming in `v3.0.0`.
+
+Inside your `config/adldap_auth.php` file, there is an option named `provider`.
+
+This option allows you to configure which type of authentication method you prefer with Adldap.
+
+#### DatabaseUserProvider
+
+For synchronizing LDAP users to your local applications database, use the provider:
+
+```php
+Adldap\Laravel\Auth\DatabaseUserProvider::class
+```
+
+#### NoDatabaseUserProvider
+
+If you just require LDAP authentication, use the provider:
+
+```php
+Adldap\Laravel\Auth\NoDatabaseUserProvider::class
+```
