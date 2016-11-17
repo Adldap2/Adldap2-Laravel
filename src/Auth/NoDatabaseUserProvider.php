@@ -23,6 +23,8 @@ class NoDatabaseUserProvider implements UserProvider
         ])->first();
 
         if ($user instanceof Authenticatable) {
+            // We'll verify we have the correct instance just to ensure we
+            // don't return an incompatible model that may be returned.
             return $user;
         }
     }

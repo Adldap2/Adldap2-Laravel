@@ -68,7 +68,7 @@ trait AuthenticatesUsers
     /**
      * Handle an authenticated LDAP user with their model.
      *
-     * @param \Adldap\Models\User $user
+     * @param User                $user
      * @param Authenticatable     $model
      *
      * @return void
@@ -81,7 +81,7 @@ trait AuthenticatesUsers
     /**
      * Handle an authenticated users model that has been soft deleted.
      *
-     * @param \Adldap\Models\User $user
+     * @param User                $user
      * @param Authenticatable     $model
      */
     protected function handleAuthenticatedModelTrashed(User $user, Authenticatable $model)
