@@ -82,6 +82,13 @@ if (Adldap::auth()->attempt($username, $password)) {
 
 // Running an operation under a different connection:
 $users = Adldap::getProvider('other-connection')->search()->users()->get();
+
+// Creating a user.
+$user = Adldap::make()->user([
+    'cn' => 'John Doe',
+]);
+
+$user->save();
 ```
 
 Or you can inject the Adldap contract:
@@ -123,9 +130,11 @@ To see more usage in detail, please visit the [Adldap2 Repository](http://github
 
 ## Auth Driver
 
-The Adldap Laravel auth driver allows you to seamlessly authenticate active directory users,
-as well as have a local database record of the user. This allows you to easily attach information
-to the users as you would a regular laravel application.
+The Adldap Laravel auth driver allows you to seamlessly authenticate AD users,
+as well as have a local database record of the user.
+
+This allows you to easily attach information to the users account
+as you would a regular laravel application.
 
 > **Note**: The Adldap auth driver actually extends from and utilizes Laravel's eloquent auth driver.
 
@@ -237,7 +246,9 @@ Inside `config/adldap_auth.php`
 'username_attribute' => ['username' => 'samaccountname'],
 ```
 
-> **Note**: The actual authentication is done with the `login_attribute` inside your `config/adldap_auth.php` file.
+> **Note**: The actual authentication against your AD server is done with
+> the `login_attribute` inside your `config/adldap_auth.php` file. The
+> `username_attribute` array is used for **finding** your user in AD.
 
 #### Logging In
 
