@@ -2,7 +2,6 @@
 
 namespace Adldap\Laravel\Auth;
 
-use Adldap\Utilities;
 use Adldap\Laravel\Traits\AuthenticatesUsers;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
