@@ -30,7 +30,7 @@ trait UsesAdldap
     /**
      * Returns Adldap's current attribute schema.
      *
-     * @return \Adldap\Contracts\Schemas\SchemaInterface
+     * @return \Adldap\Schemas\SchemaInterface
      */
     protected function getSchema()
     {
@@ -42,7 +42,7 @@ trait UsesAdldap
      *
      * @param string $provider
      *
-     * @return \Adldap\Contracts\Connections\ProviderInterface
+     * @return \Adldap\Connections\ProviderInterface
      */
     protected function getAdldap($provider = null)
     {

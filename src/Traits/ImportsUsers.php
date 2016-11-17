@@ -44,7 +44,7 @@ trait ImportsUsers
     /**
      * Finds an Eloquent model from the specified Adldap user.
      *
-     * @param \Adldap\Models\User $user
+     * @param User $user
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
