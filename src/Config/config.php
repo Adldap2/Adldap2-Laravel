@@ -89,7 +89,7 @@ return [
                 |
                 */
 
-                'account_prefix' => '',
+                'account_prefix' => env('ADLDAP_ACCOUNT_PREFIX', ''),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -104,7 +104,7 @@ return [
                 |
                 */
 
-                'account_suffix' => '@acme.org',
+                'account_suffix' => env('ADLDAP_ACCOUNT_SUFFIX', '@acme.org'),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -120,7 +120,7 @@ return [
                 |
                 */
 
-                'domain_controllers' => ['corp-dc1.corp.acme.org', 'corp-dc2.corp.acme.org'],
+                'domain_controllers' => explode(' ', env('ADLDAP_DC', 'corp-dc1.corp.acme.org corp-dc2.corp.acme.org')),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -131,7 +131,7 @@ return [
                 |
                 */
 
-                'port' => 389,
+                'port' => env('ADLDAP_PORT', 389),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -144,7 +144,7 @@ return [
                 |
                 */
 
-                'timeout' => 5,
+                'timeout' => env('ADLDAP_TIMEOUT', 5),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -160,7 +160,7 @@ return [
                 |
                 */
 
-                'base_dn' => 'dc=corp,dc=acme,dc=org',
+                'base_dn' => env('ADLDAP_BASEDN', 'dc=corp,dc=acme,dc=org'),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -174,7 +174,7 @@ return [
                 |
                 */
 
-                'admin_account_suffix' => '@acme.org',
+                'admin_account_suffix' => env('ADLDAP_ADMIN_ACCOUNT_SUFFIX', '@acme.org'),
 
                 /*
                 |--------------------------------------------------------------------------
