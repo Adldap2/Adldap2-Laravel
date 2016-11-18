@@ -24,9 +24,10 @@ return [
             | Auto Connect
             |--------------------------------------------------------------------------
             |
-            | If auto connect is true, Adldap will try to automatically connect to your
-            | LDAP server in your configuration. This allows you to assume
-            | connectivity rather than having to connectmanually in your application.
+            | If auto connect is true, Adldap will try to automatically connect to
+            | your LDAP server in your configuration. This allows you to assume
+            | connectivity rather than having to connect manually
+            | in your application.
             |
             | If this is set to false, you must connect manually before running
             | LDAP operations using: Adldap::connect();
