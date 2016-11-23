@@ -47,9 +47,13 @@ class DatabaseUserProvider extends EloquentUserProvider
     {
         $user = $this->retrieveLdapUserByCredentials($credentials);
 
+        // We need to check if we have the right user instance, as well
+        // as set the currently authenticated user in this case.
         if ($user instanceof User && $this->user = $user) {
+            // We'll retrieve the login name from the LDAP user.
             $username = $this->getLoginUsernameFromUser($user);
 
+            // Then, get their password from the given credentials.
             $password = $this->getPasswordFromCredentials($credentials);
 
             // Perform LDAP authentication.
@@ -63,6 +67,13 @@ class DatabaseUserProvider extends EloquentUserProvider
                     $this->handleAuthenticatedModelTrashed($user, $model);
 
                     // We also won't allow soft-deleted users to authenticate.
+                    return;
+                }
+
+                if ($this->getOnlyAllowImportedUsers() && ! $model->exists) {
+                    // If we're only allowing already imported users
+                    // and the user doesn't exist, we won't
+                    // allow them to authenticate.
                     return;
                 }
 

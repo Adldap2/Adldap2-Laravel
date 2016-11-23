@@ -247,4 +247,15 @@ trait ImportsUsers
     {
         return config('adldap_auth.password_sync', true);
     }
+
+    /**
+     * Returns the configured option for only allowing
+     * manually imported users to authenticate.
+     *
+     * @return mixed
+     */
+    protected function getOnlyAllowImportedUsers()
+    {
+        return config('adldap_auth.allow_only_imported', false);
+    }
 }
