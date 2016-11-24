@@ -23,7 +23,7 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 
 5. Enter your database details and credentials inside the `.env` file located in your project root directory (if there is not one there, rename the `.env.example` to `.env`).
 
-6. If you're using Active Directory username's to login users **instead** of their emails, you will need to change
+6. If you're using username's to login users **instead** of their emails, you will need to change
    the default `email` column in `database/migrations/2014_10_12_000000_create_users_table.php`.
    
    ```php
@@ -70,11 +70,12 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 
 12. Run the command `php artisan make:auth` to scaffold authentication controllers and routes.
 
-13. 
+13. If you require logging in by another attribute, such as a username instead of email follow
+the process below for your Laravel version. Otherwise ignore this step.
 
 #### Laravel <= 5.2
 Inside the generated `app/Http/Controllers/Auth/AuthController.php`, you'll need to add the `protected $username`
-    property if you're logging in users by username. Otherwise ignore this step.
+    property if you're logging in users by username.
 
     ```php
     class AuthController extends Controller
