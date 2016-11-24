@@ -107,7 +107,7 @@ return [
     |
     */
 
-    'allow_only_imported' => false,
+    'allow_only_imported' => env('ADLDAP_ALLOW_ONLY_IMPORTED', false),
 
     /*
     |--------------------------------------------------------------------------
