@@ -70,7 +70,10 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 
 12. Run the command `php artisan make:auth` to scaffold authentication controllers and routes.
 
-13. Inside the generated `app/Http/Controllers/Auth/AuthController.php`, you'll need to add the `protected $username`
+13. 
+
+#### Laravel <= 5.2
+Inside the generated `app/Http/Controllers/Auth/AuthController.php`, you'll need to add the `protected $username`
     property if you're logging in users by username. Otherwise ignore this step.
 
     ```php
@@ -78,6 +81,17 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
     {
         protected $username = 'username';
     ```
+
+#### Laravel > 5.3
+
+Inside the generated `app/Http/Controllers/Auth/LoginController.php`, you'll need to add the public method `username()`:
+
+```php
+public function username()
+{
+    return 'username';
+}
+```
 
 14. Now insert a new auth driver inside your `config/auth.php` file:
 
