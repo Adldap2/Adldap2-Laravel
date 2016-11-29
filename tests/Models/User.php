@@ -2,7 +2,7 @@
 
 namespace Adldap\Laravel\Tests\Models;
 
-use Adldap\Laravel\Traits\AdldapUserModelTrait;
+use Adldap\Laravel\Traits\HasAdldapUser;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, CanResetPassword, AdldapUserModelTrait;
+    use Authenticatable, CanResetPassword, HasAdldapUser;
 
     /**
      * The database table used by the model.

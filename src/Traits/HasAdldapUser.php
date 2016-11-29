@@ -2,7 +2,7 @@
 
 namespace Adldap\Laravel\Traits;
 
-trait AdldapUserModelTrait
+trait HasAdldapUser
 {
     /**
      * The Adldap User that is bound to the current model.
