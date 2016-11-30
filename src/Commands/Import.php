@@ -28,48 +28,49 @@ class Import extends Command
     protected $description = 'Imports LDAP users into the local database with a random 16 character hashed password.';
 
     /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    public function getArguments()
+    {
+        return [
+            ['user', InputArgument::OPTIONAL, 'The specific user to import using ANR.'],
+        ];
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return [
+            ['filter', '-f', InputOption::VALUE_OPTIONAL, 'The raw filter for limiting users imported.'],
+
+            ['log', '-l', InputOption::VALUE_OPTIONAL, 'Log successful and unsuccessful imported users.', 'true'],
+
+            ['connection', '-c', InputOption::VALUE_OPTIONAL, 'The LDAP connection to use to import users.'],
+
+            ['delete', '-d', InputOption::VALUE_OPTIONAL, 'Soft-delete the users model if the AD user is disabled.', 'false'],
+        ];
+    }
+
+    /**
      * Execute the console command.
      *
      * @return mixed
      */
     public function handle()
     {
-        // Retrieve the Adldap instance.
-        $adldap = $this->getAdldap($this->option('connection'));
+        $users = $this->getUsers();
 
-        if (!$adldap->getConnection()->isBound()) {
-            // If the connection isn't bound yet, we'll connect to the server manually.
-            $adldap->connect();
-        }
+        $count = count($users);
 
-        // Generate a new user search.
-        $search = $adldap->search()->users();
-
-        if ($filter = $this->getFilter()) {
-            // If the filter option was given, we'll
-            // insert it into our search query.
-            $search->rawFilter($filter);
-        }
-
-        if ($user = $this->argument('user')) {
-            $users = [$search->findOrFail($user)];
-
+        if ($count === 1) {
             $this->info("Found user '{$users[0]->getCommonName()}'.");
         } else {
-            // Retrieve all users. We'll paginate our search in case we hit
-            // the 1000 record hard limit of active directory.
-            $users = $search->paginate()->getResults();
-
-            // We need to filter our results to make sure they are
-            // only users. In some cases, Contact models may be
-            // returned due the possibility of them
-            // existing in the same scope.
-            $users = collect($users)->filter(function($user) {
-                return $user instanceof User;
-            })->toArray();
-
-            $count = count($users);
-
             $this->info("Found {$count} user(s).");
         }
 
@@ -169,6 +170,47 @@ class Import extends Command
     }
 
     /**
+     * Retrieves users to be imported.
+     *
+     * @return array
+     */
+    public function getUsers()
+    {
+        // Retrieve the Adldap instance.
+        $adldap = $this->getAdldap($this->option('connection'));
+
+        if (!$adldap->getConnection()->isBound()) {
+            // If the connection isn't bound yet, we'll connect to the server manually.
+            $adldap->connect();
+        }
+
+        // Generate a new user search.
+        $search = $adldap->search()->users();
+
+        if ($filter = $this->getFilter()) {
+            // If the filter option was given, we'll
+            // insert it into our search query.
+            $search->rawFilter($filter);
+        }
+
+        if ($user = $this->argument('user')) {
+            $users = [$search->findOrFail($user)];
+        } else {
+            // Retrieve all users. We'll paginate our search in case we hit
+            // the 1000 record hard limit of active directory.
+            $users = $search->paginate()->getResults();
+        }
+
+        // We need to filter our results to make sure they are
+        // only users. In some cases, Contact models may be
+        // returned due the possibility of them
+        // existing in the same scope.
+        return array_filter($users, function ($user) {
+            return $user instanceof User;
+        });
+    }
+
+    /**
      * Returns the limitation filter for the user query.
      *
      * @return string
@@ -176,36 +218,6 @@ class Import extends Command
     public function getFilter()
     {
         return $this->getLimitationFilter() ?: $this->option('filter');
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['user', InputArgument::OPTIONAL, 'The specific user to import using ANR.'],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['filter', '-f', InputOption::VALUE_OPTIONAL, 'The raw filter for limiting users imported.'],
-
-            ['log', '-l', InputOption::VALUE_OPTIONAL, 'Log successful and unsuccessful imported users.', 'true'],
-
-            ['connection', '-c', InputOption::VALUE_OPTIONAL, 'The LDAP connection to use to import users.'],
-
-            ['delete', '-d', InputOption::VALUE_OPTIONAL, 'Soft-delete the users model if the AD user is disabled.', 'false'],
-        ];
     }
 
     /**
