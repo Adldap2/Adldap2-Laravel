@@ -92,7 +92,7 @@ class AdldapServiceProvider extends ServiceProvider
             }
 
             // Add the provider to the Adldap container.
-            $adldap->addProvider($name, $provider);
+            $adldap->addProvider($provider, $name);
         });
 
         return $adldap;
