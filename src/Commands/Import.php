@@ -74,7 +74,7 @@ class Import extends Command
             $this->info("Found {$count} user(s).");
         }
 
-        if ($this->confirm('Would you like to display the user(s) to be imported?')) {
+        if ($this->confirm('Would you like to display the user(s) to be imported / synchronized?')) {
             $this->display($users);
         }
 
@@ -180,7 +180,8 @@ class Import extends Command
         $adldap = $this->getAdldap($this->option('connection'));
 
         if (!$adldap->getConnection()->isBound()) {
-            // If the connection isn't bound yet, we'll connect to the server manually.
+            // If the connection isn't bound yet, we'll
+            // connect to the server manually.
             $adldap->connect();
         }
 
@@ -196,8 +197,8 @@ class Import extends Command
         if ($user = $this->argument('user')) {
             $users = [$search->findOrFail($user)];
         } else {
-            // Retrieve all users. We'll paginate our search in case we hit
-            // the 1000 record hard limit of active directory.
+            // Retrieve all users. We'll paginate our search in case we
+            // hit the 1000 record hard limit of active directory.
             $users = $search->paginate()->getResults();
         }
 
