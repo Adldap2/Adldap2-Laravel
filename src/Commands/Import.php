@@ -54,7 +54,7 @@ class Import extends Command
         if ($user = $this->argument('user')) {
             $users = [$search->findOrFail($user)];
 
-            $this->info("Found user '{$users[0]->getCommonName()}'. Importing...");
+            $this->info("Found user '{$users[0]->getCommonName()}'.");
         } else {
             // Retrieve all users. We'll paginate our search in case we hit
             // the 1000 record hard limit of active directory.
@@ -70,10 +70,18 @@ class Import extends Command
 
             $count = count($users);
 
-            $this->info("Found {$count} user(s). Importing...");
+            $this->info("Found {$count} user(s).");
         }
 
-        $this->info("\nSuccessfully imported / synchronized {$this->import($users)} user(s).");
+        if ($this->confirm('Would you like to display the user(s) to be imported?')) {
+            $this->display($users);
+        }
+
+        if ($this->confirm('Would you like these users to be imported / synchronized?')) {
+            $this->info("\nSuccessfully imported / synchronized {$this->import($users)} user(s).");
+        } else {
+            $this->info('Okay, no users were imported / synchronized.');
+        }
     }
 
     /**
@@ -114,6 +122,30 @@ class Import extends Command
         }
 
         return $imported;
+    }
+
+    /**
+     * Displays the given users in a table.
+     *
+     * @param array $users
+     *
+     * @return void
+     */
+    public function display(array $users = [])
+    {
+        $headers = ['Name', 'Account Name', 'Email'];
+
+        $data = [];
+
+        array_map(function (User $user) use (&$data) {
+            $data[] = [
+                'name' => $user->getCommonName(),
+                'account_name' => $user->getAccountName(),
+                'email' => $user->getEmail(),
+            ];
+        }, $users);
+
+        $this->table($headers, $data);
     }
 
     /**
