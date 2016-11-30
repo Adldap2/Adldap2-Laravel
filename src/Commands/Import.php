@@ -97,7 +97,7 @@ class Import extends Command
     {
         $imported = 0;
 
-        $bar = $this->output->createProgressBar(count($users));
+        $this->output->progressStart(count($users));
 
         foreach ($users as $user) {
             try {
@@ -119,8 +119,10 @@ class Import extends Command
                 }
             }
 
-            $bar->advance();
+            $this->output->progressAdvance();
         }
+
+        $this->output->progressFinish();
 
         return $imported;
     }
