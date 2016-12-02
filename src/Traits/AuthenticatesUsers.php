@@ -24,7 +24,7 @@ trait AuthenticatesUsers
     }
 
     /**
-     * Authenticates a user against our LDAP connection.
+     * Authenticates a user against our default LDAP connection.
      *
      * @param string $username
      * @param string $password
@@ -68,8 +68,8 @@ trait AuthenticatesUsers
     /**
      * Handle an authenticated LDAP user with their model.
      *
-     * @param User                $user
-     * @param Authenticatable     $model
+     * @param User            $user
+     * @param Authenticatable $model
      *
      * @return void
      */
@@ -81,8 +81,10 @@ trait AuthenticatesUsers
     /**
      * Handle an authenticated users model that has been soft deleted.
      *
-     * @param User                $user
-     * @param Authenticatable     $model
+     * @param User            $user
+     * @param Authenticatable $model
+     *
+     * @return void
      */
     protected function handleAuthenticatedModelTrashed(User $user, Authenticatable $model)
     {
@@ -92,7 +94,7 @@ trait AuthenticatesUsers
     /**
      * Handle discovered LDAP users before they are authenticated.
      *
-     * @param \Adldap\Models\User $user
+     * @param User $user
      *
      * @return void
      */
