@@ -77,11 +77,11 @@ the process below for your Laravel version. Otherwise ignore this step.
 
   Inside the generated `app/Http/Controllers/Auth/AuthController.php`, you'll need to add the `protected $username` property if you're logging in users by username.
 
-      ```php
-      class AuthController extends Controller
-      {
-          protected $username = 'username';
-      ```
+  ```php
+  class AuthController extends Controller
+  {
+      protected $username = 'username';
+  ```
 
  * **Laravel > 5.3**
 
@@ -96,14 +96,14 @@ the process below for your Laravel version. Otherwise ignore this step.
 
 14. Now insert a new auth driver inside your `config/auth.php` file:
 
-    ```php
-    'providers' => [
-        'users' => [
-            'driver' => 'adldap', // Was 'eloquent'.
-            'model'  => App\User::class,
-        ],
-    ],
-    ```
+  ```php
+  'providers' => [
+      'users' => [
+          'driver' => 'adldap', // Was 'eloquent'.
+          'model'  => App\User::class,
+      ],
+  ],
+  ```
 
 15. Inside your `resources/views/auth/login.blade.php` file, if you're requiring the user logging in by username, you'll
     need to modify the HTML input to `username` instead of `email`. Ignore this step otherwise.
