@@ -60,7 +60,7 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
    'Adldap' => Adldap\Laravel\Facades\Adldap::class,
    ```
 
-   > **Note**: Insertion of this facade in your `app.php` file isn't necessary unless you're planning on utilizing it.
+   > **Note**: Insertion of this alias in your `app.php` file isn't necessary unless you're planning on utilizing it.
 
 10. Now run `php artisan vendor:publish` in your root project directory to publish Adldap2's configuration files.
 
