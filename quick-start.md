@@ -73,26 +73,26 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 13. If you require logging in by another attribute, such as a username instead of email follow
 the process below for your Laravel version. Otherwise ignore this step.
 
-#### Laravel <= 5.2
-Inside the generated `app/Http/Controllers/Auth/AuthController.php`, you'll need to add the `protected $username`
-    property if you're logging in users by username.
+ * **Laravel <= 5.2**
 
-    ```php
-    class AuthController extends Controller
-    {
-        protected $username = 'username';
-    ```
+  Inside the generated `app/Http/Controllers/Auth/AuthController.php`, you'll need to add the `protected $username` property if you're logging in users by username.
 
-#### Laravel > 5.3
+      ```php
+      class AuthController extends Controller
+      {
+          protected $username = 'username';
+      ```
 
-Inside the generated `app/Http/Controllers/Auth/LoginController.php`, you'll need to add the public method `username()`:
+ * **Laravel > 5.3**
 
-```php
-public function username()
-{
-    return 'username';
-}
-```
+  Inside the generated `app/Http/Controllers/Auth/LoginController.php`, you'll need to add the public method `username()`:
+
+  ```php
+  public function username()
+  {
+      return 'username';
+  }
+  ```
 
 14. Now insert a new auth driver inside your `config/auth.php` file:
 
