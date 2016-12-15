@@ -212,46 +212,9 @@ array indicates the input name of your login form, and the value indicates the L
 
 This option just allows you to set your input name to however you see fit, and allow different ways of logging in a user.
 
-In your login form, change the username form input name to your configured input name.
-
-By default this is set to `email`:
-```html
-<input type="text" name="email" />
-
-<input type="password" name="password" />
-```
-
-You'll also need to add the following to your AuthController if you're not overriding the default postLogin method:
-
-```php
-// In Laravel <= 5.2
-protected $username = 'email';
-
-// In Laravel >= 5.3
-public function username()
-{
-    return 'email';
-}
-```
-
-If you'd like to use the users `samaccountname` to login instead, just change your input name and auth configuration:
-```html
-<input type="text" name="username" />
-
-<input type="password" name="password" />
-```
-
-> **Note**: If you're using the `username` input field, make sure you have the `username` field inside your users database
-table as well. By default, laravel's migrations use the `email` field.
-
-Inside `config/adldap_auth.php`
-```php
-'username_attribute' => ['username' => 'samaccountname'],
-```
-
 > **Note**: The actual authentication against your AD server is done with
 > the `login_attribute` inside your `config/adldap_auth.php` file. The
-> `username_attribute` array is used for **finding** your user in AD.
+> `username_attribute` array is used for **locating** your user in AD.
 
 #### Logging In
 
@@ -276,6 +239,61 @@ public function login(Request $request)
         ->withMessage('Hmm... Your username or password is incorrect');
 }
 ```
+
+##### Logging in Users Via Their Username
+
+If you need to login users via their username (`samaccountname`), then you'll need to modify a couple things.
+Otherwise, if you're logging in users via email, then you don't need to change a thing and you can
+skip over the following documentation.
+
+First make sure you have the `username` field inside your users database table as well.
+By default, laravel's migrations use the `email` field:
+
+```php
+// 2014_10_12_000000_create_users_table.php
+Schema::create('users', function (Blueprint $table) {
+    $table->increments('id');
+    $table->string('name');
+    
+    // Changed to `username` instead of `email`.
+    $table->string('username')->unique();
+    
+    $table->string('password');
+    $table->rememberToken();
+    $table->timestamps();
+    $table->softDeletes();
+});
+```
+ 
+Inside `config/adldap_auth.php`, change the array to the following:
+
+```php
+'username_attribute' => ['username' => 'samaccountname'],
+```
+
+In your login form, change the username form input name to your configured
+input name (by default this is set to `email`):
+
+```html
+<!-- Changed the `name` attribute to `username`. -->
+<input type="text" name="username" />
+```
+
+You'll also need to add the following to your AuthController / LoginController if
+you're not already overriding the default postLogin method:
+
+```php
+// In Laravel <= 5.2
+protected $username = 'username';
+
+// In Laravel >= 5.3
+public function username()
+{
+    return 'username';
+}
+```
+
+Once you've followed these steps, you'll be able to authenticate LDAP users by their username instead of their email.
 
 ## Features
 
