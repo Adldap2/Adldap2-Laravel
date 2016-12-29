@@ -121,7 +121,7 @@ return [
                 |
                 */
 
-                'domain_controllers' => explode(' ', env('ADLDAP_DC', 'corp-dc1.corp.acme.org corp-dc2.corp.acme.org')),
+                'domain_controllers' => explode(' ', env('ADLDAP_CONTROLLERS', 'corp-dc1.corp.acme.org corp-dc2.corp.acme.org')),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -216,8 +216,10 @@ return [
                 |
                 | If you need to be able to change user passwords on your server, then an
                 | SSL or TLS connection is required. All other operations are allowed
-                | on unsecured protocols. One of these options are definitely recommended
-                | if you have the ability to connect to your server securely.
+                | on unsecured protocols.
+                | 
+                | One of these options are definitely recommended if you 
+                | have the ability to connect to your server securely.
                 |
                 */
 
