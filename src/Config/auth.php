@@ -202,7 +202,7 @@ return [
     |
     | If this option is true, you must insert the trait:
     |
-    |   `Adldap\Laravel\Traits\AdldapUserModelTrait`
+    |   `Adldap\Laravel\Traits\HasAdldapUser`
     |
     | Onto your User model that is configured in `config/auth.php`.
     |
@@ -225,7 +225,7 @@ return [
     | up to date.
     |
     | The array key represents the Laravel model key, and the value
-    | represents the Active Directory attribute to set it to.
+    | represents the LDAP attribute to set it to.
     |
     | Your login attribute (configured above) is already synchronized
     | and does not need to be added to this array.
@@ -254,8 +254,9 @@ return [
     | This is configurable to allow for faster LDAP queries, rather
     | than retrieving all attributes on every login.
     |
-    | ** Note ** : Keep in mind you must include attributes that you would
-    | like to synchronize, as well as your login attribute.
+    | **Note**: Keep in mind you must include attributes that you would
+    | like to synchronize, as well as your login attribute, if you've
+    | specified attributes to select.
     |
     */
 
