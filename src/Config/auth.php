@@ -78,7 +78,7 @@ return [
     | Password Key
     |--------------------------------------------------------------------------
     |
-    | The password key is the name of the HTML input that contains the users password.
+    | The password field is the name of the HTML input that contains the users password.
     |
     | Change this if you change your HTML password fields input name.
     |
