@@ -3,9 +3,9 @@
 namespace Adldap\Laravel\Traits;
 
 use Adldap\Models\User;
+use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
-use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -144,7 +144,7 @@ trait AuthenticatesUsers
      */
     protected function getPasswordFromCredentials(array $credentials = [])
     {
-        return array_get($credentials, $this->getPasswordKey());
+        return array_get($credentials, $this->getPasswordField());
     }
 
     /**
@@ -182,14 +182,13 @@ trait AuthenticatesUsers
     }
 
     /**
-     * Returns the password key to retrieve the
-     * password from the user input array.
+     * Returns the password key to retrieve the password from the user input array.
      *
-     * @return mixed
+     * @return string
      */
-    protected function getPasswordKey()
+    protected function getPasswordField()
     {
-        return config('adldap_auth.password_key', 'password');
+        return config('adldap_auth.password_field', 'password');
     }
 
     /**

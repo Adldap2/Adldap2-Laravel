@@ -43,8 +43,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | The username attribute is an array of the HTML input name and the LDAP
-    | attribute to discover the user by. The reason for this is to hide
-    | the attribute that you're using to login users.
+    | attribute to discover the user by. The reason for this is to allow
+    | the ability for users to login via different attributes.
     |
     | For example, if your HTML input name is `email` and you'd like users to login
     | by their LDAP `mail` attribute, then keep the configuration below. However,
@@ -56,6 +56,37 @@ return [
     */
 
     'username_attribute' => ['email' => 'mail'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Login Attribute
+    |--------------------------------------------------------------------------
+    |
+    | The login attribute is the name of the LDAP users attribute that you use
+    | to authenticate against your LDAP server.
+    |
+    | This is usually the users `sAMAccountName`.
+    |
+    | This option must be a string.
+    |
+    */
+
+    'login_attribute' => env('ADLDAP_LOGIN_ATTRIBUTE', 'samaccountname'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Key
+    |--------------------------------------------------------------------------
+    |
+    | The password key is the name of the HTML input that contains the users password.
+    |
+    | Change this if you change your HTML password fields input name.
+    |
+    | This option must be a string.
+    |
+    */
+
+    'password_field' => env('ADLDAP_PASSWORD_KEY', 'password'),
 
     /*
     |--------------------------------------------------------------------------
@@ -111,22 +142,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Password Key
-    |--------------------------------------------------------------------------
-    |
-    | The password key is the name of the input array key located inside
-    | the user input array given to the auth driver.
-    |
-    | Change this if you change your HTML password fields input name.
-    |
-    | This option must be a string.
-    |
-    */
-
-    'password_key' => env('ADLDAP_PASSWORD_KEY', 'password'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Password Sync
     |--------------------------------------------------------------------------
     |
@@ -148,22 +163,6 @@ return [
     */
 
     'password_sync' => env('ADLDAP_PASSWORD_SYNC', true),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Login Attribute
-    |--------------------------------------------------------------------------
-    |
-    | The login attribute is the name of the LDAP users attribute that you use
-    | to authenticate against your LDAP server.
-    |
-    | This is usually the users `sAMAccountName`.
-    |
-    | This option must be a string.
-    |
-    */
-
-    'login_attribute' => env('ADLDAP_LOGIN_ATTRIBUTE', 'samaccountname'),
 
     /*
     |--------------------------------------------------------------------------
