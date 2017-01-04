@@ -152,12 +152,12 @@ return [
                 | Base Distinguished Name
                 |--------------------------------------------------------------------------
                 |
-                | The base distinguished name is the base distinguished name you'd like
-                | to perform operations on. An example base DN would be DC=corp,DC=acme,DC=org.
+                | The base distinguished name is the base distinguished name you'd
+                | like to perform query operations on. An example base DN would be:
                 |
-                | If one is not defined, then Adldap will try to find it automatically
-                | by querying your server. It's recommended to include it to
-                | limit queries executed per request.
+                |        dc=corp,dc=acme,dc=org
+                |
+                | A correct base DN is required for any query results to be returned.
                 |
                 */
 
