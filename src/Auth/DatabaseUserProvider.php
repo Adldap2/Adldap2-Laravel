@@ -47,9 +47,10 @@ class DatabaseUserProvider extends EloquentUserProvider
     {
         $user = $this->retrieveLdapUserByCredentials($credentials);
 
-        // We need to check if we have the right user instance, as well
-        // as set the currently authenticated user in this case.
-        if ($user instanceof User && $this->user = $user) {
+        if ($user instanceof User) {
+            // Set the currently authenticated LDAP user.
+            $this->setUser($user);
+
             // We'll retrieve the login name from the LDAP user.
             $username = $this->getLoginUsernameFromUser($user);
 
@@ -81,9 +82,9 @@ class DatabaseUserProvider extends EloquentUserProvider
             }
         }
 
+        // Login failed. If login fallback is enabled
+        // we'll call the eloquent driver.
         if ($this->getLoginFallback()) {
-            // Login failed. If login fallback is enabled
-            // we'll call the eloquent driver.
             return parent::retrieveByCredentials($credentials);
         }
     }
@@ -136,5 +137,19 @@ class DatabaseUserProvider extends EloquentUserProvider
         }
 
         return $model;
+    }
+
+    /**
+     * Sets the currently authenticated user.
+     *
+     * @param User $user
+     *
+     * @return $this
+     */
+    protected function setUser(User $user)
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }
