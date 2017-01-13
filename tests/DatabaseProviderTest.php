@@ -65,7 +65,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         // Due to Laravel firing service provider registrations, the
         // two events we expect to be fired need to be
         // added on to this total.
-        Event::shouldReceive('fire')->times(6)->withAnyArgs();
+        Event::shouldReceive('fire')->atLeast()->times(5)->withAnyArgs();
 
         $this->assertTrue(Auth::attempt($credentials));
 
