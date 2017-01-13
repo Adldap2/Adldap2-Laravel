@@ -62,6 +62,8 @@ class DatabaseUserProvider extends EloquentUserProvider
                 // Passed, create / find the eloquent model from our Adldap user.
                 $model = $this->getModelFromAdldap($user, $password);
 
+                $this->handleAuthenticatedWithCredentials($user, $model);
+
                 if (method_exists($model, 'trashed') && $model->trashed()) {
                     // If the model is soft-deleted, we'll fire an event
                     // with the affected LDAP user and their model.
