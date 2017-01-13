@@ -11,7 +11,6 @@ use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Adldap\Laravel\Events\AuthenticatedWithWindows;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
 
 class WindowsAuthenticate
@@ -112,7 +111,7 @@ class WindowsAuthenticate
      */
     protected function handleAuthenticatedUser(User $user, Model $model = null)
     {
-        Event::fire(new AuthenticatedWithWindows($user, $model));
+        event(new AuthenticatedWithWindows($user, $model));
     }
 
     /**

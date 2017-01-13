@@ -6,7 +6,6 @@ use Adldap\Models\User;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 trait AuthenticatesUsers
@@ -75,7 +74,7 @@ trait AuthenticatesUsers
      */
     protected function handleAuthenticatedWithCredentials(User $user, Authenticatable $model)
     {
-        Event::fire(new AuthenticatedWithCredentials($user, $model));
+        event(new AuthenticatedWithCredentials($user, $model));
     }
 
     /**
@@ -88,7 +87,7 @@ trait AuthenticatesUsers
      */
     protected function handleAuthenticatedModelTrashed(User $user, Authenticatable $model)
     {
-        Event::fire(new AuthenticatedModelTrashed($user, $model));
+        event(new AuthenticatedModelTrashed($user, $model));
     }
 
     /**
@@ -100,7 +99,7 @@ trait AuthenticatesUsers
      */
     protected function handleDiscoveredUserWithCredentials(User $user)
     {
-        Event::fire(new DiscoveredWithCredentials($user));
+        event(new DiscoveredWithCredentials($user));
     }
 
     /**
