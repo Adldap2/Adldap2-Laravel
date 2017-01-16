@@ -516,10 +516,14 @@ if (Auth::attempt($credentials)) {
 }
 
 if ($auth === true) {
-    return $this->handleUserWasAuthenticated($request, $throttles);
+    return redirect()
+        ->to('dashboard')
+        ->with(['message' => 'Successfully logged in!']);
 }
 
-return 'Login incorrect!';
+return redirect()
+        ->to('login')
+        ->with(['message' => 'Your credentials are incorrect.']);
 ```
 
 #### Password Synchronization
