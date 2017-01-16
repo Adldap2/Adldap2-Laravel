@@ -670,3 +670,5 @@ Since you're actually using an instance of `Adldap\Models\User`, you'll need to 
 ```
 
 You can read more about the methods available on the `Adldap\Models\User` instance here: 
+
+[Adldap2 - User Model](https://github.com/Adldap2/Adldap2/blob/master/docs/models/user.md)
