@@ -526,6 +526,28 @@ return redirect()
         ->with(['message' => 'Your credentials are incorrect.']);
 ```
 
+Or, if you'd like to all of your LDAP connections:
+
+```php
+$connections = config('adldap.connections');
+
+foreach ($connections as $connection => $config) {
+
+    // Set the LDAP connection to authenticate with.
+    config(['adldap_auth.connection' => $connection]);
+
+    if (Auth::attempt($credentials)) {
+        return redirect()
+            ->to('dashboard')
+            ->with(['message' => 'Successfully logged in!']);
+    }
+}
+
+return redirect()
+        ->to('login')
+        ->with(['message' => 'Your credentials are incorrect.']);
+```
+
 #### Password Synchronization
 
 > **Note**: This feature was introduced in `v2.0.8`.
@@ -599,8 +621,11 @@ You can continue to develop and login to your application without a connection t
 * You have `password_sync` set to `true` in your `adldap_auth.php` configuration
  > This is necessary so we can login to the account with the last password that was used when an AD connection was present.
 
-* You have logged into the synchronized AD account previously
+* You have logged into the synchronized LDAP account previously
  > This is necessary so the account actually exists in your local app's database.
+
+If you have this configuration, you will have no issues developing an
+application without a persistent connection to your LDAP server.
 
 ### Auth Providers
 
@@ -625,3 +650,23 @@ If you just require LDAP authentication, use the provider:
 ```php
 Adldap\Laravel\Auth\NoDatabaseUserProvider::class
 ```
+
+##### Things to Note about the NoDatabaseUserProvider
+
+When calling `Auth::user()`, you will receive an instance of `Adldap\Models\User`. **Not**
+an instance of an `App\User`. This means you will need to change laravel's
+built in views for accessing the users name, and other information.
+
+For a small example, inside Laravel's stock view `layouts/app.blade.php`, this will result in an error:
+
+```
+{{ Auth::user()->name }}
+```
+
+Since you're actually using an instance of `Adldap\Models\User`, you'll need to replace the above with:
+
+```
+{{ Auth::user()->getCommonName() }}
+```
+
+You can read more about the methods available on the `Adldap\Models\User` instance here: 
