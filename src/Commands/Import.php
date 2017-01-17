@@ -175,7 +175,7 @@ class Import extends Command
     }
 
     /**
-     * Returns true / false if the users are being restored
+     * Returns true / false if users are being restored
      * if their account is enabled in AD.
      *
      * @return bool
