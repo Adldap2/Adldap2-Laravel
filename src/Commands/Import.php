@@ -53,7 +53,9 @@ class Import extends Command
 
             ['connection', '-c', InputOption::VALUE_OPTIONAL, 'The LDAP connection to use to import users.'],
 
-            ['delete', '-d', InputOption::VALUE_OPTIONAL, 'Soft-delete the users model if the AD user is disabled.', 'false'],
+            ['delete', '-d', InputOption::VALUE_OPTIONAL, 'Soft-delete the users model if their AD account is disabled.', 'false'],
+
+            ['restore', '-r', InputOption::VALUE_OPTIONAL, 'Restores soft-deleted models if their AD account is enabled.', 'false'],
         ];
     }
 
@@ -162,13 +164,25 @@ class Import extends Command
     }
 
     /**
-     * Returns true / false if users are being deleted if they are disabled in AD.
+     * Returns true / false if users are being deleted
+     * if their account is disabled in AD.
      *
      * @return bool
      */
     public function isDeleting()
     {
         return $this->option('delete') == 'true';
+    }
+
+    /**
+     * Returns true / false if the users are being restored
+     * if their account is enabled in AD.
+     *
+     * @return bool
+     */
+    public function isRestoring()
+    {
+        return $this->option('restore') == 'true';
     }
 
     /**
@@ -258,15 +272,40 @@ class Import extends Command
     }
 
     /**
-     * Soft deletes the specified model if the specified AD account is disabled.
+     * Restores soft-deleted models if their AD account is enabled.
      *
      * @param User  $user
      * @param Model $model
+     *
+     * @return void
+     */
+    protected function restore(User $user, Model $model)
+    {
+        if (
+            $this->isUsingSoftDeletes($model) &&
+            $model->trashed() &&
+            $user->isEnabled()
+        ) {
+            $model->restore();
+
+            if ($this->isLogging()) {
+                logger()->info("Restored user {$user->getCommonName()}. Their AD user account has been re-enabled.");
+            }
+        }
+    }
+
+    /**
+     * Soft deletes the specified model if their AD account is disabled.
+     *
+     * @param User  $user
+     * @param Model $model
+     *
+     * @return void
      */
     protected function delete(User $user, Model $model)
     {
         if (
-            method_exists($model, 'trashed') &&
+            $this->isUsingSoftDeletes($model) &&
             ! $model->trashed() &&
             $user->isDisabled()
         ) {
@@ -279,5 +318,17 @@ class Import extends Command
                 logger()->info("Soft-deleted user {$user->getCommonName()}. Their AD user account is disabled.");
             }
         }
+    }
+
+    /**
+     * Returns true / false if the model is using soft deletes.
+     *
+     * @param Model $model
+     *
+     * @return bool
+     */
+    protected function isUsingSoftDeletes(Model $model)
+    {
+        return method_exists($model, 'trashed');
     }
 }
