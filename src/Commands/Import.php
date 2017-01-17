@@ -53,9 +53,9 @@ class Import extends Command
 
             ['connection', '-c', InputOption::VALUE_OPTIONAL, 'The LDAP connection to use to import users.'],
 
-            ['delete', '-d', InputOption::VALUE_OPTIONAL, 'Soft-delete the users model if their AD account is disabled.', 'false'],
+            ['delete', '-d', InputOption::VALUE_NONE, 'Soft-delete the users model if their AD account is disabled.'],
 
-            ['restore', '-r', InputOption::VALUE_OPTIONAL, 'Restores soft-deleted models if their AD account is enabled.', 'false'],
+            ['restore', '-r', InputOption::VALUE_NONE, 'Restores soft-deleted models if their AD account is enabled.'],
         ];
     }
 
@@ -286,6 +286,8 @@ class Import extends Command
             $model->trashed() &&
             $user->isEnabled()
         ) {
+            // If the model has soft-deletes enabled, the model is currently deleted, and the
+            // AD user account is enabled, we'll restore the users model.
             $model->restore();
 
             if ($this->isLogging()) {
