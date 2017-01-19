@@ -89,7 +89,7 @@ trait ImportsUsers
     protected function bindAdldapToModel(User $user, Model $model)
     {
         $traits = class_uses_recursive(get_class($model));
-        
+
         $trait = HasAdldapUser::class;
 
         if (array_key_exists($trait, $traits)) {
