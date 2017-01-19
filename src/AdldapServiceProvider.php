@@ -9,7 +9,7 @@ use Adldap\Schemas\SchemaInterface;
 use Adldap\Connections\ConnectionInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Container\Container;
 
 class AdldapServiceProvider extends ServiceProvider
 {
@@ -37,7 +37,7 @@ class AdldapServiceProvider extends ServiceProvider
     public function register()
     {
         // Bind the Adldap instance to the IoC
-        $this->app->singleton('adldap', function (Application $app) {
+        $this->app->singleton('adldap', function (Container $app) {
             $config = $app->make('config')->get('adldap');
 
             // Verify configuration exists.
