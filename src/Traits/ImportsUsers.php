@@ -3,6 +3,7 @@
 namespace Adldap\Laravel\Traits;
 
 use Adldap\Models\User;
+use Adldap\AdldapException;
 use Illuminate\Database\Eloquent\Model;
 
 trait ImportsUsers
@@ -81,13 +82,28 @@ trait ImportsUsers
      * @param User  $user
      * @param Model $model
      *
+     * @throws AdldapException
+     *
      * @return Model
      */
     protected function bindAdldapToModel(User $user, Model $model)
     {
-        $model->adldapUser = $user;
+        $traits = class_uses_recursive($model);
 
-        return $model;
+        $trait = HasAdldapUser::class;
+
+        if (array_key_exists($trait, $traits)) {
+            // We need to verify that the User model is implementing
+            // the correct trait before setting the model property.
+            $model->adldapUser = $user;
+
+            return $model;
+        }
+
+        throw new AdldapException(
+            "To use the bind_user_to_model configuration option, you must 
+            implement the {$trait} trait on your User model."
+        );
     }
 
     /**
