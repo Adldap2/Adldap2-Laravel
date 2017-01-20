@@ -95,7 +95,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
         }
 
         throw new InvalidArgumentException(
-            "The given Adldap provider [{$provider}] is not supported or does not exist."
+            "The configured Adldap provider [{$provider}] is not supported or does not exist."
         );
     }
 
