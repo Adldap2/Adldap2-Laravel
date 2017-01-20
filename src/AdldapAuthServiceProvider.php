@@ -81,10 +81,15 @@ class AdldapAuthServiceProvider extends ServiceProvider
     {
         $provider = $this->getUserProvider();
 
-        // We need to verify if the provider we've been given is supported.
         switch ($provider) {
             case DatabaseUserProvider::class:
-                return new $provider($hasher, $config['model']);
+                if (array_key_exists('model', $config)) {
+                    return new $provider($hasher, $config['model']);
+                }
+
+                throw new InvalidArgumentException(
+                    "No model is configured. You must configure a model to use with the [{$provider}]."
+                );
             case NoDatabaseUserProvider::class:
                 return new $provider;
         }
