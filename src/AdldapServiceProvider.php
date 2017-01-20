@@ -20,6 +20,10 @@ class AdldapServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ($this->isLumen()) {
+            return;
+        }
+
         $config = __DIR__.'/Config/config.php';
 
         $this->publishes([
@@ -120,5 +124,15 @@ class AdldapServiceProvider extends ServiceProvider
     protected function newProvider($configuration = [], ConnectionInterface $connection = null, SchemaInterface $schema = null)
     {
         return new Provider($configuration, $connection, $schema);
+    }
+
+    /**
+     * Is this a Lumen application?
+     *
+     * @return bool
+     */
+    protected function isLumen()
+    {
+        return str_contains($this->app->version(), 'Lumen');
     }
 }
