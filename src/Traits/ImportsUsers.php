@@ -113,15 +113,25 @@ trait ImportsUsers
      * @param Model $model
      *
      * @return Model
+     *
+     * @throws AdldapException
      */
     protected function syncModelFromAdldap(User $user, Model $model)
     {
         foreach ($this->getSyncAttributes() as $modelField => $adField) {
-            $value = $this->isAttributeCallback($adField) ?
-                $this->handleAttributeCallback($user, $adField) :
-                $this->handleAttributeRetrieval($user, $adField);
+            // If the AD Field is a class, we'll assume it's an attribute handler.
+            if (class_exists($adField)) {
+                // Create the handler.
+                $handler = app($adField);
 
-            $model->{$modelField} = $value;
+                if (!method_exists($handler, 'handle')) {
+                    throw new AdldapException("No handle method exists for the given handler class [$adField]");
+                }
+
+                $handler->handle($user, $model);
+            } else {
+                $model->{$modelField} = $this->handleAttributeRetrieval($user, $adField);
+            }
         }
 
         return $model;
@@ -148,41 +158,6 @@ trait ImportsUsers
         $model->password = ($model->hasSetMutator('password') ? $password : bcrypt($password));
 
         return $model;
-    }
-
-    /**
-     * Returns true / false if the specified string
-     * is a callback for an attribute handler.
-     *
-     * @param string $string
-     *
-     * @return bool
-     */
-    protected function isAttributeCallback($string)
-    {
-        $matches = preg_grep("/(\w)@(\w)/", explode("\n", $string));
-
-        return count($matches) > 0;
-    }
-
-    /**
-     * Handles retrieving the value from an attribute callback.
-     *
-     * @param User   $user
-     * @param string $callback
-     *
-     * @return mixed
-     */
-    protected function handleAttributeCallback(User $user, $callback)
-    {
-        // Explode the callback into its class and method.
-        list($class, $method) = explode('@', $callback);
-
-        // Create the handler.
-        $handler = app($class);
-
-        // Call the attribute handler method and return the result.
-        return call_user_func_array([$handler, $method], [$user]);
     }
 
     /**
