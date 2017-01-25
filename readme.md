@@ -296,54 +296,13 @@ Feel free to add more attributes here, however be sure that your `users` databas
 
 ##### Sync Attribute Handlers
 
-> **Note**: This feature was introduced in `v1.3.8` and updated in `v3.0.0`.
-
-> **Tip**: Attribute handlers are constructed using the `app()` helper. This means you can type-hint any application
-> dependencies you may need in the handlers constructor.
-
-
-###### Adldap2-Laravel Version 2.1 and lower
-
 If you're looking to synchronize an attribute from an Adldap model that contains an array or an object, you can
-use a class callback to return a specific value to your Laravel model's attribute. For example:
-
-```php
-'sync_attributes' => [
-
-    'name' => 'App\Handlers\LdapAttributeHandler@name',
-
-],
-```
-
-The `LdapAttributeHandler` class:
-
-```php
-namespace App\Handlers;
-
-use Adldap\Models\User;
-
-class LdapAttributeHandler
-{
-    /**
-     * Returns the common name of the AD User.
-     *
-     * @param User $user
-     *
-     * @return string
-     */
-    public function name(User $user)
-    {
-        return $user->getAccountName();
-    }
-}
-```
-
-###### Adldap2-Laravel Version 3.0 and higher
-
-You can now use classes to sync your AD attributes to your Eloquent model. For example:
+use an attribute handler class to sync your model attributes manually. For example:
 
 > **Note**: The class must contain a `handle` method. Otherwise you will receive an exception.
 
+> **Tip**: Attribute handlers are constructed using the `app()` helper. This means you can type-hint any application
+> dependencies you may need in the handlers constructor.
 
 ```php
 'sync_attributes' => [
@@ -401,8 +360,7 @@ if (Auth::attempt($credentials)) {
 }
 ```
 
-You **must** insert the trait `Adldap\Laravel\Traits\AdldapUserModelTrait` onto your configured auth User model, **OR**
-Add the public property `adldapUser` to your model.
+You **must** insert the trait `Adldap\Laravel\Traits\HasLdapUser` onto your configured auth User model.
 
 ```php
 <?php
@@ -410,7 +368,7 @@ Add the public property `adldapUser` to your model.
 
 namespace App;
 
-use Adldap\Laravel\Traits\AdldapUserModelTrait;
+use Adldap\Laravel\Traits\HasLdapUser;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -419,7 +377,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, CanResetPassword, AdldapUserModelTrait; // Insert trait here
+    use Authenticatable, CanResetPassword, HasLdapUser; // Insert trait here
 
     /**
      * The database table used by the model.
@@ -463,9 +421,6 @@ To enable it, simply set the option to true in your `adldap_auth.php` configurat
 
 #### Windows Authentication (SSO) Middleware
 
-> **Note**: This feature was introduced in `v1.4.3`. You will need to re-publish the Adldap Auth configuration file
-to receive this option.
-
 > **Requirements**: This feature assumes that you have enabled `Windows Authentication` in IIS, or have enabled it
 in some other means with Apache. Adldap does not set this up for you. To enable Windows Authentication, visit:
 https://www.iis.net/configreference/system.webserver/security/authentication/windowsauthentication/providers/add
@@ -493,9 +448,6 @@ Now when you visit your site, a user account will be created (if one doesn't exi
 with a random 16 character string password and then automatically logged in. Neat huh?
 
 #### Login Limitation Filter
-
-> **Note**: This feature was introduced in `v1.4.6`. You will need to re-publish the Adldap Auth configuration file
-to receive this option.
 
 Inside of your `config/adldap_auth.php` configuration, you can now insert a raw LDAP filter to specify which users are allowed to authenticate.
 
@@ -528,8 +480,6 @@ For another example, here's how you can limit users logging in that are apart of
 ```
 
 #### Multiple Authentication Connections
-
-> **Note**: This feature was introduced in `v2.0.0`.
 
 To swap connections on the fly, set your configurations default connection and try re-authenticating the user:
 
@@ -581,11 +531,6 @@ return redirect()
 ```
 
 #### Password Synchronization
-
-> **Note**: This feature was introduced in `v2.0.8`.
->
-> You must delete and re-publish your Adldap2 Auth configuration
-> for this option to be present.
 
 The password sync option allows you to automatically synchronize
 users AD passwords to your local database. These passwords are
