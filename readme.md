@@ -307,12 +307,18 @@ the users `name` attribute on Laravel `User` Model will be set to the active dir
 
 Feel free to add more attributes here, however be sure that your `users` database table contains the key you've entered.
 
-##### Sync Attribute Callbacks
+##### Sync Attribute Handlers
 
-> **Note**: This feature was introduced in `v1.3.8`.
+> **Note**: This feature was introduced in `v1.3.8` and updated in `v3.0.0`.
 
-If you're looking to synchronize an attribute from an Adldap model that contains an array or an object, you can use a callback
-to return a specific value to your Laravel model's attribute. For example:
+> **Tip**: Attribute handlers are constructed using the `app()` helper. This means you can type-hint any application
+> dependencies you may need in the handlers constructor.
+
+
+###### Adldap2-Laravel Version 2.1 and lower
+
+If you're looking to synchronize an attribute from an Adldap model that contains an array or an object, you can
+use a class callback to return a specific value to your Laravel model's attribute. For example:
 
 ```php
 'sync_attributes' => [
@@ -345,8 +351,46 @@ class LdapAttributeHandler
 }
 ```
 
-> **Note**: Attribute handlers are constructed using the `app()` helper. This means you can type-hint any application
-> dependencies you may need in the handlers constructor.
+###### Adldap2-Laravel Version 3.0 and higher
+
+You can now use classes to sync your AD attributes to your Eloquent model. For example:
+
+> **Note**: The class must contain a `handle` method. Otherwise you will receive an exception.
+
+
+```php
+`sync_attributes` => [
+    
+    \App\Handlers\LdapAttributeHandler::class,
+
+],
+```
+
+The `LdapAttributeHandler`:
+
+```php
+namespace App\Handlers;
+
+use App\User as EloquentUser;
+use Adldap\Models\User as LdapUser;
+
+class LdapAttributeHandler
+{
+    /**
+     * Synchronizes ldap attributes to the specified model.
+     *
+     * @param User  $user
+     * @param Model $model
+     *
+     * @return void
+     */
+    public function handle(LdapUser $ldapUser, EloquentUser $eloquentUser)
+    {
+        $eloquentUser->name = $ldapUser->getCommonName();
+    }
+}
+```
+
 
 #### Binding the Adldap User Model to the Laravel User Model
 
@@ -642,6 +686,8 @@ For synchronizing LDAP users to your local applications database, use the provid
 ```php
 Adldap\Laravel\Auth\DatabaseUserProvider::class
 ```
+
+Using the `DatabaseUserProvider` utilizes your configured Eloquent model.
 
 #### NoDatabaseUserProvider
 

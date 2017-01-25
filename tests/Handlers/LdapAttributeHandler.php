@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LdapAttributeHandler
 {
     /**
-     * Returns the common name of the AD User.
+     * Synchronizes ldap attributes to the specified model.
      *
      * @param User  $user
      * @param Model $model
