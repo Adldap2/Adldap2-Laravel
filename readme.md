@@ -391,6 +391,7 @@ class LdapAttributeHandler
 }
 ```
 
+> **Tip**: You do not need to call `save()` on your eloquent `User` model. It will be saved automatically.
 
 #### Binding the Adldap User Model to the Laravel User Model
 
