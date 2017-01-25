@@ -3,18 +3,20 @@
 namespace Adldap\Laravel\Tests\Handlers;
 
 use Adldap\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
 class LdapAttributeHandler
 {
     /**
      * Returns the common name of the AD User.
      *
-     * @param User $user
+     * @param User  $user
+     * @param Model $model
      *
-     * @return string
+     * @return void
      */
-    public function name(User $user)
+    public function handle(User $user, Model $model)
     {
-        return 'handled';
+        $model->name = 'handled';
     }
 }

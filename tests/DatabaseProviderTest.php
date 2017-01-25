@@ -5,6 +5,7 @@ namespace Adldap\Laravel\Tests;
 use Adldap\Models\User;
 use Adldap\AdldapInterface;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
+use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
@@ -65,7 +66,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         // Due to Laravel firing service provider registrations, the
         // two events we expect to be fired need to be
         // added on to this total.
-        Event::shouldReceive('fire')->atLeast()->times(5)->withAnyArgs();
+        Event::shouldReceive('fire')->atLeast()->times(3)->withAnyArgs();
 
         $this->assertTrue(Auth::attempt($credentials));
 
@@ -177,7 +178,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     public function test_config_callback_attribute_handler()
     {
         $this->app['config']->set('adldap_auth.sync_attributes', [
-            'name' => 'Adldap\Laravel\Tests\Handlers\LdapAttributeHandler@name',
+            LdapAttributeHandler::class,
         ]);
 
         $this->test_auth_passes();
@@ -185,6 +186,18 @@ class DatabaseProviderTest extends DatabaseTestCase
         $user = Auth::user();
 
         $this->assertEquals('handled', $user->name);
+    }
+
+    /**
+     * @expectedException \Adldap\AdldapException
+     */
+    public function test_config_invalid_config_attribute_handler()
+    {
+        $this->app['config']->set('adldap_auth.sync_attributes', [
+            \stdClass::class,
+        ]);
+
+        $this->test_auth_passes();
     }
 
     public function test_config_login_fallback()
