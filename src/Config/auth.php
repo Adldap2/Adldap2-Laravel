@@ -194,29 +194,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Bind User to Model
-    |--------------------------------------------------------------------------
-    |
-    | The 'bind user to model' option allows you to access the authenticated
-    | Adldap user model instance on your laravel User model.
-    |
-    | If this option is true, you must insert the trait:
-    |
-    |   `Adldap\Laravel\Traits\HasAdldapUser`
-    |
-    | Onto your User model that is configured in `config/auth.php`.
-    |
-    | Then use `Auth::user()->adldapUser` to access.
-    |
-    | This option must be true or false and is only
-    | applicable to the DatabaseUserProvider.
-    |
-    */
-
-    'bind_user_to_model' => env('ADLDAP_BIND_USER_TO_MODEL', false),
-
-    /*
-    |--------------------------------------------------------------------------
     | Sync Attributes
     |--------------------------------------------------------------------------
     |
