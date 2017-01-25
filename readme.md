@@ -379,8 +379,8 @@ class LdapAttributeHandler
     /**
      * Synchronizes ldap attributes to the specified model.
      *
-     * @param User  $user
-     * @param Model $model
+     * @param LdapUser     $ldapUser
+     * @param EloquentUser $eloquentUser
      *
      * @return void
      */
