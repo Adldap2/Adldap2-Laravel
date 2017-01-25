@@ -50,7 +50,6 @@ class DatabaseTestCase extends TestCase
         ]);
 
         // Adldap auth setup.
-        $app['config']->set('adldap_auth.bind_user_to_model', true);
         $app['config']->set('adldap_auth.username_attribute', ['email' => 'mail']);
         $app['config']->set('adldap_auth.provider', DatabaseUserProvider::class);
 

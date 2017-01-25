@@ -40,18 +40,16 @@ class DatabaseProviderTest extends DatabaseTestCase
         $credentials = $credentials ?: ['email' => 'jdoe@email.com', 'password' => '12345'];
 
         $user = $this->getMockUser([
-            'cn'             => '',
+            'cn'             => 'John Doe',
             'mail'           => 'jdoe@email.com',
             'samaccountname' => 'jdoe',
         ]);
 
         $connection = $this->getMockConnection();
 
-        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
-
-        $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
-
-        $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
+        $connection->method('isBound')->willReturn(true);
+        $connection->method('search')->willReturn('resource');
+        $connection->method('getEntries')->willReturn([
             'count' => 1,
             $user->getAttributes(),
         ]);
@@ -74,22 +72,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $this->assertEquals($credentials['email'], $user->email);
         $this->assertTrue(Hash::check($credentials['password'], $user->password));
-    }
-
-    public function test_auth_passes_with_persistent_adldap_user()
-    {
-        $this->test_auth_passes();
-
-        $this->assertInstanceOf(User::class, Auth::user()->adldapUser);
-    }
-
-    public function test_auth_passes_without_persistent_adldap_user()
-    {
-        $this->app['config']->set('adldap_auth.bind_user_to_model', false);
-
-        $this->test_auth_passes();
-
-        $this->assertNull(Auth::user()->adldapUser);
+        $this->assertInstanceOf(User::class, $user->ldap);
     }
 
     public function test_auth_fails_when_user_found()
@@ -103,9 +86,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         $connection = $this->getMockConnection(['getLastError', 'errNo']);
 
         $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
-
         $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
-
         $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
             'count' => 1,
             $user->getAttributes(),
@@ -113,7 +94,6 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $connection->expects($this->exactly(1))->method('getLastError')->willReturn('Bind Failure.');
         $connection->expects($this->exactly(1))->method('errNo')->willReturn(1);
-
         $connection->expects($this->exactly(1))->method('bind')
             ->with($this->equalTo('jdoe'))
             ->willReturn(false);
@@ -126,9 +106,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         $connection = $this->getMockConnection();
 
         $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
-
         $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
-
         $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
             'count' => 0,
         ]);
@@ -152,15 +130,15 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $connection = $this->getMockConnection();
 
-        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
+        $connection->method('isBound')->willReturn(true);
 
-        $connection->expects($this->exactly(1))->method('search')->with(
+        $connection->method('search')->with(
             $this->equalTo(''),
             $this->equalTo($expectedFilter),
             $this->equalTo([])
         )->willReturn('resource');
 
-        $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
+        $connection->method('getEntries')->willReturn([
             'count' => 1,
             $user->getAttributes(),
         ]);
@@ -283,11 +261,9 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $connection = $this->getMockConnection();
 
-        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
-
-        $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
-
-        $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
+        $connection->method('isBound')->willReturn(true);
+        $connection->method('search')->willReturn('resource');
+        $connection->method('getEntries')->willReturn([
             'count' => 1,
             $user->getAttributes(),
         ]);
