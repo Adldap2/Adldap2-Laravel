@@ -27,7 +27,9 @@ class DatabaseUserProvider extends EloquentUserProvider
     {
         $model = parent::retrieveById($identifier);
 
-        return $this->discoverAdldapFromModel($model);
+        $this->locateAndBindLdapUserToModel($model);
+
+        return $model;
     }
 
     /**
@@ -37,7 +39,9 @@ class DatabaseUserProvider extends EloquentUserProvider
     {
         $model = parent::retrieveByToken($identifier, $token);
 
-        return $this->discoverAdldapFromModel($model);
+        $this->locateAndBindLdapUserToModel($model);
+
+        return $model;
     }
 
     /**
@@ -49,7 +53,7 @@ class DatabaseUserProvider extends EloquentUserProvider
 
         if ($user instanceof User) {
             // Set the currently authenticated LDAP user.
-            $this->setUser($user);
+            $this->user = $user;
 
             // We'll retrieve the login name from the LDAP user.
             $username = $this->getLoginUsernameFromUser($user);
@@ -59,8 +63,8 @@ class DatabaseUserProvider extends EloquentUserProvider
 
             // Perform LDAP authentication.
             if ($this->authenticate($username, $password)) {
-                // Passed, create / find the eloquent model from our Adldap user.
-                $model = $this->getModelFromAdldap($user, $password);
+                // Passed, find or create the eloquent model from our LDAP user.
+                $model = $this->findOrCreateModelFromAdldap($user, $password);
 
                 $this->handleAuthenticatedWithCredentials($user, $model);
 
@@ -73,7 +77,7 @@ class DatabaseUserProvider extends EloquentUserProvider
                     return;
                 }
 
-                if ($this->getOnlyAllowImportedUsers() && ! $model->exists) {
+                if (!$model->exists && $this->getOnlyAllowImportedUsers()) {
                     // If we're only allowing already imported users
                     // and the user doesn't exist, we won't
                     // allow them to authenticate.
@@ -111,47 +115,5 @@ class DatabaseUserProvider extends EloquentUserProvider
         }
 
         return false;
-    }
-
-    /**
-     * Retrieves the Adldap User model from the specified Laravel model.
-     *
-     * @param mixed $model
-     *
-     * @return null|Authenticatable
-     */
-    protected function discoverAdldapFromModel($model)
-    {
-        if ($this->getBindUserToModel() && $model) {
-            // If the developer wants to bind the Adldap User model
-            // to the Laravel model, we'll query to find it.
-            $attributes = $this->getUsernameAttribute();
-
-            $key = key($attributes);
-
-            $user = $this->newAdldapUserQuery()
-                ->where([$attributes[$key] => $model->{$key}])
-                ->first();
-
-            if ($user instanceof User) {
-                $model = $this->bindAdldapToModel($user, $model);
-            }
-        }
-
-        return $model;
-    }
-
-    /**
-     * Sets the currently authenticated user.
-     *
-     * @param User $user
-     *
-     * @return $this
-     */
-    protected function setUser(User $user)
-    {
-        $this->user = $user;
-
-        return $this;
     }
 }

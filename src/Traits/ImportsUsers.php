@@ -18,38 +18,14 @@ trait ImportsUsers
     abstract public function createModel();
 
     /**
-     * Returns an existing or new Eloquent user from the specified Adldap user instance.
+     * Finds an Eloquent model from the specified Adldap user.
      *
      * @param User        $user
      * @param string|null $password
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function getModelFromAdldap(User $user, $password = null)
-    {
-        $model = $this->findOrCreateModelFromAdldap($user);
-
-        // Sync the users password (if enabled). If no password is
-        // given, we'll pass in a random 16 character string.
-        $model = $this->syncModelPassword($model, $password ?: str_random());
-
-        // Synchronize other active directory attributes on the model.
-        $model = $this->syncModelFromAdldap($user, $model);
-
-        // Bind the Adldap model to the eloquent model (if enabled).
-        $model = ($this->getBindUserToModel() ? $this->bindAdldapToModel($user, $model) : $model);
-
-        return $model;
-    }
-
-    /**
-     * Finds an Eloquent model from the specified Adldap user.
-     *
-     * @param User $user
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    protected function findOrCreateModelFromAdldap(User $user)
+    protected function findOrCreateModelFromAdldap(User $user, $password = null)
     {
         // Get the model key.
         $attributes = $this->getUsernameAttribute();
@@ -72,6 +48,16 @@ trait ImportsUsers
         // Set the username in case of changes in active directory.
         $model->{$key} = $username;
 
+        // Sync the users password (if enabled). If no password is
+        // given, we'll pass in a random 16 character string.
+        $this->syncModelPassword($model, $password ?: str_random());
+
+        // Synchronize other active directory attributes on the model.
+        $this->syncModelFromAdldap($user, $model);
+
+        // Bind the Adldap model to the eloquent model (if enabled).
+        $this->locateAndBindLdapUserToModel($model);
+
         return $model;
     }
 
@@ -79,31 +65,38 @@ trait ImportsUsers
      * Binds the Adldap User instance to the Eloquent model instance
      * by setting its `adldapUser` public property.
      *
-     * @param User  $user
      * @param Model $model
      *
-     * @throws AdldapException
-     *
-     * @return Model
+     * @return bool
      */
-    protected function bindAdldapToModel(User $user, Model $model)
+    protected function isBindingUserToModel(Model $model)
     {
-        $traits = class_uses_recursive(get_class($model));
-
-        $trait = HasAdldapUser::class;
-
-        if (array_key_exists($trait, $traits)) {
-            // We need to verify that the User model is implementing
-            // the correct trait before setting the model property.
-            $model->adldapUser = $user;
-
-            return $model;
-        }
-
-        throw new AdldapException(
-            "To use the bind_user_to_model configuration option, you must 
-            implement the {$trait} trait on your User model."
+        return array_key_exists(
+            HasLdapUser::class,
+            class_uses_recursive(get_class($model))
         );
+    }
+
+    /**
+     * Retrieves the Adldap User model from the specified Laravel model.
+     *
+     * @param mixed $model
+     *
+     * @return void
+     */
+    protected function locateAndBindLdapUserToModel($model)
+    {
+        if ($model && $this->isBindingUserToModel($model)) {
+            $attributes = $this->getUsernameAttribute();
+
+            $key = key($attributes);
+
+            $user = $this->newAdldapUserQuery()
+                ->where([$attributes[$key] => $model->{$key}])
+                ->first();
+
+            $model->setLdapUser($user);
+        }
     }
 
     /**
@@ -112,9 +105,9 @@ trait ImportsUsers
      * @param User  $user
      * @param Model $model
      *
-     * @return Model
-     *
      * @throws AdldapException
+     *
+     * @return void
      */
     protected function syncModelFromAdldap(User $user, Model $model)
     {
@@ -133,8 +126,6 @@ trait ImportsUsers
                 $model->{$modelField} = $this->handleAttributeRetrieval($user, $adField);
             }
         }
-
-        return $model;
     }
 
     /**
@@ -143,7 +134,7 @@ trait ImportsUsers
      * @param Model  $model
      * @param string $password
      *
-     * @return Model
+     * @return void
      */
     protected function syncModelPassword(Model $model, $password)
     {
@@ -156,8 +147,6 @@ trait ImportsUsers
         // encryption method for passwords. Otherwise
         // we'll bcrypt it normally.
         $model->password = ($model->hasSetMutator('password') ? $password : bcrypt($password));
-
-        return $model;
     }
 
     /**
@@ -205,17 +194,6 @@ trait ImportsUsers
         }
 
         return $model->where([$key => $username]);
-    }
-
-    /**
-     * Returns the configured bind user to model option for binding
-     * the Adldap user model instance to the laravel model.
-     *
-     * @return bool
-     */
-    protected function getBindUserToModel()
-    {
-        return config('adldap_auth.bind_user_to_model', false);
     }
 
     /**
