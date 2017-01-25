@@ -359,7 +359,7 @@ You can now use classes to sync your AD attributes to your Eloquent model. For e
 
 
 ```php
-`sync_attributes` => [
+'sync_attributes' => [
     
     \App\Handlers\LdapAttributeHandler::class,
 
