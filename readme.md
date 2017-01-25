@@ -160,19 +160,6 @@ php artisan vendor:publish --tag="adldap"
 Change the auth driver in `config/auth.php` to `adldap`:
 
 ```php
-/*
-|--------------------------------------------------------------------------
-| Default Authentication Driver
-|--------------------------------------------------------------------------
-|
-| This option controls the authentication driver that will be utilized.
-| This driver manages the retrieval and authentication of the users
-| attempting to get access to protected areas of your application.
-|
-| Supported: "database", "eloquent"
-|
-*/
-
 'driver' => 'adldap',
 ```
 
