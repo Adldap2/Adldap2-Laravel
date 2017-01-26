@@ -39,6 +39,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Rules
+    |--------------------------------------------------------------------------
+    |
+    | Rules allow you to deny authentication requests depending on scenarios.
+    |
+    | You can create your own rules and insert them here.
+    |
+    | All rules must extend from Adldap\Laravel\Validation\Rules\Rule.
+    |
+    */
+
+    'rules' => [
+
+        // Denys deleted users from authenticating.
+
+        Adldap\Laravel\Validation\Rules\DenyTrashed::class,
+
+        // Allows only manually imported users to authenticate.
+
+        // Adldap\Laravel\Validation\Rules\OnlyImported::class,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Username Attribute
     |--------------------------------------------------------------------------
     |
@@ -215,31 +240,6 @@ return [
     'sync_attributes' => [
 
         'name' => 'cn',
-
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Select Attributes
-    |--------------------------------------------------------------------------
-    |
-    | Attributes to select upon the user on authentication and binding.
-    |
-    | If no attributes are given inside the array, all attributes on the
-    | user are selected.
-    |
-    | This is configurable to allow for faster LDAP queries, rather
-    | than retrieving all attributes on every login.
-    |
-    | **Note**: Keep in mind you must include attributes that you would
-    | like to synchronize, as well as your login attribute, if you've
-    | specified attributes to select.
-    |
-    */
-
-    'select_attributes' => [
-
-        //
 
     ],
 
