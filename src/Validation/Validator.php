@@ -26,7 +26,9 @@ class Validator
     }
 
     /**
-     * Determine if the data passes validation.
+     * Checks if each rule passes validation.
+     *
+     * If all rules pass, authentication is granted.
      *
      * @return bool
      */
@@ -42,7 +44,7 @@ class Validator
     }
 
     /**
-     * Determine if the data fails validation.
+     * Checks if a rule fails validation.
      *
      * @return bool
      */
