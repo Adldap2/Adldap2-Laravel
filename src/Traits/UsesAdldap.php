@@ -24,7 +24,7 @@ trait UsesAdldap
             $query->rawFilter($filter);
         }
 
-        return $query->select($this->getSelectAttributes());
+        return $query;
     }
 
     /**
@@ -49,17 +49,6 @@ trait UsesAdldap
         $provider = $provider ?: $this->getDefaultConnectionName();
 
         return Adldap::getProvider($provider);
-    }
-
-    /**
-     * Returns the configured select attributes when performing
-     * queries for authentication and binding for users.
-     *
-     * @return array
-     */
-    protected function getSelectAttributes()
-    {
-        return config('adldap_auth.select_attributes', []);
     }
 
     /**
