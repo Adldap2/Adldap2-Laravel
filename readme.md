@@ -359,7 +359,7 @@ class User extends Authenticatable
     use SoftDeletes, HasLdapUser;
 ```
 
-Now, after you've authenticated a user, their LDAP model is available on their `User` model:
+Now, after you've authenticated a user via the `adldap` driver, their LDAP model is available on their `User` model:
 
 ```php    
 if (Auth::attempt($credentials)) {
