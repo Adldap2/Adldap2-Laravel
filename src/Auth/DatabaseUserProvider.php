@@ -4,6 +4,7 @@ namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
 use Adldap\Laravel\Traits\ImportsUsers;
+use Adldap\Laravel\Validation\Validator;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -52,9 +53,6 @@ class DatabaseUserProvider extends EloquentUserProvider
         $user = $this->retrieveLdapUserByCredentials($credentials);
 
         if ($user instanceof User) {
-            // Set the currently authenticated LDAP user.
-            $this->user = $user;
-
             // We'll retrieve the login name from the LDAP user.
             $username = $this->getLoginUsernameFromUser($user);
 
@@ -68,23 +66,12 @@ class DatabaseUserProvider extends EloquentUserProvider
 
                 $this->handleAuthenticatedWithCredentials($user, $model);
 
-                if (method_exists($model, 'trashed') && $model->trashed()) {
-                    // If the model is soft-deleted, we'll fire an event
-                    // with the affected LDAP user and their model.
-                    $this->handleAuthenticatedModelTrashed($user, $model);
+                if ($this->validator($this->rules($user, $model))->passes()) {
+                    // Set the currently authenticated LDAP user.
+                    $this->user = $user;
 
-                    // We also won't allow soft-deleted users to authenticate.
-                    return;
+                    return $model;
                 }
-
-                if (!$model->exists && $this->getOnlyAllowImportedUsers()) {
-                    // If we're only allowing already imported users
-                    // and the user doesn't exist, we won't
-                    // allow them to authenticate.
-                    return;
-                }
-
-                return $model;
             }
         }
 
@@ -115,5 +102,36 @@ class DatabaseUserProvider extends EloquentUserProvider
         }
 
         return false;
+    }
+
+    /**
+     * Returns a new authentication validator.
+     *
+     * @param array $rules
+     *
+     * @return Validator
+     */
+    protected function validator(array $rules = [])
+    {
+        return new Validator($rules);
+    }
+
+    /**
+     * Returns an array of constructed rules.
+     *
+     * @param User            $user
+     * @param Authenticatable $model
+     *
+     * @return array
+     */
+    protected function rules(User $user, Authenticatable $model)
+    {
+        $rules = [];
+
+        foreach (config('adldap_auth.rules', []) as $rule) {
+            $rules[] = new $rule($user, $model);
+        }
+
+        return $rules;
     }
 }
