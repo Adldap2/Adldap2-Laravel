@@ -152,21 +152,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Allow Only Imported
-    |--------------------------------------------------------------------------
-    |
-    | This option allows only pre-imported LDAP users to authenticate.
-    |
-    | To import a specific user, use the command:
-    |
-    |   php artisan adldap:import {username}
-    |
-    */
-
-    'allow_only_imported' => env('ADLDAP_ALLOW_ONLY_IMPORTED', false),
-
-    /*
-    |--------------------------------------------------------------------------
     | Password Sync
     |--------------------------------------------------------------------------
     |
