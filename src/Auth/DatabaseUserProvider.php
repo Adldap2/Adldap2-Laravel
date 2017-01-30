@@ -53,29 +53,13 @@ class DatabaseUserProvider extends EloquentUserProvider
         $user = $this->retrieveLdapUserByCredentials($credentials);
 
         if ($user instanceof User) {
-            // We'll retrieve the login name from the LDAP user.
-            $username = $this->getLoginUsernameFromUser($user);
+            // Set the currently authenticated user.
+            $this->user = $user;
 
-            $password = $credentials['password'];
-
-            // Perform LDAP authentication.
-            if ($this->authenticate($username, $password)) {
-                // Passed, find or create the eloquent model from our LDAP user.
-                $model = $this->findOrCreateModelFromAdldap($user, $password);
-
-                $this->handleAuthenticatedWithCredentials($user, $model);
-
-                if ($this->validator($this->rules($user, $model))->passes()) {
-                    // Set the currently authenticated LDAP user.
-                    $this->user = $user;
-
-                    return $model;
-                }
-            }
+            return $this->findOrCreateModelFromAdldap($user, $credentials['password']);
         }
 
-        // Login failed. If login fallback is enabled
-        // we'll call the eloquent driver.
+        // If we're unable to locate the user, we'll either fallback to local
         if ($this->getLoginFallback()) {
             return parent::retrieveByCredentials($credentials);
         }
@@ -84,20 +68,32 @@ class DatabaseUserProvider extends EloquentUserProvider
     /**
      * {@inheritdoc}
      */
-    public function validateCredentials(Authenticatable $user, array $credentials)
+    public function validateCredentials(Authenticatable $model, array $credentials)
     {
         // Check if we have an authenticated AD user.
         if ($this->user instanceof User) {
-            // We'll save the authenticated model in case of changes.
-            $user->save();
+            // We'll retrieve the login name from the LDAP user.
+            $username = $this->getLoginUsernameFromUser($this->user);
 
-            return true;
+            // Perform LDAP authentication.
+            if ($this->authenticate($username, $credentials['password'])) {
+                $this->handleAuthenticatedWithCredentials($this->user, $model);
+
+                // Here we'll perform authorization on the LDAP user. If a
+                // validation rule fails, then the login attempt is
+                // rejected, even if the user has valid credentials.
+                if ($this->validator($this->rules($this->user, $model))->passes()) {
+                    $model->save();
+
+                    return true;
+                }
+            }
         }
 
-        if ($this->getLoginFallback() && $user->exists) {
+        if ($this->getLoginFallback() && $model->exists) {
             // If the user exists in our local database already and fallback is
             // enabled, we'll perform standard eloquent authentication.
-            return parent::validateCredentials($user, $credentials);
+            return parent::validateCredentials($model, $credentials);
         }
 
         return false;

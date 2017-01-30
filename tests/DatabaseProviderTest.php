@@ -175,7 +175,24 @@ class DatabaseProviderTest extends DatabaseTestCase
             \stdClass::class,
         ]);
 
-        $this->test_auth_passes();
+        $credentials = ['email' => 'jdoe@email.com', 'password' => '12345'];
+
+        $user = $this->getMockUser([
+            'cn'             => 'John Doe',
+            'mail'           => 'jdoe@email.com',
+            'samaccountname' => 'jdoe',
+        ]);
+
+        $connection = $this->getMockConnection();
+
+        $connection->method('isBound')->willReturn(true);
+        $connection->method('search')->willReturn('resource');
+        $connection->method('getEntries')->willReturn([
+            'count' => 1,
+            $user->getAttributes(),
+        ]);
+
+        Auth::attempt($credentials);
     }
 
     public function test_config_login_fallback()

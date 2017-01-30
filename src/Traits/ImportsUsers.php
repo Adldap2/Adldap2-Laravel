@@ -34,10 +34,7 @@ trait ImportsUsers
         $key = key($attributes);
 
         // Get the username from the AD model.
-        $username = $user->{$attributes[$key]};
-
-        // Make sure we retrieve the first username result if it's an array.
-        $username = (is_array($username) ? array_get($username, 0) : $username);
+        $username = $user->getFirstAttribute($attributes[$key]);
 
         // Try to find the local database user record.
         $model = $this->newEloquentQuery($key, $username)->first();
@@ -56,7 +53,7 @@ trait ImportsUsers
         $this->syncModelFromAdldap($user, $model);
 
         // Bind the Adldap model to the eloquent model (if enabled).
-        $this->locateAndBindLdapUserToModel($model);
+        $this->locateAndBindLdapUserToModel($model, $user);
 
         return $model;
     }
@@ -80,18 +77,21 @@ trait ImportsUsers
     /**
      * Retrieves the Adldap User model from the specified Laravel model.
      *
-     * @param mixed $model
+     * @param Model|null $model
+     * @param User       $user
      *
      * @return void
      */
-    protected function locateAndBindLdapUserToModel($model)
+    protected function locateAndBindLdapUserToModel(Model $model = null, User $user = null)
     {
         if ($model && $this->isBindingUserToModel($model)) {
             $attributes = $this->getUsernameAttribute();
 
             $key = key($attributes);
 
-            $user = $this->newAdldapUserQuery()
+            // If we have already been given a User instance,
+            // we don't need to locate one using the model.
+            $user = $user ?: $this->newAdldapUserQuery()
                 ->where([$attributes[$key] => $model->{$key}])
                 ->first();
 
