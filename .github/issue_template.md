@@ -1,6 +1,6 @@
-- Laravel Version: #.#.#
-- Adldap2-Laravel Version: #.#.#
-- PHP Version:
+- Laravel Version: #.#
+- Adldap2-Laravel Version: #.#
+- PHP Version: #.#
 
 ### Description:
 
