@@ -4,7 +4,6 @@ namespace Adldap\Laravel\Traits;
 
 use Adldap\Models\User;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
-use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -75,19 +74,6 @@ trait AuthenticatesUsers
     protected function handleAuthenticatedWithCredentials(User $user, Authenticatable $model)
     {
         event(new AuthenticatedWithCredentials($user, $model));
-    }
-
-    /**
-     * Handle an authenticated users model that has been soft deleted.
-     *
-     * @param User            $user
-     * @param Authenticatable $model
-     *
-     * @return void
-     */
-    protected function handleAuthenticatedModelTrashed(User $user, Authenticatable $model)
-    {
-        event(new AuthenticatedModelTrashed($user, $model));
     }
 
     /**
