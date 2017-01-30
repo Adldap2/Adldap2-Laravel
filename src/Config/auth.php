@@ -100,21 +100,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Password Key
-    |--------------------------------------------------------------------------
-    |
-    | The password field is the name of the HTML input that contains the users password.
-    |
-    | Change this if you change your HTML password fields input name.
-    |
-    | This option must be a string.
-    |
-    */
-
-    'password_field' => env('ADLDAP_PASSWORD_KEY', 'password'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Limitation Filter
     |--------------------------------------------------------------------------
     |

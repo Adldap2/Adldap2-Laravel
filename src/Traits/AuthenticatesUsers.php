@@ -135,18 +135,6 @@ trait AuthenticatesUsers
     }
 
     /**
-     * Returns the configured users password from the credentials array.
-     *
-     * @param array $credentials
-     *
-     * @return string
-     */
-    protected function getPasswordFromCredentials(array $credentials = [])
-    {
-        return array_get($credentials, $this->getPasswordField());
-    }
-
-    /**
      * Returns the configured username key.
      *
      * For example: 'email' or 'username'.
@@ -178,16 +166,6 @@ trait AuthenticatesUsers
     protected function getUsernameAttribute()
     {
         return config('adldap_auth.username_attribute', ['username' => $this->getSchema()->accountName()]);
-    }
-
-    /**
-     * Returns the password key to retrieve the password from the user input array.
-     *
-     * @return string
-     */
-    protected function getPasswordField()
-    {
-        return config('adldap_auth.password_field', 'password');
     }
 
     /**

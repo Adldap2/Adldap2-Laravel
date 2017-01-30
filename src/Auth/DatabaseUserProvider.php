@@ -56,8 +56,7 @@ class DatabaseUserProvider extends EloquentUserProvider
             // We'll retrieve the login name from the LDAP user.
             $username = $this->getLoginUsernameFromUser($user);
 
-            // Then, get their password from the given credentials.
-            $password = $this->getPasswordFromCredentials($credentials);
+            $password = $credentials['password'];
 
             // Perform LDAP authentication.
             if ($this->authenticate($username, $password)) {
