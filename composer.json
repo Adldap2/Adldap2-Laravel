@@ -10,7 +10,7 @@
     },
     "require-dev": {
         "mockery/mockery": "0.9.*",
-        "orchestra/testbench": "~3.3"
+        "orchestra/testbench": "~3.2"
     },
     "archive": {
         "exclude": ["/tests"]
