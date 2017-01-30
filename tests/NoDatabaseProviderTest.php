@@ -37,8 +37,8 @@ class NoDatabaseProviderTest extends NoDatabaseTestCase
             ))
             ->willReturn(true);
 
-        Event::shouldReceive('fire')->atLeast()->times(0)->atMost()->times(5)->withAnyArgs();
-        Event::shouldReceive('dispatch')->atLeast()->times(0)->atMost()->times(5)->withAnyArgs();
+        Event::shouldReceive('fire')->between(0, 5)->withAnyArgs();
+        Event::shouldReceive('dispatch')->between(0, 5)->withAnyArgs();
 
         $this->assertTrue(Auth::attempt($credentials));
 
