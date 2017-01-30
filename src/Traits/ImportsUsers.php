@@ -156,19 +156,9 @@ trait ImportsUsers
      */
     protected function handleAttributeRetrieval(User $user, $field)
     {
-        if ($field === $this->getSchema()->thumbnail()) {
-            // If the field we're retrieving is the users thumbnail photo, we need
-            // to retrieve it encoded so we're able to save it to the database.
-            $value = $user->getThumbnailEncoded();
-        } else {
-            $value = $user->{$field};
-
-            // If the AD Value is an array, we'll
-            // retrieve the first value.
-            $value = (is_array($value) ? array_get($value, 0) : $value);
-        }
-
-        return $value;
+        return $field === $this->getSchema()->thumbnail() ?
+            $user->getThumbnailEncoded() :
+            $user->getFirstAttribute($field);
     }
 
     /**
