@@ -53,7 +53,7 @@ class DatabaseUserProvider extends EloquentUserProvider
         $user = $this->retrieveLdapUserByCredentials($credentials);
 
         if ($user instanceof User) {
-            // Set the currently authenticated user.
+            // Set the authenticating LDAP user.
             $this->user = $user;
 
             return $this->findOrCreateModelFromAdldap($user, $credentials['password']);
@@ -70,7 +70,6 @@ class DatabaseUserProvider extends EloquentUserProvider
      */
     public function validateCredentials(Authenticatable $model, array $credentials)
     {
-        // Check if we have an authenticated AD user.
         if ($this->user instanceof User) {
             // We'll retrieve the login name from the LDAP user.
             $username = $this->getLoginUsernameFromUser($this->user);
@@ -79,14 +78,16 @@ class DatabaseUserProvider extends EloquentUserProvider
             if ($this->authenticate($username, $credentials['password'])) {
                 $this->handleAuthenticatedWithCredentials($this->user, $model);
 
-                // Here we'll perform authorization on the LDAP user. If a
-                // validation rule fails, then the login attempt is
-                // rejected, even if the user has valid credentials.
+                // Here we will perform authorization on the LDAP user. If all
+                // validation rules pass, we will allow the authentication
+                // attempt. Otherwise, it is automatically rejected.
                 if ($this->validator($this->rules($this->user, $model))->passes()) {
                     $model->save();
 
                     return true;
                 }
+
+                return false;
             }
         }
 
