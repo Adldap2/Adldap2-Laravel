@@ -157,8 +157,7 @@ trait ImportsUsers
     protected function handleAttributeRetrieval(User $user, $field)
     {
         return $field === $this->getSchema()->thumbnail() ?
-            $user->getThumbnailEncoded() :
-            $user->getFirstAttribute($field);
+            $user->getThumbnailEncoded() : $user->getFirstAttribute($field);
     }
 
     /**
