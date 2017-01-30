@@ -113,10 +113,7 @@ trait ImportsUsers
     {
         foreach ($this->getSyncAttributes() as $modelField => $adField) {
             // If the AD Field is a class, we'll assume it's an attribute handler.
-            if (class_exists($adField)) {
-                // Create the handler.
-                $handler = app($adField);
-
+            if (class_exists($adField) && $handler = app($adField)) {
                 if (!method_exists($handler, 'handle')) {
                     throw new AdldapException("No handle method exists for the given handler class [$adField]");
                 }
