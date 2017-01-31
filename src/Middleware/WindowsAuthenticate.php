@@ -140,7 +140,7 @@ class WindowsAuthenticate
                 // Retrieve the Eloquent user model from our AD user instance.
                 // We'll assign the user a random password since we don't
                 // have access to it through SSO auth.
-                $model = $this->getModelFromAdldap($user, str_random());
+                $model = $this->findOrCreateModelByUser($user, str_random());
 
                 // Save model in case of changes.
                 $model->save();

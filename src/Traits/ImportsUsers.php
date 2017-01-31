@@ -25,7 +25,7 @@ trait ImportsUsers
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function findOrCreateModelFromAdldap(User $user, $password = null)
+    protected function findOrCreateModelByUser(User $user, $password = null)
     {
         // Get the model key.
         $attributes = $this->getUsernameAttribute();
@@ -50,7 +50,7 @@ trait ImportsUsers
         $this->syncModelPassword($model, $password ?: str_random());
 
         // Synchronize other active directory attributes on the model.
-        $this->syncModelFromAdldap($user, $model);
+        $this->syncModelAttributes($user, $model);
 
         // Bind the Adldap model to the eloquent model (if enabled).
         $this->locateAndBindLdapUserToModel($model, $user);
@@ -109,7 +109,7 @@ trait ImportsUsers
      *
      * @return void
      */
-    protected function syncModelFromAdldap(User $user, Model $model)
+    protected function syncModelAttributes(User $user, Model $model)
     {
         foreach ($this->getSyncAttributes() as $modelField => $adField) {
             // If the AD Field is a class, we'll assume it's an attribute handler.
@@ -190,7 +190,9 @@ trait ImportsUsers
      */
     protected function getSyncAttributes()
     {
-        return config('adldap_auth.sync_attributes', ['name' => $this->getSchema()->commonName()]);
+        return config('adldap_auth.sync_attributes', [
+            'name' => $this->getSchema()->commonName()
+        ]);
     }
 
     /**
@@ -201,16 +203,5 @@ trait ImportsUsers
     protected function getPasswordSync()
     {
         return config('adldap_auth.password_sync', true);
-    }
-
-    /**
-     * Returns the configured option for only allowing
-     * manually imported users to authenticate.
-     *
-     * @return mixed
-     */
-    protected function getOnlyAllowImportedUsers()
-    {
-        return config('adldap_auth.allow_only_imported', false);
     }
 }
