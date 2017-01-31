@@ -42,11 +42,13 @@ return [
     | Rules
     |--------------------------------------------------------------------------
     |
-    | Rules allow you to deny authentication requests depending on scenarios.
+    | Rules allow you to deny user authentication requests depending on scenarios.
     |
     | You can create your own rules and insert them here.
     |
-    | All rules must extend from Adldap\Laravel\Validation\Rules\Rule.
+    | All rules must extend from the following class:
+    |
+    |   Adldap\Laravel\Validation\Rules\Rule
     |
     */
 
@@ -59,6 +61,28 @@ return [
         // Allows only manually imported users to authenticate.
 
         // Adldap\Laravel\Validation\Rules\OnlyImported::class,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    |
+    | Scopes allow you to restrict the LDAP query that locates
+    | users upon import and authentication.
+    |
+    | All scopes must implement the following interface:
+    |
+    |   Adldap\Laravel\Scopes\Scope
+    |
+    */
+
+    'scopes' => [
+
+        // Only allows users with an email address to authenticate.
+
+        Adldap\Laravel\Scopes\MailScope::class,
 
     ],
 
@@ -97,26 +121,6 @@ return [
     */
 
     'login_attribute' => env('ADLDAP_LOGIN_ATTRIBUTE', 'samaccountname'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Limitation Filter
-    |--------------------------------------------------------------------------
-    |
-    | The limitation filter allows you to enter a raw filter to only allow
-    | specific users / groups / ous to authenticate.
-    |
-    | For an example, to only allow users inside of a group
-    | named 'Accounting', you would insert the Accounting
-    | groups full distinguished name inside the filter:
-    |
-    | '(memberof=cn=Accounting,dc=corp,dc=acme,dc=org)'
-    |
-    | This value must be a standard LDAP filter.
-    |
-    */
-
-    'limitation_filter' => env('ADLDAP_LIMITATION_FILTER', ''),
 
     /*
     |--------------------------------------------------------------------------
