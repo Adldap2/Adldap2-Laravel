@@ -11,6 +11,6 @@ class MailScope implements Scope
      */
     public function apply(Builder $builder)
     {
-        $builder->whereHas('mail');
+        $builder->whereHas($builder->getSchema()->email());
     }
 }
