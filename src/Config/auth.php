@@ -82,7 +82,7 @@ return [
 
         // Only allows users with an email address to authenticate.
 
-        Adldap\Laravel\Scopes\MailScope::class,
+        Adldap\Laravel\Scopes\EmailScope::class,
 
     ],
 

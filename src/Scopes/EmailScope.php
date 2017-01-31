@@ -4,7 +4,7 @@ namespace Adldap\Laravel\Scopes;
 
 use Adldap\Query\Builder;
 
-class MailScope implements Scope
+class EmailScope implements Scope
 {
     /**
      * {@inheritdoc}
