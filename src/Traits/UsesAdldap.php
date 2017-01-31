@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Traits;
 
+use Adldap\Query\Builder;
 use Adldap\Laravel\Facades\Adldap;
 
 trait UsesAdldap
@@ -10,21 +11,30 @@ trait UsesAdldap
      * Returns a new Adldap user query.
      *
      * @param string|null $provider
-     * @param string|null $filter
      *
-     * @return \Adldap\Query\Builder
+     * @return Builder
      */
-    protected function newAdldapUserQuery($provider = null, $filter = null)
+    protected function newAdldapUserQuery($provider = null)
     {
         $query = $this->getAdldap($provider)->search()->users();
 
-        if ($filter = $this->getLimitationFilter() ?: $filter) {
-            // If we're provided a login limitation filter,
-            // we'll add it to the user query.
-            $query->rawFilter($filter);
-        }
+        $this->applyScopes($query);
 
         return $query;
+    }
+
+    /**
+     * Applies the configured scopes to the given query.
+     *
+     * @param Builder $query
+     */
+    protected function applyScopes(Builder $query)
+    {
+        foreach ($this->getScopes() as $scope) {
+            $scope = app($scope);
+
+            $scope->apply($query);
+        }
     }
 
     /**
@@ -52,13 +62,13 @@ trait UsesAdldap
     }
 
     /**
-     * Returns the configured login limitation filter.
+     * Returns the configured query scopes.
      *
-     * @return string|null
+     * @return array
      */
-    protected function getLimitationFilter()
+    protected function getScopes()
     {
-        return config('adldap_auth.limitation_filter');
+        return config('adldap_auth.scopes', []);
     }
 
     /**

@@ -62,7 +62,7 @@ class Import extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
@@ -104,7 +104,7 @@ class Import extends Command
         foreach ($users as $user) {
             try {
                 // Import the user and retrieve it's model.
-                $model = $this->getModelFromAdldap($user);
+                $model = $this->findOrCreateModelByUser($user);
 
                 // Save the returned model.
                 $this->save($user, $model);
@@ -202,20 +202,22 @@ class Import extends Command
         }
 
         // Generate a new user search.
-        $search = $adldap->search()->users();
+        $query = $adldap->search()->users();
 
-        if ($filter = $this->getFilter()) {
+        $this->applyScopes($query);
+
+        if ($filter = $this->option('filter')) {
             // If the filter option was given, we'll
             // insert it into our search query.
-            $search->rawFilter($filter);
+            $query->rawFilter($filter);
         }
 
         if ($user = $this->argument('user')) {
-            $users = [$search->findOrFail($user)];
+            $users = [$query->findOrFail($user)];
         } else {
             // Retrieve all users. We'll paginate our search in case we
             // hit the 1000 record hard limit of active directory.
-            $users = $search->paginate()->getResults();
+            $users = $query->paginate()->getResults();
         }
 
         // We need to filter our results to make sure they are
@@ -225,16 +227,6 @@ class Import extends Command
         return array_filter($users, function ($user) {
             return $user instanceof User;
         });
-    }
-
-    /**
-     * Returns the limitation filter for the user query.
-     *
-     * @return string
-     */
-    public function getFilter()
-    {
-        return $this->getLimitationFilter() ?: $this->option('filter');
     }
 
     /**

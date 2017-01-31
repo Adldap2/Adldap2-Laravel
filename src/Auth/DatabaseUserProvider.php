@@ -56,7 +56,7 @@ class DatabaseUserProvider extends EloquentUserProvider
             // Set the authenticating LDAP user.
             $this->user = $user;
 
-            return $this->findOrCreateModelFromAdldap($user, $credentials['password']);
+            return $this->findOrCreateModelByUser($user, $credentials['password']);
         }
 
         // If we're unable to locate the user, we'll either fallback to local
@@ -82,6 +82,8 @@ class DatabaseUserProvider extends EloquentUserProvider
                 // validation rules pass, we will allow the authentication
                 // attempt. Otherwise, it is automatically rejected.
                 if ($this->validator($this->rules($this->user, $model))->passes()) {
+                    // All of our validation rules have passed and we can
+                    // finally save the model in case of changes.
                     $model->save();
 
                     return true;
