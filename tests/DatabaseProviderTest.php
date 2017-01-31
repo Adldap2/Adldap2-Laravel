@@ -4,6 +4,7 @@ namespace Adldap\Laravel\Tests;
 
 use Adldap\Models\User;
 use Adldap\AdldapInterface;
+use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
 use Illuminate\Support\Facades\App;
@@ -115,13 +116,15 @@ class DatabaseProviderTest extends DatabaseTestCase
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
 
-    public function test_config_limitation_filter()
+    public function test_config_scopes()
     {
-        $filter = '(cn=John Doe)';
+        $scopes = config('adldap_auth.scopes', []);
 
-        $expectedFilter = '(&(cn=John Doe)(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(mail=\6a\64\6f\65\40\65\6d\61\69\6c\2e\63\6f\6d))';
+        $scopes[] = JohnDoeScope::class;
 
-        $this->app['config']->set('adldap_auth.limitation_filter', $filter);
+        config(['adldap_auth.scopes' => $scopes]);
+
+        $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(mail=*)(cn=\4a\6f\68\6e\20\44\6f\65)(mail=\6a\64\6f\65\40\65\6d\61\69\6c\2e\63\6f\6d))';
 
         $user = $this->getMockUser([
             'cn'             => '',
