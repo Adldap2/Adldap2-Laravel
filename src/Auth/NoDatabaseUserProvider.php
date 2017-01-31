@@ -60,10 +60,7 @@ class NoDatabaseUserProvider implements UserProvider
         // Retrieve the authentication username for the AD user.
         $username = $this->getLoginUsernameFromUser($user);
 
-        // Retrieve the users password.
-        $password = $credentials['password'];
-
         // Perform LDAP authentication.
-        return $this->authenticate($username, $password);
+        return $this->authenticate($username, $credentials['password']);
     }
 }
