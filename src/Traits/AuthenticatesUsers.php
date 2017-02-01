@@ -97,15 +97,7 @@ trait AuthenticatesUsers
      */
     public function getLoginUsernameFromUser(User $user)
     {
-        $username = $user->{$this->getLoginAttribute()};
-
-        if (is_array($username)) {
-            // We'll make sure we retrieve the users first username
-            // attribute if it's contained in an array.
-            $username = array_get($username, 0);
-        }
-
-        return $username;
+        return $user->getFirstAttribute($this->getLoginAttribute());
     }
 
     /**
