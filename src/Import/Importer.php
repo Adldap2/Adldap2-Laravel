@@ -6,78 +6,47 @@ use Adldap\Models\User;
 use Adldap\AdldapException;
 use Illuminate\Database\Eloquent\Model;
 
-class Importer
+class Importer implements ImporterInterface
 {
     /**
-     * The LDAP user to import.
-     *
-     * @var User
+     * {@inheritdoc}
      */
-    protected $user;
-
-    /**
-     * The users password.
-     *
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * Constructor.
-     *
-     * @param User $user
-     * @param null $password
-     */
-    public function __construct(User $user, $password = null)
+    public function run(User $user, Model $model, array $credentials = [])
     {
-        $this->user = $user;
-        $this->password = $password;
-    }
-
-    /**
-     * Imports the user.
-     *
-     * @return Model|null|static
-     */
-    public function run()
-    {
-        $attributes = $this->getUsernameAttribute();
-
-        // Get the model key.
-        $key = key($attributes);
-
-        // Get the username from the AD model.
-        $username = $this->user->getFirstAttribute($attributes[$key]);
-
         // Here we'll try to locate our local user record
         // for the LDAP user. If one isn't located,
         // we'll create a new one for them.
-        $model = $this->findBy($key, $username) ?: $this->getModel();
+        $model = $this->findByCredentials($model, $credentials) ?: $model->newInstance();
 
-        // Set the username in case of changes.
-        $model->{$key} = $username;
+        // We'll check if we've been given a password. If one isn't
+        // given we'll set it to a 16 character random string.
+        $password = array_key_exists('password', $credentials) ?
+            $credentials['password'] :
+            str_random();
 
         // Sync the users password (if enabled). If no password is
         // given, we'll pass in a random 16 character string.
-        $this->syncModelPassword($model, $this->password ?: str_random());
+        $this->syncModelPassword($model, $password);
 
-        // Synchronize other active directory attributes on the model.
-        $this->syncModelAttributes($this->user, $model);
+        // Synchronize other LDAP attributes on the model.
+        $this->syncModelAttributes($user, $model);
 
         return $model;
     }
 
     /**
-     * Returns a new Eloquent user query.
+     * Retrieves an eloquent user by their credentials.
      *
-     * @param string $key
-     * @param string $username
+     * @param Model $model
+     * @param array $credentials
      *
      * @return Model|null
      */
-    protected function findBy($key, $username)
+    protected function findByCredentials(Model $model, array $credentials = [])
     {
-        $model = $this->getModel();
+        if (empty($credentials)) {
+            return;
+        }
 
         if (method_exists($model, 'trashed')) {
             // If the trashed method exists on our User model, then we must be
@@ -86,7 +55,10 @@ class Importer
             $model = $model->withTrashed();
         }
 
-        return $model->where([$key => $username])->first();
+        $username = $this->getEloquentUsername();
+
+        return $model->where([$username => $credentials[$username]])
+            ->first();
     }
 
     /**
@@ -129,10 +101,9 @@ class Importer
         // we'll set the password to a random 16 character string.
         $password = ($this->getPasswordSync() ? $password : str_random());
 
-        // If the model has a set mutator for the password then
-        // we'll assume that the dev is using their own
-        // encryption method for passwords. Otherwise
-        // we'll bcrypt it normally.
+        // If the model has a set mutator for the password then we'll
+        // assume that we're using a custom encryption method for
+        // passwords. Otherwise we'll bcrypt it normally.
         $model->password = ($model->hasSetMutator('password') ? $password : bcrypt($password));
     }
 
@@ -159,7 +130,8 @@ class Importer
     protected function getSyncAttributes()
     {
         return config('adldap_auth.sync_attributes', [
-            'name' => $this->user->getSchema()->commonName(),
+            'email' => 'mail',
+            'name' => 'cn',
         ]);
     }
 
@@ -174,24 +146,12 @@ class Importer
     }
 
     /**
-     * Returns the configured username attribute array.
+     * Retrieves the eloquent users username attribute.
      *
-     * @return array
+     * @return string
      */
-    protected function getUsernameAttribute()
+    protected function getEloquentUsername()
     {
-        return config('adldap_auth.username_attribute', [
-            'email' => $this->user->getSchema()->email(),
-        ]);
-    }
-
-    /**
-     * Returns the configured eloquent auth model.
-     *
-     * @return Model
-     */
-    protected function getModel()
-    {
-        return auth()->getProvider()->getModel();
+        return config('adldap_auth.usernames.eloquent', 'email');
     }
 }
