@@ -3,7 +3,9 @@
 namespace Adldap\Laravel\Commands;
 
 use Adldap\Models\User;
-use Adldap\Laravel\Traits\ImportsUsers;
+use Adldap\Laravel\Import\Importer;
+use Adldap\Laravel\Traits\UsesAdldap;
+use Adldap\Laravel\Resolvers\UserResolver;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\Console\Input\InputOption;
@@ -11,7 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class Import extends Command
 {
-    use ImportsUsers;
+    use UsesAdldap;
 
     /**
      * The name of the console command.
@@ -104,7 +106,7 @@ class Import extends Command
         foreach ($users as $user) {
             try {
                 // Import the user and retrieve it's model.
-                $model = $this->findOrCreateModelByUser($user);
+                $model = $this->importer()->run($user, $this->model());
 
                 // Save the returned model.
                 $this->save($user, $model);
@@ -192,19 +194,7 @@ class Import extends Command
      */
     public function getUsers()
     {
-        // Retrieve the Adldap instance.
-        $adldap = $this->getAdldap($this->option('connection'));
-
-        if (!$adldap->getConnection()->isBound()) {
-            // If the connection isn't bound yet, we'll
-            // connect to the server manually.
-            $adldap->connect();
-        }
-
-        // Generate a new user search.
-        $query = $adldap->search()->users();
-
-        $this->applyScopes($query);
+        $query = $this->resolver()->query();
 
         if ($filter = $this->option('filter')) {
             // If the filter option was given, we'll
@@ -227,16 +217,6 @@ class Import extends Command
         return array_filter($users, function ($user) {
             return $user instanceof User;
         });
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createModel()
-    {
-        $model = auth()->getProvider()->getModel();
-
-        return new $model();
     }
 
     /**
@@ -312,6 +292,48 @@ class Import extends Command
                 logger()->info("Soft-deleted user {$user->getCommonName()}. Their AD user account is disabled.");
             }
         }
+    }
+
+    /**
+     * Returns the user resolver.
+     *
+     * @return \Adldap\Laravel\Resolvers\ResolverInterface
+     */
+    protected function resolver()
+    {
+        $resolver = config('adldap_auth.resolver', UserResolver::class);
+
+        $provider = $this->provider($this->option('connection'));
+
+        if (!$provider->getConnection()->isBound()) {
+            // If the connection isn't bound yet, we'll
+            // connect to the server manually.
+            $provider->connect();
+        }
+
+        return new $resolver($provider);
+    }
+
+    /**
+     * Returns the importer.
+     *
+     * @return \Adldap\Laravel\Import\ImporterInterface
+     */
+    protected function importer()
+    {
+        $importer = config('adldap_auth.importer', Importer::class);
+
+        return new $importer;
+    }
+
+    /**
+     * Create a new instance of the configured authentication model.
+     *
+     * @return Model
+     */
+    protected function model()
+    {
+        return auth()->getProvider()->createModel();
     }
 
     /**
