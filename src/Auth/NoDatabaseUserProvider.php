@@ -2,24 +2,16 @@
 
 namespace Adldap\Laravel\Auth;
 
-use Adldap\Laravel\Traits\AuthenticatesUsers;
-use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class NoDatabaseUserProvider implements UserProvider
+class NoDatabaseUserProvider extends Provider
 {
-    use AuthenticatesUsers {
-        retrieveByCredentials as retrieveLdapUserByCredentials;
-    }
-
     /**
      *  {@inheritdoc}
      */
     public function retrieveById($identifier)
     {
-        $user = $this->newAdldapUserQuery()->where([
-            $this->getSchema()->objectSid() => $identifier,
-        ])->first();
+        $user = $this->resolver()->byId($identifier);
 
         if ($user instanceof Authenticatable) {
             // We'll verify we have the correct instance just to ensure we
@@ -49,7 +41,7 @@ class NoDatabaseUserProvider implements UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        return $this->retrieveLdapUserByCredentials($credentials);
+        return $this->resolver()->byCredentials($credentials);
     }
 
     /**
@@ -58,9 +50,9 @@ class NoDatabaseUserProvider implements UserProvider
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
         // Retrieve the authentication username for the AD user.
-        $username = $this->getLoginUsernameFromUser($user);
+        $username = $this->resolver()->username($user);
 
         // Perform LDAP authentication.
-        return $this->authenticate($username, $credentials['password']);
+        return $this->provider()->auth()->attempt($username, $credentials['password']);
     }
 }

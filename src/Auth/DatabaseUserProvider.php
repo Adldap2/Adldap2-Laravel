@@ -3,16 +3,37 @@
 namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
-use Adldap\Laravel\Traits\ImportsUsers;
-use Adldap\Laravel\Validation\Validator;
+use Adldap\Laravel\Traits\HasLdapUser;
+use Adldap\Laravel\Traits\DispatchesAuthEvents;
 use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class DatabaseUserProvider extends EloquentUserProvider
+class DatabaseUserProvider extends Provider
 {
-    use ImportsUsers {
-        retrieveByCredentials as retrieveLdapUserByCredentials;
-    }
+    use DispatchesAuthEvents;
+
+    /**
+     * The hasher implementation.
+     *
+     * @var \Illuminate\Contracts\Hashing\Hasher
+     */
+    protected $hasher;
+
+    /**
+     * The Eloquent user model.
+     *
+     * @var string
+     */
+    protected $model;
+
+    /**
+     * The fallback user provider.
+     *
+     * @var UserProvider
+     */
+    protected $fallback;
 
     /**
      * The currently authenticated LDAP user.
@@ -22,13 +43,28 @@ class DatabaseUserProvider extends EloquentUserProvider
     protected $user;
 
     /**
+     * Constructor.
+     *
+     * @param Hasher $hasher
+     * @param string $model
+     */
+    public function __construct(Hasher $hasher, $model)
+    {
+        $this->model = $model;
+        $this->hasher = $hasher;
+        $this->fallback = new EloquentUserProvider($hasher, $model);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function retrieveById($identifier)
     {
-        $model = parent::retrieveById($identifier);
+        $model = $this->fallback->retrieveById($identifier);
 
-        $this->locateAndBindLdapUserToModel($model);
+        if ($this->isBindingUserToModel($model)) {
+            $model->setLdapUser($this->resolver()->byModel($model));
+        }
 
         return $model;
     }
@@ -38,11 +74,26 @@ class DatabaseUserProvider extends EloquentUserProvider
      */
     public function retrieveByToken($identifier, $token)
     {
-        $model = parent::retrieveByToken($identifier, $token);
+        $model = $this->fallback->retrieveByToken($identifier, $token);
 
-        $this->locateAndBindLdapUserToModel($model);
+        if ($this->isBindingUserToModel($model)) {
+            $model->setLdapUser($this->resolver()->byModel($model));
+        }
 
         return $model;
+    }
+
+    /**
+     * Update the "remember me" token for the given user in storage.
+     *
+     * @param Authenticatable $user
+     * @param string          $token
+     *
+     * @return void
+     */
+    public function updateRememberToken(Authenticatable $user, $token)
+    {
+        $this->fallback->updateRememberToken($user, $token);
     }
 
     /**
@@ -50,18 +101,20 @@ class DatabaseUserProvider extends EloquentUserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        $user = $this->retrieveLdapUserByCredentials($credentials);
+        // Retrieve the LDAP user who is authenticating.
+        $user = $this->resolver()->byCredentials($credentials);
 
         if ($user instanceof User) {
-            // Set the authenticating LDAP user.
+            // Set the currently authenticating LDAP user.
             $this->user = $user;
 
-            return $this->findOrCreateModelByUser($user, $credentials['password']);
+            // Import / locate the local user account.
+            return $this->importer()
+                ->run($user, $this->fallback->createModel(), $credentials);
         }
 
-        // If we're unable to locate the user, we'll either fallback to local
-        if ($this->getLoginFallback()) {
-            return parent::retrieveByCredentials($credentials);
+        if ($this->isFallingBack()) {
+            return $this->fallback->retrieveByCredentials($credentials);
         }
     }
 
@@ -72,10 +125,13 @@ class DatabaseUserProvider extends EloquentUserProvider
     {
         if ($this->user instanceof User) {
             // We'll retrieve the login name from the LDAP user.
-            $username = $this->getLoginUsernameFromUser($this->user);
+            $username = $this->resolver()->username($this->user);
 
-            // Perform LDAP authentication.
-            if ($this->authenticate($username, $credentials['password'])) {
+            // Retrieve the LDAP provider.
+            $provider = $this->provider();
+
+            // Perform LDAP authentication on our configured provider.
+            if ($provider->auth()->attempt($username, $credentials['password'])) {
                 $this->handleAuthenticatedWithCredentials($this->user, $model);
 
                 // Here we will perform authorization on the LDAP user. If all
@@ -86,6 +142,13 @@ class DatabaseUserProvider extends EloquentUserProvider
                     // finally save the model in case of changes.
                     $model->save();
 
+                    // If binding to the eloquent model is configured, we
+                    // need to make sure it's available during the
+                    // same authentication request.
+                    if ($this->isBindingUserToModel($model)) {
+                        $model->setLdapUser($this->user);
+                    }
+
                     return true;
                 }
 
@@ -93,43 +156,49 @@ class DatabaseUserProvider extends EloquentUserProvider
             }
         }
 
-        if ($this->getLoginFallback() && $model->exists) {
+        if ($this->isFallingBack() && $model->exists) {
             // If the user exists in our local database already and fallback is
             // enabled, we'll perform standard eloquent authentication.
-            return parent::validateCredentials($model, $credentials);
+            return $this->fallback->validateCredentials($model, $credentials);
         }
 
         return false;
     }
 
     /**
-     * Returns a new authentication validator.
+     * Create a new instance of the model.
      *
-     * @param array $rules
-     *
-     * @return Validator
+     * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function validator(array $rules = [])
+    public function createModel()
     {
-        return new Validator($rules);
+        $class = '\\'.ltrim($this->model, '\\');
+
+        return new $class;
     }
 
     /**
-     * Returns an array of constructed rules.
+     * Binds the LDAP User instance to the Eloquent model.
      *
-     * @param User            $user
      * @param Authenticatable $model
      *
-     * @return array
+     * @return bool
      */
-    protected function rules(User $user, Authenticatable $model)
+    protected function isBindingUserToModel(Authenticatable $model = null)
     {
-        $rules = [];
+        return $model ? array_key_exists(
+            HasLdapUser::class,
+            class_uses_recursive(get_class($model))
+        ) : false;
+    }
 
-        foreach (config('adldap_auth.rules', []) as $rule) {
-            $rules[] = new $rule($user, $model);
-        }
-
-        return $rules;
+    /**
+     * Determines if login fallback is enabled.
+     *
+     * @return bool
+     */
+    protected function isFallingBack()
+    {
+        return config('adldap_auth.login_fallback', false);
     }
 }
