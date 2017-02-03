@@ -39,10 +39,40 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Resolver
+    |--------------------------------------------------------------------------
+    |
+    | The resolver that locates users from your LDAP server.
+    |
+    | Custom resolvers must implement the following interface:
+    |
+    |   Adldap\Laravel\Resolvers\ResolverInterface
+    |
+    */
+
+    'resolver' => Adldap\Laravel\Resolvers\UserResolver::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Importer
+    |--------------------------------------------------------------------------
+    |
+    | The importer that imports LDAP users into your local database.
+    |
+    | Custom importers must implement the following interface:
+    |
+    |   Adldap\Laravel\Import\ImporterInterface
+    |
+    */
+
+    'importer' => Adldap\Laravel\Import\Importer::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Rules
     |--------------------------------------------------------------------------
     |
-    | Rules allow you to deny user authentication requests depending on scenarios.
+    | Rules allow you to control user authentication requests depending on scenarios.
     |
     | You can create your own rules and insert them here.
     |
@@ -74,7 +104,7 @@ return [
     |
     | All scopes must implement the following interface:
     |
-    |   Adldap\Laravel\Scopes\Scope
+    |   Adldap\Laravel\Scopes\ScopeInterface
     |
     */
 
@@ -86,41 +116,35 @@ return [
 
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Username Attribute
-    |--------------------------------------------------------------------------
-    |
-    | The username attribute is an array of the HTML input name and the LDAP
-    | attribute to discover the user by. The reason for this is to allow
-    | the ability for users to login via different attributes.
-    |
-    | For example, if your HTML input name is `email` and you'd like users to login
-    | by their LDAP `mail` attribute, then keep the configuration below. However,
-    | if you'd like to login users by their usernames, then change `mail`
-    | to `samaccountname`. and `email` to `username`.
-    |
-    | This must be an array with a key - value pair.
-    |
-    */
+    'usernames' => [
 
-    'username_attribute' => ['email' => 'mail'],
+        /*
+        |--------------------------------------------------------------------------
+        | LDAP
+        |--------------------------------------------------------------------------
+        |
+        | This is the LDAP users attribute that you use to authenticate
+        | against your LDAP server. This is usually the users
+        |'sAMAccountName' / 'mail' / 'upn' attribute.
+        |
+        */
 
-    /*
-    |--------------------------------------------------------------------------
-    | Login Attribute
-    |--------------------------------------------------------------------------
-    |
-    | The login attribute is the name of the LDAP users attribute that you use
-    | to authenticate against your LDAP server.
-    |
-    | This is usually the users `sAMAccountName`.
-    |
-    | This option must be a string.
-    |
-    */
+        'ldap' => 'mail',
 
-    'login_attribute' => env('ADLDAP_LOGIN_ATTRIBUTE', 'samaccountname'),
+        /*
+        |--------------------------------------------------------------------------
+        | Eloquent
+        |--------------------------------------------------------------------------
+        |
+        | This is the local database users attribute that is used for
+        | storing the LDAP users username. This is usually
+        | 'email' or 'username'.
+        |
+        */
+
+        'eloquent' => 'email',
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -203,9 +227,6 @@ return [
     | The array key represents the Laravel model key, and the value
     | represents the LDAP attribute to set it to.
     |
-    | Your login attribute (configured above) is already synchronized
-    | and does not need to be added to this array.
-    |
     | This option must be an array and is only applicable
     | to the DatabaseUserProvider.
     |
@@ -213,6 +234,7 @@ return [
 
     'sync_attributes' => [
 
+        'email' => 'mail',
         'name' => 'cn',
 
     ],
