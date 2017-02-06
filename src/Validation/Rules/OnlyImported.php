@@ -9,6 +9,6 @@ class OnlyImported extends Rule
      */
     public function isValid()
     {
-        return $this->model->exists;
+        return $this->model && $this->model->exists;
     }
 }
