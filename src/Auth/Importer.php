@@ -18,15 +18,19 @@ class Importer implements ImporterInterface
         // we'll create a new one for them.
         $model = $this->findByCredentials($model, $credentials) ?: $model->newInstance();
 
-        // We'll check if we've been given a password. If one isn't
-        // given we'll set it to a 16 character random string.
-        $password = array_key_exists('password', $credentials) ?
-            $credentials['password'] :
-            str_random();
+        // We'll check if we've been given a password and that
+        // syncing password is enabled. Otherwise we'll
+        // use a random 16 character string.
+        if (array_key_exists('password', $credentials) && $this->isSyncingPasswords()) {
+            $password = $credentials['password'];
+        } else {
+            $password = str_random();
+        }
 
-        // Sync the users password (if enabled). If no password is
-        // given, we'll pass in a random 16 character string.
-        $this->syncModelPassword($model, $password);
+        // If the model has a set mutator for the password then we'll
+        // assume that we're using a custom encryption method for
+        // passwords. Otherwise we'll bcrypt it normally.
+        $model->password = ($model->hasSetMutator('password') ? $password : bcrypt($password));
 
         // Synchronize other LDAP attributes on the model.
         $this->syncModelAttributes($user, $model);
@@ -88,23 +92,13 @@ class Importer implements ImporterInterface
     }
 
     /**
-     * Syncs the models password with the specified password.
+     * Returns the configured password sync configuration option.
      *
-     * @param Model  $model
-     * @param string $password
-     *
-     * @return void
+     * @return bool
      */
-    protected function syncModelPassword(Model $model, $password)
+    protected function isSyncingPasswords()
     {
-        // If the developer doesn't want to synchronize AD passwords,
-        // we'll set the password to a random 16 character string.
-        $password = ($this->getPasswordSync() ? $password : str_random());
-
-        // If the model has a set mutator for the password then we'll
-        // assume that we're using a custom encryption method for
-        // passwords. Otherwise we'll bcrypt it normally.
-        $model->password = ($model->hasSetMutator('password') ? $password : bcrypt($password));
+        return config('adldap_auth.password_sync', true);
     }
 
     /**
@@ -133,16 +127,6 @@ class Importer implements ImporterInterface
             'email' => 'mail',
             'name' => 'cn',
         ]);
-    }
-
-    /**
-     * Returns the configured password sync configuration option.
-     *
-     * @return bool
-     */
-    protected function getPasswordSync()
-    {
-        return config('adldap_auth.password_sync', true);
     }
 
     /**
