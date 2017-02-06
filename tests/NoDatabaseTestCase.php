@@ -25,7 +25,6 @@ class NoDatabaseTestCase extends TestCase
         ]);
 
         // Adldap auth setup.
-        $app['config']->set('adldap_auth.username_attribute', ['email' => 'mail']);
         $app['config']->set('adldap_auth.provider', NoDatabaseUserProvider::class);
 
         // Laravel auth setup.

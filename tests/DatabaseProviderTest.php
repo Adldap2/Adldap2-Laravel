@@ -2,6 +2,8 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Mockery as m;
+use Adldap\Laravel\Auth\ResolverInterface;
 use Adldap\Models\User;
 use Adldap\AdldapInterface;
 use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
@@ -9,16 +11,16 @@ use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseProviderTest extends DatabaseTestCase
 {
+    /**
+     * @expectedException \Adldap\Laravel\Exceptions\ConfigurationMissingException
+     */
     public function test_configuration_not_found_exception()
     {
         $this->app['config']->set('adldap', null);
-
-        $this->setExpectedException('Adldap\Laravel\Exceptions\ConfigurationMissingException');
 
         App::make('adldap');
     }
@@ -40,78 +42,50 @@ class DatabaseProviderTest extends DatabaseTestCase
     {
         $credentials = $credentials ?: ['email' => 'jdoe@email.com', 'password' => '12345'];
 
-        $user = $this->getMockUser([
-            'cn'             => 'John Doe',
-            'mail'           => 'jdoe@email.com',
-            'samaccountname' => 'jdoe',
+        $user = $this->makeLdapUser([
+            'cn'    => 'John Doe',
+            'userprincipalname'  => 'jdoe@email.com',
         ]);
 
-        $connection = $this->getMockConnection();
+        $resolver = m::mock(ResolverInterface::class);
 
-        $connection->method('isBound')->willReturn(true);
-        $connection->method('search')->willReturn('resource');
-        $connection->method('getEntries')->willReturn([
-            'count' => 1,
-            $user->getAttributes(),
-        ]);
+        Auth::getProvider()->setResolver($resolver);
 
-        $connection->expects($this->exactly(2))->method('bind')
-            ->with($this->logicalOr(
-                $this->equalTo('jdoe'),
-                $this->equalTo('admin')
-            ))
-            ->willReturn(true);
-
-        // Due to Laravel firing service provider registrations, the
-        // two events we expect to be fired need to be
-        // added on to this total.
-        Event::shouldReceive('fire')->between(0, 6)->withAnyArgs();
-        Event::shouldReceive('dispatch')->between(0, 6)->withAnyArgs();
+        $resolver
+            ->shouldReceive('byCredentials')->once()->andReturn($user)
+            ->shouldReceive('authenticate')->once()->andReturn(true);
 
         $this->assertTrue(Auth::attempt($credentials));
-
-        $user = Auth::user();
-
-        $this->assertEquals($credentials['email'], $user->email);
-        $this->assertTrue(Hash::check($credentials['password'], $user->password));
-        $this->assertInstanceOf(User::class, $user->ldap);
+        $this->assertInstanceOf(ResolverInterface::class, Auth::getProvider()->getResolver());
+        $this->assertInstanceOf(EloquentUser::class, Auth::user());
+        $this->assertInstanceOf(User::class, Auth::user()->ldap);
     }
 
     public function test_auth_fails_when_user_found()
     {
-        $user = $this->getMockUser([
-            'cn'             => '',
-            'mail'           => 'jdoe@email.com',
-            'samaccountname' => 'jdoe',
+        $user = $this->makeLdapUser([
+            'cn'    => 'John Doe',
+            'userprincipalname'  => 'jdoe@email.com',
         ]);
 
-        $connection = $this->getMockConnection(['getLastError', 'errNo']);
+        $resolver = m::mock(ResolverInterface::class);
 
-        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
-        $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
-        $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
-            'count' => 1,
-            $user->getAttributes(),
-        ]);
+        Auth::getProvider()->setResolver($resolver);
 
-        $connection->expects($this->exactly(1))->method('getLastError')->willReturn('Bind Failure.');
-        $connection->expects($this->exactly(1))->method('errNo')->willReturn(1);
-        $connection->expects($this->exactly(1))->method('bind')
-            ->with($this->equalTo('jdoe'))
-            ->willReturn(false);
+        $resolver
+            ->shouldReceive('byCredentials')->once()->andReturn($user)
+            ->shouldReceive('authenticate')->once()->andReturn(false);
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
 
     public function test_auth_fails_when_user_not_found()
     {
-        $connection = $this->getMockConnection();
+        $resolver = m::mock(ResolverInterface::class);
 
-        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
-        $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
-        $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
-            'count' => 0,
-        ]);
+        Auth::getProvider()->setResolver($resolver);
+
+        $resolver->shouldReceive('byCredentials')->once()->andReturn(null);
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
@@ -124,44 +98,18 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         config(['adldap_auth.scopes' => $scopes]);
 
-        $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(mail=*)(cn=\4a\6f\68\6e\20\44\6f\65)(mail=\6a\64\6f\65\40\65\6d\61\69\6c\2e\63\6f\6d))';
+        $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(mail=*)(cn=\4a\6f\68\6e\20\44\6f\65))';
 
-        $user = $this->getMockUser([
-            'cn'             => '',
-            'mail'           => 'jdoe@email.com',
-            'samaccountname' => 'jdoe',
-        ]);
+        $resolver = Auth::getProvider()->getResolver();
 
-        $connection = $this->getMockConnection();
-
-        $connection->method('isBound')->willReturn(true);
-
-        $connection->method('search')->with(
-            $this->equalTo(''),
-            $this->equalTo($expectedFilter),
-            $this->equalTo([])
-        )->willReturn('resource');
-
-        $connection->method('getEntries')->willReturn([
-            'count' => 1,
-            $user->getAttributes(),
-        ]);
-
-        $connection->expects($this->exactly(2))->method('bind')
-            ->with($this->logicalOr(
-                $this->equalTo('jdoe'),
-                $this->equalTo('admin')
-            ))
-            ->willReturn(true);
-
-        $this->assertTrue(Auth::attempt(['email' => 'jdoe@email.com', 'password' => 'password']));
+        $this->assertEquals($expectedFilter, $resolver->query()->getQuery());
     }
 
     public function test_config_callback_attribute_handler()
     {
-        $this->app['config']->set('adldap_auth.sync_attributes', [
-            LdapAttributeHandler::class,
-        ]);
+        $default = config('adldap_auth.sync_attributes');
+
+        config(['adldap_auth.sync_attributes' => array_merge($default, [LdapAttributeHandler::class])]);
 
         $this->test_auth_passes();
 
@@ -179,29 +127,25 @@ class DatabaseProviderTest extends DatabaseTestCase
             \stdClass::class,
         ]);
 
-        $credentials = ['email' => 'jdoe@email.com', 'password' => '12345'];
+        $default = config('adldap_auth.sync_attributes');
 
-        $user = $this->getMockUser([
-            'cn'             => 'John Doe',
-            'mail'           => 'jdoe@email.com',
-            'samaccountname' => 'jdoe',
+        config(['adldap_auth.sync_attributes' => array_merge($default, [\stdClass::class])]);
+
+        $importer = Auth::getProvider()->getImporter();
+
+        $user = $this->makeLdapUser([
+            'cn'    => 'John Doe',
+            'userprincipalname'  => 'jdoe@email.com',
         ]);
 
-        $connection = $this->getMockConnection();
+        $model = new EloquentUser();
 
-        $connection->method('isBound')->willReturn(true);
-        $connection->method('search')->willReturn('resource');
-        $connection->method('getEntries')->willReturn([
-            'count' => 1,
-            $user->getAttributes(),
-        ]);
-
-        Auth::attempt($credentials);
+        $importer->run($user, $model);
     }
 
     public function test_config_login_fallback()
     {
-        $this->app['config']->set('adldap_auth.login_fallback', true);
+        config(['adldap_auth.login_fallback' => true]);
 
         EloquentUser::create([
             'email'    => 'jdoe@email.com',
@@ -214,25 +158,22 @@ class DatabaseProviderTest extends DatabaseTestCase
             'password' => 'Password123',
         ];
 
+        $resolver = m::mock(ResolverInterface::class);
+
+        $resolver->shouldReceive('byCredentials')->twice()->andReturn(null);
+
+        Auth::getProvider()->setResolver($resolver);
+
         $this->assertTrue(Auth::attempt($credentials));
 
-        $user = Auth::user();
-
-        $this->assertInstanceOf('Adldap\Laravel\Tests\Models\User', $user);
-        $this->assertEquals('jdoe@email.com', $user->email);
-
-        $this->app['config']->set('adldap_auth.login_fallback', false);
+        config(['adldap_auth.login_fallback' => false]);
 
         $this->assertFalse(Auth::attempt($credentials));
     }
 
     public function test_config_login_fallback_no_connection()
     {
-        $this->app['config']->set('adldap_auth.login_fallback', true);
-
-        $connection = $this->getMockConnection();
-
-        $connection->expects($this->exactly(1))->method('isBound')->willReturn(false);
+        config(['adldap_auth.login_fallback' => true]);
 
         EloquentUser::create([
             'email'    => 'jdoe@email.com',
@@ -255,55 +196,35 @@ class DatabaseProviderTest extends DatabaseTestCase
 
     public function test_config_password_sync_enabled()
     {
-        $this->app['config']->set('adldap_auth.password_sync', true);
+        config(['adldap_auth.password_sync' => true]);
 
-        $email = 'jdoe@email.com';
-        $password = '12345';
+        $credentials = [
+            'email' => 'jdoe@email.com',
+            'password' => '12345',
+        ];
 
-        $this->test_auth_passes(compact('email', 'password'));
+        $this->test_auth_passes($credentials);
 
         $user = EloquentUser::first();
 
-        $this->assertInstanceOf(EloquentUser::class, $user);
-
         // This check will pass due to password synchronization being enabled.
-        $this->assertTrue(Hash::check($password, $user->password));
+        $this->assertTrue(Hash::check($credentials['password'], $user->password));
     }
 
     public function test_config_password_sync_disabled()
     {
-        $this->app['config']->set('adldap_auth.password_sync', false);
+        config(['adldap_auth.password_sync' => false]);
 
-        $user = $this->getMockUser([
-            'cn'             => '',
-            'mail'           => 'jdoe@email.com',
-            'samaccountname' => 'jdoe',
-        ]);
+        $credentials = [
+            'email' => 'jdoe@email.com',
+            'password' => '12345',
+        ];
 
-        $connection = $this->getMockConnection();
+        $this->test_auth_passes($credentials);
 
-        $connection->method('isBound')->willReturn(true);
-        $connection->method('search')->willReturn('resource');
-        $connection->method('getEntries')->willReturn([
-            'count' => 1,
-            $user->getAttributes(),
-        ]);
-
-        $connection->expects($this->exactly(2))->method('bind')
-            ->with($this->logicalOr(
-                $this->equalTo('jdoe'),
-                $this->equalTo('admin')
-            ))
-            ->willReturn(true);
-
-        $email = 'jdoe@email.com';
-        $password = '12345';
-
-        $this->assertTrue(Auth::attempt(compact('email', 'password')));
-
-        $user = Auth::user();
+        $user = EloquentUser::first();
 
         // This check will fail due to password synchronization being disabled.
-        $this->assertFalse(Hash::check($password, $user->password));
+        $this->assertFalse(Hash::check($credentials['password'], $user->password));
     }
 }

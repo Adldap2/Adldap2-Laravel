@@ -18,10 +18,11 @@ class TestCase extends BaseTestCase
         ];
     }
 
-    protected function getMockUser(array $attributes = [])
+    protected function makeLdapUser(array $attributes = [])
     {
         return Adldap::getDefaultProvider()->make()->user($attributes ?: [
             'samaccountname' => ['jdoe'],
+            'userprincipalname' => ['jdoe@email.com'],
             'mail'           => ['jdoe@email.com'],
             'cn'             => ['John Doe'],
         ]);

@@ -45,12 +45,11 @@ class DatabaseTestCase extends TestCase
         $app['config']->set('adldap.connections.default.connection', Ldap::class);
         $app['config']->set('adldap.connections.default.schema', ActiveDirectory::class);
         $app['config']->set('adldap.connections.default.connection_settings', [
-            'admin_username' => 'admin',
+            'admin_username' => 'admin@email.com',
             'admin_password' => 'password',
         ]);
 
         // Adldap auth setup.
-        $app['config']->set('adldap_auth.username_attribute', ['email' => 'mail']);
         $app['config']->set('adldap_auth.provider', DatabaseUserProvider::class);
 
         // Laravel auth setup.

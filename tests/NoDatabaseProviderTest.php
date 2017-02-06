@@ -2,43 +2,29 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Adldap\Laravel\Auth\ResolverInterface;
+use Mockery as m;
 use Adldap\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
 
 class NoDatabaseProviderTest extends NoDatabaseTestCase
 {
-    public function test_auth_passes($credentials = null)
+    public function test_auth_passes()
     {
-        $credentials = $credentials ?: ['email' => 'jdoe@email.com', 'password' => '12345'];
+        $credentials = [
+            'email' => 'jdoe@email.com',
+            'password' => '12345',
+        ];
 
-        $user = $this->getMockUser([
-            'cn'             => '',
-            'mail'           => 'jdoe@email.com',
-            'samaccountname' => 'jdoe',
-            'objectsid'      => 'S-1-5-32-544',
-        ]);
+        $resolver = m::mock(ResolverInterface::class);
 
-        $connection = $this->getMockConnection();
+        $user = $this->makeLdapUser();
 
-        $connection->expects($this->exactly(1))->method('isBound')->willReturn(true);
+        $resolver
+            ->shouldReceive('byCredentials')->once()->andReturn($user)
+            ->shouldReceive('authenticate')->once()->withArgs([$user, $credentials])->andReturn(true);
 
-        $connection->expects($this->exactly(1))->method('search')->willReturn('resource');
-
-        $connection->expects($this->exactly(1))->method('getEntries')->willReturn([
-            'count' => 1,
-            $user->getAttributes(),
-        ]);
-
-        $connection->expects($this->exactly(2))->method('bind')
-            ->with($this->logicalOr(
-                $this->equalTo('jdoe'),
-                $this->equalTo('admin')
-            ))
-            ->willReturn(true);
-
-        Event::shouldReceive('fire')->between(0, 5)->withAnyArgs();
-        Event::shouldReceive('dispatch')->between(0, 5)->withAnyArgs();
+        Auth::getProvider()->setResolver($resolver);
 
         $this->assertTrue(Auth::attempt($credentials));
 

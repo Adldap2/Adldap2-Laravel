@@ -2,10 +2,10 @@
 
 namespace Adldap\Laravel\Tests\Scopes;
 
-use Adldap\Laravel\Scopes\Scope;
 use Adldap\Query\Builder;
+use Adldap\Laravel\Scopes\ScopeInterface;
 
-class JohnDoeScope implements Scope
+class JohnDoeScope implements ScopeInterface
 {
     /**
      * {@inheritdoc}
