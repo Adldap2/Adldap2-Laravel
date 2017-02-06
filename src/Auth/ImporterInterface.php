@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel\Import;
+namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
 use Illuminate\Database\Eloquent\Model;
