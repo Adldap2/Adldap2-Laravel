@@ -93,7 +93,7 @@ class Resolver implements ResolverInterface
      */
     protected function getLdapUsername()
     {
-        return config('adldap_auth.usernames.ldap', 'mail');
+        return config('adldap_auth.usernames.ldap', 'userprincipalname');
     }
 
     /**
