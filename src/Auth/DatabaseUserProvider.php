@@ -4,16 +4,13 @@ namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
 use Adldap\Laravel\Traits\HasLdapUser;
-use Adldap\Laravel\Traits\DispatchesAuthEvents;
 use Illuminate\Auth\EloquentUserProvider;
-use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class DatabaseUserProvider extends Provider
 {
-    use DispatchesAuthEvents;
-
     /**
      * The hasher implementation.
      *
@@ -63,7 +60,7 @@ class DatabaseUserProvider extends Provider
         $model = $this->fallback->retrieveById($identifier);
 
         if ($this->isBindingUserToModel($model)) {
-            $model->setLdapUser($this->resolver()->byModel($model));
+            $model->setLdapUser($this->getResolver()->byModel($model));
         }
 
         return $model;
@@ -77,7 +74,7 @@ class DatabaseUserProvider extends Provider
         $model = $this->fallback->retrieveByToken($identifier, $token);
 
         if ($this->isBindingUserToModel($model)) {
-            $model->setLdapUser($this->resolver()->byModel($model));
+            $model->setLdapUser($this->getResolver()->byModel($model));
         }
 
         return $model;
@@ -102,14 +99,16 @@ class DatabaseUserProvider extends Provider
     public function retrieveByCredentials(array $credentials)
     {
         // Retrieve the LDAP user who is authenticating.
-        $user = $this->resolver()->byCredentials($credentials);
+        $user = $this->getResolver()->byCredentials($credentials);
 
         if ($user instanceof User) {
             // Set the currently authenticating LDAP user.
             $this->user = $user;
 
+            $this->handleDiscoveredWithCredentials($user);
+
             // Import / locate the local user account.
-            return $this->importer()
+            return $this->getImporter()
                 ->run($user, $this->fallback->createModel(), $credentials);
         }
 
@@ -123,36 +122,28 @@ class DatabaseUserProvider extends Provider
      */
     public function validateCredentials(Authenticatable $model, array $credentials)
     {
-        if ($this->user instanceof User) {
-            // We'll retrieve the login name from the LDAP user.
-            $username = $this->resolver()->username($this->user);
+        if (
+            $this->user instanceof User &&
+            $this->getResolver()->authenticate($this->user, $credentials)
+        ) {
+            $this->handleAuthenticatedWithCredentials($this->user, $model);
 
-            // Retrieve the LDAP provider.
-            $provider = $this->provider();
+            // Here we will perform authorization on the LDAP user. If all
+            // validation rules pass, we will allow the authentication
+            // attempt. Otherwise, it is automatically rejected.
+            if ($this->newValidator($this->getRules($this->user, $model))->passes()) {
+                // All of our validation rules have passed and we can
+                // finally save the model in case of changes.
+                $model->save();
 
-            // Perform LDAP authentication on our configured provider.
-            if ($provider->auth()->attempt($username, $credentials['password'])) {
-                $this->handleAuthenticatedWithCredentials($this->user, $model);
-
-                // Here we will perform authorization on the LDAP user. If all
-                // validation rules pass, we will allow the authentication
-                // attempt. Otherwise, it is automatically rejected.
-                if ($this->validator($this->rules($this->user, $model))->passes()) {
-                    // All of our validation rules have passed and we can
-                    // finally save the model in case of changes.
-                    $model->save();
-
-                    // If binding to the eloquent model is configured, we
-                    // need to make sure it's available during the
-                    // same authentication request.
-                    if ($this->isBindingUserToModel($model)) {
-                        $model->setLdapUser($this->user);
-                    }
-
-                    return true;
+                // If binding to the eloquent model is configured, we
+                // need to make sure it's available during the
+                // same authentication request.
+                if ($this->isBindingUserToModel($model)) {
+                    $model->setLdapUser($this->user);
                 }
 
-                return false;
+                return true;
             }
         }
 

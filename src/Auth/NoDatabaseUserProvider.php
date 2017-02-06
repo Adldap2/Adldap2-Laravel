@@ -11,7 +11,7 @@ class NoDatabaseUserProvider extends Provider
      */
     public function retrieveById($identifier)
     {
-        $user = $this->resolver()->byId($identifier);
+        $user = $this->getResolver()->byId($identifier);
 
         if ($user instanceof Authenticatable) {
             // We'll verify we have the correct instance just to ensure we
@@ -41,7 +41,11 @@ class NoDatabaseUserProvider extends Provider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        return $this->resolver()->byCredentials($credentials);
+        if ($user = $this->getResolver()->byCredentials($credentials)) {
+            $this->handleDiscoveredWithCredentials($user);
+
+            return $user;
+        }
     }
 
     /**
@@ -49,10 +53,8 @@ class NoDatabaseUserProvider extends Provider
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-        // Retrieve the authentication username for the AD user.
-        $username = $this->resolver()->username($user);
-
-        // Perform LDAP authentication.
-        return $this->provider()->auth()->attempt($username, $credentials['password']);
+        // Perform LDAP authentication and validate the authenticated model.
+        return $this->getResolver()->authenticate($user, $credentials) &&
+            $this->newValidator($this->getRules($user))->passes();
     }
 }
