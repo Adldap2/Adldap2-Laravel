@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel\Resolvers;
+namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
 use Adldap\Connections\ProviderInterface;
@@ -43,13 +43,14 @@ interface ResolverInterface
     public function byModel(Authenticatable $model);
 
     /**
-     * Retrieves the authentication username for the given user.
+     * Authenticates the user against the current provider.
      *
-     * @param User $user
+     * @param User  $user
+     * @param array $credentials
      *
      * @return string|null
      */
-    public function username(User $user);
+    public function authenticate(User $user, array $credentials = []);
 
     /**
      * Returns a new user query.

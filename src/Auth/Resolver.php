@@ -1,13 +1,13 @@
 <?php
 
-namespace Adldap\Laravel\Resolvers;
+namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
 use Adldap\Query\Builder;
 use Adldap\Connections\ProviderInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class UserResolver implements ResolverInterface
+class Resolver implements ResolverInterface
 {
     /**
      * The LDAP connection provider.
@@ -61,9 +61,11 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function username(User $user)
+    public function authenticate(User $user, array $credentials = [])
     {
-        return $user->getFirstAttribute($this->getLdapUsername());
+        $username = $user->getFirstAttribute($this->getLdapUsername());
+
+        return $this->provider->auth()->attempt($username, $credentials['password']);
     }
 
     /**
