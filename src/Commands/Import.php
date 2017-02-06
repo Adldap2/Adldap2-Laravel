@@ -3,9 +3,7 @@
 namespace Adldap\Laravel\Commands;
 
 use Adldap\Models\User;
-use Adldap\Laravel\Import\Importer;
 use Adldap\Laravel\Traits\UsesAdldap;
-use Adldap\Laravel\Resolvers\UserResolver;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\Console\Input\InputOption;
@@ -292,38 +290,6 @@ class Import extends Command
                 logger()->info("Soft-deleted user {$user->getCommonName()}. Their AD user account is disabled.");
             }
         }
-    }
-
-    /**
-     * Returns the user resolver.
-     *
-     * @return \Adldap\Laravel\Resolvers\ResolverInterface
-     */
-    protected function resolver()
-    {
-        $resolver = config('adldap_auth.resolver', UserResolver::class);
-
-        $provider = $this->provider($this->option('connection'));
-
-        if (!$provider->getConnection()->isBound()) {
-            // If the connection isn't bound yet, we'll
-            // connect to the server manually.
-            $provider->connect();
-        }
-
-        return new $resolver($provider);
-    }
-
-    /**
-     * Returns the importer.
-     *
-     * @return \Adldap\Laravel\Import\ImporterInterface
-     */
-    protected function importer()
-    {
-        $importer = config('adldap_auth.importer', Importer::class);
-
-        return new $importer;
     }
 
     /**
