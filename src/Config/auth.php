@@ -46,11 +46,11 @@ return [
     |
     | Custom resolvers must implement the following interface:
     |
-    |   Adldap\Laravel\Resolvers\ResolverInterface
+    |   Adldap\Laravel\Auth\ResolverInterface
     |
     */
 
-    'resolver' => Adldap\Laravel\Resolvers\UserResolver::class,
+    'resolver' => Adldap\Laravel\Auth\Resolver::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -61,11 +61,11 @@ return [
     |
     | Custom importers must implement the following interface:
     |
-    |   Adldap\Laravel\Import\ImporterInterface
+    |   Adldap\Laravel\Auth\ImporterInterface
     |
     */
 
-    'importer' => Adldap\Laravel\Import\Importer::class,
+    'importer' => Adldap\Laravel\Auth\Importer::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -125,11 +125,11 @@ return [
         |
         | This is the LDAP users attribute that you use to authenticate
         | against your LDAP server. This is usually the users
-        |'sAMAccountName' / 'mail' / 'upn' attribute.
+        |'sAMAccountName' / 'userprincipalname' attribute.
         |
         */
 
-        'ldap' => 'mail',
+        'ldap' => 'userprincipalname',
 
         /*
         |--------------------------------------------------------------------------
@@ -234,7 +234,7 @@ return [
 
     'sync_attributes' => [
 
-        'email' => 'mail',
+        'email' => 'userprincipalname',
         'name' => 'cn',
 
     ],
