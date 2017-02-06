@@ -3,19 +3,17 @@
 namespace Adldap\Laravel\Middleware;
 
 use Closure;
-use Adldap\Models\User;
-use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\ModelNotFoundException;
+use Adldap\Laravel\Traits\UsesAdldap;
+use Adldap\Laravel\Traits\DispatchesAuthEvents;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
-use Adldap\Laravel\Events\AuthenticatedWithWindows;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Database\Eloquent\Model;
 
 class WindowsAuthenticate
 {
-    use ImportsUsers;
+    use UsesAdldap, DispatchesAuthEvents;
 
     /**
      * The authenticator implementation.
@@ -69,49 +67,7 @@ class WindowsAuthenticate
             }
         }
 
-        return $this->returnNextRequest($request, $next);
-    }
-
-    /**
-     * Returns the next request.
-     *
-     * This method exists to be overridden.
-     *
-     * @param Request $request
-     * @param Closure $next
-     *
-     * @return mixed
-     */
-    public function returnNextRequest(Request $request, Closure $next)
-    {
         return $next($request);
-    }
-
-    /**
-     * Returns a new auth model instance.
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function createModel()
-    {
-        $model = $this->auth->getProvider()->getModel();
-
-        return new $model();
-    }
-
-    /**
-     * Handle the authenticated user model.
-     *
-     * This method exists to be overridden.
-     *
-     * @param User       $user
-     * @param Model|null $model
-     *
-     * @return void
-     */
-    protected function handleAuthenticatedUser(User $user, Model $model = null)
-    {
-        event(new AuthenticatedWithWindows($user, $model));
     }
 
     /**
@@ -128,24 +84,24 @@ class WindowsAuthenticate
 
         try {
             // Find the user in AD.
-            $user = $this->newAdldapUserQuery()
+            $user = $this->getResolver()->query()
                 ->where([$key => $username])
                 ->firstOrFail();
 
             if ($provider instanceof NoDatabaseUserProvider) {
-                $this->handleAuthenticatedUser($user);
+                $this->handleAuthenticatedWithWindows($user);
 
                 return $user;
             } elseif ($provider instanceof DatabaseUserProvider) {
                 // Retrieve the Eloquent user model from our AD user instance.
                 // We'll assign the user a random password since we don't
                 // have access to it through SSO auth.
-                $model = $this->findOrCreateModelByUser($user, str_random());
+                $model = $this->getImporter()->run($user, $this->getModel(), ['password' => str_random()]);
 
                 // Save model in case of changes.
                 $model->save();
 
-                $this->handleAuthenticatedUser($user, $model);
+                $this->handleAuthenticatedWithWindows($user, $model);
 
                 return $model;
             }
@@ -155,12 +111,22 @@ class WindowsAuthenticate
     }
 
     /**
+     * Returns the configured authentication model.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    protected function getModel()
+    {
+        return auth()->getProvider()->createModel();
+    }
+
+    /**
      * Returns the windows authentication attribute.
      *
      * @return string
      */
     protected function getWindowsAuthAttribute()
     {
-        return config('adldap_auth.windows_auth_attribute', [$this->getSchema()->accountName() => 'AUTH_USER']);
+        return config('adldap_auth.windows_auth_attribute', ['samaccountname' => 'AUTH_USER']);
     }
 }
