@@ -23,7 +23,7 @@ class DatabaseProviderTest extends DatabaseTestCase
      */
     public function test_configuration_not_found_exception()
     {
-        $this->app['config']->set('adldap', null);
+        config(['adldap' => null]);
 
         App::make('adldap');
     }
@@ -36,7 +36,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
     public function test_contract_resolve()
     {
-        $adldap = $this->app->make(AdldapInterface::class);
+        $adldap = App::make(AdldapInterface::class);
 
         $this->assertInstanceOf(AdldapInterface::class, $adldap);
     }
@@ -131,9 +131,7 @@ class DatabaseProviderTest extends DatabaseTestCase
      */
     public function test_config_invalid_config_attribute_handler()
     {
-        $this->app['config']->set('adldap_auth.sync_attributes', [
-            \stdClass::class,
-        ]);
+        config(['adldap_auth.sync_attributes' => [\stdClass::class]]);
 
         $default = config('adldap_auth.sync_attributes');
 
