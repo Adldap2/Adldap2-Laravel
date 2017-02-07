@@ -98,7 +98,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         config(['adldap_auth.scopes' => $scopes]);
 
-        $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(mail=*)(cn=\4a\6f\68\6e\20\44\6f\65))';
+        $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(userprincipalname=*)(cn=\4a\6f\68\6e\20\44\6f\65))';
 
         $resolver = Auth::getProvider()->getResolver();
 
