@@ -127,6 +127,8 @@ return [
         | against your LDAP server. This is usually the users
         |'sAMAccountName' / 'userprincipalname' attribute.
         |
+        | If you'd like to use their username to login instead, insert `samaccountname`.
+        |
         */
 
         'ldap' => 'userprincipalname',
@@ -136,9 +138,10 @@ return [
         | Eloquent
         |--------------------------------------------------------------------------
         |
-        | This is the local database users attribute that is used for
-        | storing the LDAP users username. This is usually
-        | 'email' or 'username'.
+        | This is the attribute that is used for locating
+        | and storing the LDAP username above.
+        |
+        | If you're using a `username` field instead, change this to `username`.
         |
         */
 
@@ -225,7 +228,7 @@ return [
     | up to date.
     |
     | The array key represents the Laravel model key, and the value
-    | represents the LDAP attribute to set it to.
+    | represents the users LDAP attribute.
     |
     | This option must be an array and is only applicable
     | to the DatabaseUserProvider.
