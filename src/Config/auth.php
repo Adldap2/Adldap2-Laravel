@@ -110,9 +110,9 @@ return [
 
     'scopes' => [
 
-        // Only allows users with an email address to authenticate.
+        // Only allows users with a user principal name to authenticate.
 
-        Adldap\Laravel\Scopes\EmailScope::class,
+        Adldap\Laravel\Scopes\UpnScope::class,
 
     ],
 
