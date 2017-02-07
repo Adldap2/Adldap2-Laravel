@@ -24,9 +24,22 @@ Using this provider utilizes your configured Eloquent model in `config/auth.php`
 ],
 ```
 
+When you've authenticated, use the method `Auth::user()` as you would
+normally to retrieve the currently authenticated user:
+
+```php
+// Instance of \App\User.
+$user = Auth::user();
+
+echo $user->email;
+```
+
 ## NoDatabaseUserProvider
 
 The `NoDatabaseUserProvider` allows you to authenticate LDAP users without synchronizing them.
+
+> **Note**: You will have to re-write the default Laravel views that
+> are generated with the `php artisan make:auth` command. 
 
 To use it, insert it in your `config/adldap_auth.php` in the `provider` option:
 
@@ -42,4 +55,16 @@ Inside your `config/auth.php` file, you can remove the `model` key in your provi
         'driver' => 'adldap',
     ],
 ],
+```
+
+When you've authenticated, use the method `Auth::user()` as you would
+normally to retrieve the currently authenticated user:
+
+```php
+// Instance of \Adldap\Models\User.
+$user = Auth::user();
+
+echo $user->getCommonName();
+
+echo $user->getAccountName();
 ```

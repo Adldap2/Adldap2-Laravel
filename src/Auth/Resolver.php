@@ -78,8 +78,10 @@ class Resolver implements ResolverInterface
         $query = $this->provider->search()->users();
 
         foreach ($this->getScopes() as $scope) {
+            // Create the scope.
             $scope = app($scope);
 
+            // Apply it to our query.
             $scope->apply($query);
         }
 

@@ -143,6 +143,8 @@ return [
         |
         | If you're using a `username` field instead, change this to `username`.
         |
+        | This option is only applicable to the DatabaseUserProvider.
+        |
         */
 
         'eloquent' => 'email',
