@@ -59,7 +59,7 @@ class DatabaseUserProvider extends Provider
     {
         $model = $this->fallback->retrieveById($identifier);
 
-        if ($this->isBindingUserToModel($model)) {
+        if ($model && $this->isBindingUserToModel($model)) {
             $model->setLdapUser($this->getResolver()->byModel($model));
         }
 
@@ -73,7 +73,7 @@ class DatabaseUserProvider extends Provider
     {
         $model = $this->fallback->retrieveByToken($identifier, $token);
 
-        if ($this->isBindingUserToModel($model)) {
+        if ($model && $this->isBindingUserToModel($model)) {
             $model->setLdapUser($this->getResolver()->byModel($model));
         }
 
@@ -175,12 +175,12 @@ class DatabaseUserProvider extends Provider
      *
      * @return bool
      */
-    protected function isBindingUserToModel(Authenticatable $model = null)
+    protected function isBindingUserToModel(Authenticatable $model)
     {
-        return $model ? array_key_exists(
+        return array_key_exists(
             HasLdapUser::class,
             class_uses_recursive(get_class($model))
-        ) : false;
+        );
     }
 
     /**
