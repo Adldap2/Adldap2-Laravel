@@ -3,12 +3,15 @@
 namespace Adldap\Laravel\Tests;
 
 use Mockery as m;
-use Adldap\Laravel\Auth\ResolverInterface;
 use Adldap\Models\User;
 use Adldap\AdldapInterface;
+use Adldap\Laravel\Auth\ResolverInterface;
 use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
+use Adldap\Laravel\Events\DiscoveredWithCredentials;
+use Adldap\Laravel\Events\AuthenticatedModelTrashed;
+use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -54,6 +57,11 @@ class DatabaseProviderTest extends DatabaseTestCase
         $resolver
             ->shouldReceive('byCredentials')->once()->andReturn($user)
             ->shouldReceive('authenticate')->once()->andReturn(true);
+
+        $this->expectsEvents([
+            DiscoveredWithCredentials::class,
+            AuthenticatedWithCredentials::class,
+        ]);
 
         $this->assertTrue(Auth::attempt($credentials));
         $this->assertInstanceOf(ResolverInterface::class, Auth::getProvider()->getResolver());
@@ -226,5 +234,31 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         // This check will fail due to password synchronization being disabled.
         $this->assertFalse(Hash::check($credentials['password'], $user->password));
+    }
+
+    public function test_deny_trashed_rule()
+    {
+        config(['adldap_auth.login_fallback' => false]);
+
+        $credentials = [
+            'email' => 'jdoe@email.com',
+            'password' => '12345',
+        ];
+
+        $resolver = m::mock(ResolverInterface::class);
+
+        $resolver
+            ->shouldReceive('byCredentials')->twice()->andReturn($this->makeLdapUser())
+            ->shouldReceive('authenticate')->twice()->andReturn(true);
+
+        Auth::getProvider()->setResolver($resolver);
+
+        $this->assertTrue(Auth::attempt($credentials));
+
+        EloquentUser::first()->delete();
+
+        $this->expectsEvents([AuthenticatedModelTrashed::class]);
+
+        $this->assertFalse(Auth::attempt($credentials));
     }
 }
