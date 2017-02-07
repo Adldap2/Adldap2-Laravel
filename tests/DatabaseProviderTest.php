@@ -236,7 +236,10 @@ class DatabaseProviderTest extends DatabaseTestCase
 
     public function test_deny_trashed_rule()
     {
-        config(['adldap_auth.login_fallback' => false]);
+        config([
+            'adldap_auth.login_fallback' => false,
+            'adldap_auth.rules' => [\Adldap\Laravel\Validation\Rules\DenyTrashed::class],
+        ]);
 
         $credentials = [
             'email' => 'jdoe@email.com',
@@ -258,5 +261,29 @@ class DatabaseProviderTest extends DatabaseTestCase
         $this->expectsEvents([AuthenticatedModelTrashed::class]);
 
         $this->assertFalse(Auth::attempt($credentials));
+    }
+
+    public function test_only_imported_rule()
+    {
+        config([
+            'adldap_auth.login_fallback' => false,
+            'adldap_auth.rules' => [\Adldap\Laravel\Validation\Rules\OnlyImported::class],
+        ]);
+
+        $credentials = [
+            'email' => 'jdoe@email.com',
+            'password' => '12345',
+        ];
+
+        $resolver = m::mock(ResolverInterface::class);
+
+        $resolver
+            ->shouldReceive('byCredentials')->once()->andReturn($this->makeLdapUser())
+            ->shouldReceive('authenticate')->once()->andReturn(true);
+
+        Auth::getProvider()->setResolver($resolver);
+
+        $this->assertFalse(Auth::attempt($credentials));
+
     }
 }
