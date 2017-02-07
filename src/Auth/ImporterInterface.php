@@ -14,7 +14,7 @@ interface ImporterInterface
      * @param Model $model
      * @param array $credentials
      *
-     * @return Model|null
+     * @return Model
      */
     public function run(User $user, Model $model, array $credentials = []);
 }
