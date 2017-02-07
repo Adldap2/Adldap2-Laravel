@@ -104,7 +104,7 @@ class Import extends Command
         foreach ($users as $user) {
             try {
                 // Import the user and retrieve it's model.
-                $model = $this->importer()->run($user, $this->model());
+                $model = $this->getImporter()->run($user, $this->model());
 
                 // Save the returned model.
                 $this->save($user, $model);
@@ -192,7 +192,7 @@ class Import extends Command
      */
     public function getUsers()
     {
-        $query = $this->resolver()->query();
+        $query = $this->getResolver()->query();
 
         if ($filter = $this->option('filter')) {
             // If the filter option was given, we'll
