@@ -1,7 +1,7 @@
 # Authentication Providers
 
-* [DatabaseUserProvider]()
-* [NoDatabaseUserProvider]()
+* [DatabaseUserProvider](#DatabaseUserProvider)
+* [NoDatabaseUserProvider](#NoDatabaseUserProvider)
 
 ## DatabaseUserProvider
 
@@ -32,4 +32,14 @@ To use it, insert it in your `config/adldap_auth.php` in the `provider` option:
 
 ```php
 'provider' => Adldap\Laravel\Auth\NoDatabaseUserProvider::class
+```
+
+Inside your `config/auth.php` file, you can remove the `model` key in your provider array since it won't be used:
+
+```php
+'providers' => [
+    'users' => [
+        'driver' => 'adldap',
+    ],
+],
 ```
