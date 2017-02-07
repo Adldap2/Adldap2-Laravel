@@ -13,12 +13,12 @@ trait DispatchesAuthEvents
     /**
      * Dispatches an authentication event when users login by their credentials.
      *
-     * @param User            $user
-     * @param Authenticatable $model
+     * @param User                 $user
+     * @param Authenticatable|null $model
      *
      * @return void
      */
-    public function handleAuthenticatedWithCredentials(User $user, Authenticatable $model)
+    public function handleAuthenticatedWithCredentials(User $user, Authenticatable $model = null)
     {
         event(new AuthenticatedWithCredentials($user, $model));
     }

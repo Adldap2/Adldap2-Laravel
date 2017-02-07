@@ -54,7 +54,13 @@ class NoDatabaseUserProvider extends Provider
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
         // Perform LDAP authentication and validate the authenticated model.
-        return $this->getResolver()->authenticate($user, $credentials) &&
-            $this->newValidator($this->getRules($user))->passes();
+        if ($this->getResolver()->authenticate($user, $credentials) &&
+            $this->newValidator($this->getRules($user))->passes()) {
+            $this->handleAuthenticatedWithCredentials($user);
+
+            return true;
+        }
+
+        return false;
     }
 }
