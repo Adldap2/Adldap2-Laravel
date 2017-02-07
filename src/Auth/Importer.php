@@ -124,7 +124,7 @@ class Importer implements ImporterInterface
     protected function getSyncAttributes()
     {
         return config('adldap_auth.sync_attributes', [
-            'email' => 'mail',
+            'email' => 'userprincipalname',
             'name' => 'cn',
         ]);
     }
