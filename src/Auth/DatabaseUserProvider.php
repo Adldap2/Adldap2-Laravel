@@ -35,7 +35,7 @@ class DatabaseUserProvider extends Provider
     /**
      * The currently authenticated LDAP user.
      *
-     * @var User
+     * @var User|null
      */
     protected $user;
 
