@@ -138,7 +138,7 @@ class Import extends Command
      */
     public function display(array $users = [])
     {
-        $headers = ['Name', 'Account Name', 'Email'];
+        $headers = ['Name', 'Account Name', 'UPN'];
 
         $data = [];
 
@@ -146,7 +146,7 @@ class Import extends Command
             $data[] = [
                 'name' => $user->getCommonName(),
                 'account_name' => $user->getAccountName(),
-                'email' => $user->getEmail(),
+                'upn' => $user->getUserPrincipalName(),
             ];
         }, $users);
 
