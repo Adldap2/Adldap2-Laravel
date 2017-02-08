@@ -84,22 +84,39 @@ php artisan adldap:import --log false
 
 ### Connection
 
+The `--connection` option allows you import users with a different connection specified in your `config/adldap.php` file.
+
+```bash
+php artisan adldap:import --connection other-connection
+```
 
 ### Delete
 
+The `--delete` option allows you to soft-delete deactivated AD users. No users will
+be deleted if your User model does not have soft-deletes enabled.
+
+```bash
+php artisan adldap:import --delete
+```
 
 ### Restore
+
+The `--restore` option allows you to restore soft-deleted re-activated AD users.
+
+```bash
+php artisan adldap:import --restore
+```
+
+> **Note**: Usually the `--restore` and `--delete` options are used in tandem to allow full synchronization.
 
 ## Tips
 
  - Users who already exist inside your database will be updated with your configured `sync_attributes`
- - Users are never deleted from the import command, you will need to clear users regularly through your model
- - Successfully imported (new) users are reported in your log files:
+ - Users are never deleted from the import command, you will need to delete users regularly through your model
+ - Successfully imported (new) users are reported in your log files with:
   - `[2016-06-29 14:51:51] local.INFO: Imported user johndoe`
  - Unsuccessful imported users are also reported in your log files, with the message of the exception:
   - `[2016-06-29 14:51:51] local.ERROR: Unable to import user janedoe. SQLSTATE[23000]: Integrity constraint violation: 1048`
- - To run the import without logging, use `php artisan adldap:import --log=false`
- - To import a single user, insert their username: `php artisan adldap:import jdoe`
   - Specifying a username uses ambiguous naming resolution, so you're able to specify attributes other than their username, such as their email (`php artisan adldap:import jdoe@mail.com`).
   - If you have a password mutator (setter) on your User model, it will not override it. This way, you can hash the random 16 characters any way you please.
 
