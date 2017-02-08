@@ -24,7 +24,7 @@ Using this provider utilizes your configured Eloquent model in `config/auth.php`
 ],
 ```
 
-When you've authenticated, use the method `Auth::user()` as you would
+When you've authenticated successfully, use the method `Auth::user()` as you would
 normally to retrieve the currently authenticated user:
 
 ```php
@@ -57,7 +57,7 @@ Inside your `config/auth.php` file, you can remove the `model` key in your provi
 ],
 ```
 
-When you've authenticated, use the method `Auth::user()` as you would
+When you've authenticated successfully, use the method `Auth::user()` as you would
 normally to retrieve the currently authenticated user:
 
 ```php
