@@ -23,19 +23,15 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
     * [Synchronizing Attributes](#synchronizing-attributes)
     * [Binding to the User Model](#binding-the-adldap-user-model-to-the-laravel-user-model)
     * [Login Fallback](#login-fallback)
-    * [Windows Authentication - SSO](#windows-authentication-sso-middleware)
     * [Login Limitation Filter](#login-limitation-filter)
     * [Multiple Connections](#multiple-authentication-connections)
     * [Password Synchronization](#password-synchronization)
     * [Importing Users](#importing-users)
     * [Developing without an AD connection](#developing-locally-without-an-ad-connection)
-  * [Providers](#auth-providers)
-    * [DatabaseUserProvider](#databaseuserprovider)
-    * [NoDatabaseUserProvider](#nodatabaseuserprovider)
 
 ## Installation
 
-[Quick Start - From Scratch](quick-start.md)
+[Quick Start - From Scratch](docs/quick-start.md)
 
 Insert Adldap2-Laravel into your `composer.json` file:
 
@@ -381,9 +377,6 @@ if (Auth::attempt($credentials)) {
 
 #### Login Fallback
 
-> **Note**: This feature was introduced in `v1.3.9`. You'll will need to re-publish the Adldap Auth configuration file
-to receive this option.
-
 The login fallback option allows you to login as a local database user using the Eloquent authentication driver if 
 active directory authentication fails. This option would be handy in environments where:
  
@@ -394,66 +387,6 @@ To enable it, simply set the option to true in your `adldap_auth.php` configurat
 
 ```php
 'login_fallback' => false, // Set to true.
-```
-
-#### Windows Authentication (SSO) Middleware
-
-> **Requirements**: This feature assumes that you have enabled `Windows Authentication` in IIS, or have enabled it
-in some other means with Apache. Adldap does not set this up for you. To enable Windows Authentication, visit:
-https://www.iis.net/configreference/system.webserver/security/authentication/windowsauthentication/providers/add
-
-SSO authentication allows you to authenticate your users by the pre-populated `$_SERVER['AUTH_USER']` (or `$_SERVER['REMOTE_USER']`)
-that is filled when users visit your site when SSO is enabled on your server. This is configurable in your `adldap_auth.php`
-configuration file.
-
-To use the middleware, insert it on your middleware stack:
-
-```php
-protected $middlewareGroups = [
-    'web' => [
-        Middleware\EncryptCookies::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        Middleware\VerifyCsrfToken::class,
-        \Adldap\Laravel\Middleware\WindowsAuthenticate::class, // Inserted here.
-    ],
-];
-```
-
-Now when you visit your site, a user account will be created (if one doesn't exist already)
-with a random 16 character string password and then automatically logged in. Neat huh?
-
-#### Login Limitation Filter
-
-Inside of your `config/adldap_auth.php` configuration, you can now insert a raw LDAP filter to specify which users are allowed to authenticate.
-
-This filter persists to the Windows Authentication Middleware as well.
-
-For example, to allow only users to that contain an email address to login, insert the filter: `(mail=*)`:
-
-```php
- /*
- |--------------------------------------------------------------------------
- | Limitation Filter
- |--------------------------------------------------------------------------
- |
- | The limitation filter allows you to enter a raw filter to only allow
- | specific users / groups / ous to authenticate.
- |
- | This should be a standard LDAP filter.
- |
- */
-
- 'limitation_filter' => '(mail=*)',
-```
-
-For another example, here's how you can limit users logging in that are apart of a specific group:
-
-> **Note**: This will also allow nested group users to login as well.
-
-```php
-'limitation_filter' => '(memberof:1.2.840.113556.1.4.1941:=CN=MyGroup,DC=example,DC=com)',
 ```
 
 #### Multiple Authentication Connections
@@ -527,41 +460,6 @@ This feature is enabled by default.
 'password_sync' => env('ADLDAP_PASSWORD_SYNC', true),
 ```
 
-#### Importing Users
-
-> **Note**: This feature was introduced in `v2.0.13`.
-
-You can now import all users manually by running the artisan command:
-
-```cmd
-php artisan adldap:import
-```
-
-The command requires that you have the Adldap auth driver setup and configured before running.
-
-When users are imported, they are given a random 16 character hashed password to ensure they are secure upon import.
-
-After running the import, you will receive information of how many users were imported:
-
-```cmd
-Found 370 user(s). Importing...
- 370/370 [============================] 100%
-Successfully imported / synchronized 251 user(s).
-```
-
-Tips:
-
- - Users who already exist inside your database will be updated with your configured `sync_attributes`
- - Users are never deleted from the import command, you will need to clear users regularly through your model
- - Successfully imported (new) users are reported in your log files:
-  - `[2016-06-29 14:51:51] local.INFO: Imported user johndoe`
- - Unsuccessful imported users are also reported in your log files, with the message of the exception:
-  - `[2016-06-29 14:51:51] local.ERROR: Unable to import user janedoe. SQLSTATE[23000]: Integrity constraint violation: 1048`
- - To run the import without logging, use `php artisan adldap:import --log=false`
- - To import a single user, insert their username: `php artisan adldap:import jdoe`
-  - Specifying a username uses ambiguous naming resolution, so you're able to specify attributes other than their username, such as their email (`php artisan adldap:import jdoe@mail.com`).
-  - If you have a password mutator (setter) on your User model, it will not override it. This way, you can hash the random 16 characters any way you please.
-
 #### Developing Locally without an AD connection
 
 You can continue to develop and login to your application without a connection to your AD server in the following scenario:
@@ -580,51 +478,3 @@ You can continue to develop and login to your application without a connection t
 
 If you have this configuration, you will have no issues developing an
 application without a persistent connection to your LDAP server.
-
-### Auth Providers
-
-> **Note**: This feature in coming in `v3.0.0`.
-
-Inside your `config/adldap_auth.php` file, there is an option named `provider`.
-
-This option allows you to configure which type of authentication method you prefer with Adldap.
-
-#### DatabaseUserProvider
-
-For synchronizing LDAP users to your local applications database, use the provider:
-
-```php
-Adldap\Laravel\Auth\DatabaseUserProvider::class
-```
-
-Using the `DatabaseUserProvider` utilizes your configured Eloquent model.
-
-#### NoDatabaseUserProvider
-
-If you just require LDAP authentication, use the provider:
-
-```php
-Adldap\Laravel\Auth\NoDatabaseUserProvider::class
-```
-
-##### Things to Note about the NoDatabaseUserProvider
-
-When calling `Auth::user()`, you will receive an instance of `Adldap\Models\User`. **Not**
-an instance of an `App\User`. This means you will need to change laravel's
-built in views for accessing the users name, and other information.
-
-For a small example, inside Laravel's stock view `layouts/app.blade.php`, this will result in an error:
-
-```
-{{ Auth::user()->name }}
-```
-
-Since you're actually using an instance of `Adldap\Models\User`, you'll need to replace the above with:
-
-```
-{{ Auth::user()->getCommonName() }}
-```
-
-You can read more about the methods available on the `Adldap\Models\User` instance here: 
-
-[Adldap2 - User Model](https://github.com/Adldap2/Adldap2/blob/master/docs/models/user.md)
