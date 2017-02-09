@@ -1,6 +1,6 @@
 {
     "name": "adldap2/adldap2-laravel",
-    "description": "Adldap2 for Laravel 5.",
+    "description": "LDAP Authentication & Management for Laravel.",
     "keywords": ["adldap", "adldap2", "ldap", "laravel"],
     "license": "MIT",
     "type": "project",
