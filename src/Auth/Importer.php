@@ -22,7 +22,10 @@ class Importer implements ImporterInterface
         // We'll check if we've been given a password and that
         // syncing password is enabled. Otherwise we'll
         // use a random 16 character string.
-        if (array_key_exists('password', $credentials) && $this->isSyncingPasswords()) {
+        if (
+            array_key_exists('password', $credentials) &&
+            $this->isSyncingPasswords()
+        ) {
             $password = $credentials['password'];
         } else {
             $password = str_random();
@@ -31,7 +34,8 @@ class Importer implements ImporterInterface
         // If the model has a set mutator for the password then we'll
         // assume that we're using a custom encryption method for
         // passwords. Otherwise we'll bcrypt it normally.
-        $model->password = ($model->hasSetMutator('password') ? $password : bcrypt($password));
+        $model->password = $model->hasSetMutator('password') ?
+            $password : bcrypt($password);
 
         // Synchronize other LDAP attributes on the model.
         $this->syncModelAttributes($user, $model);
