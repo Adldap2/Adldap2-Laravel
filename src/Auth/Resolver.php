@@ -69,9 +69,7 @@ class Resolver implements ResolverInterface
     }
 
     /**
-     * Returns a new Adldap user query.
-     *
-     * @return Builder
+     * {@inheritdoc}
      */
     public function query()
     {
@@ -89,21 +87,17 @@ class Resolver implements ResolverInterface
     }
 
     /**
-     * Retrieves the configured LDAP users username attribute.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function getLdapUsername()
+    public function getLdapUsername()
     {
         return config('adldap_auth.usernames.ldap', 'userprincipalname');
     }
 
     /**
-     * Retrieves the configured eloquent users username attribute.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function getEloquentUsername()
+    public function getEloquentUsername()
     {
         return config('adldap_auth.usernames.eloquent', 'email');
     }

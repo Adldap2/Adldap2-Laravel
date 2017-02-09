@@ -58,4 +58,18 @@ interface ResolverInterface
      * @return \Adldap\Query\Builder
      */
     public function query();
+
+    /**
+     * Retrieves the configured LDAP users username attribute.
+     *
+     * @return string
+     */
+    public function getLdapUsername();
+
+    /**
+     * Retrieves the configured eloquent users username attribute.
+     *
+     * @return string
+     */
+    public function getEloquentUsername();
 }
