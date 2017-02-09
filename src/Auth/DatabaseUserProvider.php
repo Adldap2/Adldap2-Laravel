@@ -49,7 +49,10 @@ class DatabaseUserProvider extends Provider
     {
         $this->model = $model;
         $this->hasher = $hasher;
-        $this->fallback = new EloquentUserProvider($hasher, $model);
+
+        $this->setFallback(
+            new EloquentUserProvider($hasher, $model)
+        );
     }
 
     /**
@@ -154,6 +157,18 @@ class DatabaseUserProvider extends Provider
         }
 
         return false;
+    }
+
+    /**
+     * Set the fallback user provider.
+     *
+     * @param UserProvider $provider
+     *
+     * @return void
+     */
+    public function setFallback(UserProvider $provider)
+    {
+        $this->setFallback($provider);
     }
 
     /**
