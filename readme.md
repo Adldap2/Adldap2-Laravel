@@ -17,6 +17,7 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
 * [Installation](#installation)
 * [Usage](#usage)
 * [Auth Driver](#auth-driver)
+  * [Quick Start - From Scratch](docs/quick-start.md)
   * [Installation](#installation-1)
   * [Setup](#setup)
   * Features
@@ -30,8 +31,6 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
     * [Developing without an AD connection](docs/auth/fallback.md#developing-locally-without-an-ad-connection)
 
 ## Installation
-
-[Quick Start - From Scratch](docs/quick-start.md)
 
 Insert Adldap2-Laravel into your `composer.json` file:
 
@@ -127,135 +126,3 @@ class UserController extends Controller
 ```
 
 To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2);
-
-## Auth Driver
-
-The Adldap Laravel auth driver allows you to seamlessly authenticate AD users,
-as well as have a local database record of the user.
-
-This allows you to easily attach information to the users account
-as you would a regular laravel application.
-
-> **Note**: The Adldap auth driver actually extends from and utilizes Laravel's eloquent auth driver.
-
-### Installation
-
-#### Laravel 5.1
-
-Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
-
-```php
-Adldap\Laravel\AdldapAuthServiceProvider::class,
-```
-
-Publish the auth configuration:
-
-```bash
-php artisan vendor:publish --tag="adldap"
-```
-
-Change the auth driver in `config/auth.php` to `adldap`:
-
-```php
-'driver' => 'adldap',
-```
-
-#### Laravel 5.2 & Up
-
-Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
-
-```php
-Adldap\Laravel\AdldapAuthServiceProvider::class,
-```
-
-Publish the auth configuration:
-
-```bash
-php artisan vendor:publish --tag="adldap"
-```
-
-Open your `config/auth.php` configuration file and change the following:
-
-Change the `driver` value inside the `users` authentication provider to `adldap`:
-
-```php
-'providers' => [
-    'users' => [
-        'driver' => 'adldap', // Changed from 'eloquent'
-        'model' => App\User::class,
-    ],
-],
-```
-
-### Setup
-
-#### Usernames
-
-Inside your `config/adldap_auth.php` file there is a configuration option named `usernames`.
-
-This array contains the `ldap` attribute you use for authenticating users, as well
-as the `eloquent` attribute for locating the LDAP users model.
-
-```php
-
-'usernames' => [
-
-    'ldap' => 'userprincipalname',
-    
-    'eloquent' => 'email',
-
-],
-```
-
-If you're using a `username` field instead of `email` in your application, you will need to change this configuration.
-
-> **Note**: Keep in mind you will also need to update your `database/migrations/2014_10_12_000000_create_users_table.php`
-> migration to use a username field instead of email, **as well as** your LoginController.
-
-For example, if you'd like to login users by their `samaccountname`:
-
-```php
-
-'usernames' => [
-
-    'ldap' => 'samaccountname',
-    
-    'eloquent' => 'username',
-
-],
-```
-
-Be sure to update the `sync_attributes` option to synchronize the users `username` as well:
-
-```php
-'sync_attributes' => [
-
-    'username' => 'samaccountname', // Changed from 'email' => 'userprincipalname'
-    'name' => 'cn',
-
-],
-```
-
-#### Logging In
-
-Login a user regularly using `Auth::attempt($credentials);`.
-
-Once a user is authenticated, retrieve them as you would regularly:
-
-```php
-public function login(Request $request)
-{
-    if (Auth::attempt($request->only(['email', 'password'])) {
-        
-        // Returns \App\User model configured in `config/auth.php`.
-        $user = Auth::user();
-        
-        
-        return redirect()->to('home')
-            ->withMessage('Logged in!');
-    }
-    
-    return redirect()->to('login')
-        ->withMessage('Hmm... Your username or password is incorrect');
-}
-```
