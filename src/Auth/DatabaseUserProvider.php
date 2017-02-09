@@ -168,7 +168,7 @@ class DatabaseUserProvider extends Provider
      */
     public function setFallback(UserProvider $provider)
     {
-        $this->setFallback($provider);
+        $this->fallback = $provider;
     }
 
     /**
