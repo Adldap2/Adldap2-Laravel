@@ -18,8 +18,7 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
 * [Usage](#usage)
 * [Auth Driver](#auth-driver)
   * [Quick Start - From Scratch](docs/quick-start.md)
-  * [Installation](#installation-1)
-  * [Setup](#setup)
+  * [Installation & Basic Setup](docs/auth/installation.md)
   * Features
     * [Providers](docs/auth/providers.md)
     * [Synchronizing Attributes](docs/auth/syncing.md)
