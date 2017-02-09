@@ -36,7 +36,7 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
 Insert Adldap2-Laravel into your `composer.json` file:
 
 ```json
-"adldap2/adldap2-laravel": "2.1.*",
+"adldap2/adldap2-laravel": "3.0.*",
 ```
 
 Or via command line:
@@ -74,7 +74,7 @@ $user = Adldap::search()->users()->find('john doe');
 // Searching for a user.
 $search = Adldap::search()->where('cn', '=', 'John Doe')->get();
 
-// Authenticating.
+// Authenticating against your LDAP server.
 if (Adldap::auth()->attempt($username, $password)) {
     // Passed!
 }
@@ -91,6 +91,7 @@ $user->save();
 ```
 
 Or you can inject the Adldap contract:
+
 ```php
 use Adldap\Contracts\AdldapInterface;
 
@@ -118,7 +119,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->adldap->getDefaultProvider()->search()->users()->get();
+        $users = $this->adldap->search()->users()->get();
         
         return view('users.index', compact('users'));
     }
@@ -188,16 +189,52 @@ Change the `driver` value inside the `users` authentication provider to `adldap`
 
 ### Usage
 
-#### Username Attributes
+#### Usernames
 
-Inside your `config/adldap_auth.php` file there is a configuration option named `username_attribute`. The key of the
-array indicates the input name of your login form, and the value indicates the LDAP attribute that this references.
+Inside your `config/adldap_auth.php` file there is a configuration option named `usernames`.
 
-This option just allows you to set your input name to however you see fit, and allow different ways of logging in a user.
+This array contains the `ldap` attribute you use for authenticating users, as well
+as the `eloquent` attribute for locating the LDAP users model.
 
-> **Note**: The actual authentication against your AD server is done with
-> the `login_attribute` inside your `config/adldap_auth.php` file. The
-> `username_attribute` array is used for **locating** your user in AD.
+```php
+
+'usernames' => [
+
+    'ldap' => 'userprincipalname',
+    
+    'eloquent' => 'email',
+
+],
+```
+
+If you're using a `username` field instead of `email` in your application, you will need to change this configuration.
+
+> **Note**: Keep in mind you will also need to update your `database/migrations/2014_10_12_000000_create_users_table.php`
+> migration to use a username field instead of email, **as well as** your LoginController.
+
+For example, if you'd like to login users by their `samaccountname`:
+
+```php
+
+'usernames' => [
+
+    'ldap' => 'samaccountname',
+    
+    'eloquent' => 'username',
+
+],
+```
+
+Be sure to update the `sync_attributes` option to synchronize the users `username` as well:
+
+```php
+'sync_attributes' => [
+
+    'username' => 'samaccountname', // Changed from 'email' => 'userprincipalname'
+    'name' => 'cn',
+
+],
+```
 
 #### Logging In
 
@@ -222,61 +259,6 @@ public function login(Request $request)
         ->withMessage('Hmm... Your username or password is incorrect');
 }
 ```
-
-##### Logging in Users Via Their Username
-
-If you need to login users via their username (`samaccountname`), then you'll need to modify a couple things.
-Otherwise, if you're logging in users via email, then you don't need to change a thing and you can
-skip over the following documentation.
-
-First make sure you have the `username` field inside your users database table as well.
-By default, laravel's migrations use the `email` field:
-
-```php
-// 2014_10_12_000000_create_users_table.php
-Schema::create('users', function (Blueprint $table) {
-    $table->increments('id');
-    $table->string('name');
-    
-    // Changed to `username` instead of `email`.
-    $table->string('username')->unique();
-    
-    $table->string('password');
-    $table->rememberToken();
-    $table->timestamps();
-    $table->softDeletes();
-});
-```
- 
-Inside `config/adldap_auth.php`, change the array to the following:
-
-```php
-'username_attribute' => ['username' => 'samaccountname'],
-```
-
-In your login form, change the username form input name to your configured
-input name (by default this is set to `email`):
-
-```html
-<!-- Changed the `name` attribute to `username`. -->
-<input type="text" name="username" />
-```
-
-You'll also need to add the following to your AuthController / LoginController if
-you're not already overriding the default postLogin method:
-
-```php
-// In Laravel <= 5.2
-protected $username = 'username';
-
-// In Laravel >= 5.3
-public function username()
-{
-    return 'username';
-}
-```
-
-Once you've followed these steps, you'll be able to authenticate LDAP users by their username instead of their email.
 
 ## Features
 
@@ -303,7 +285,7 @@ use an attribute handler class to sync your model attributes manually. For examp
 ```php
 'sync_attributes' => [
     
-    \App\Handlers\LdapAttributeHandler::class,
+    App\Handlers\LdapAttributeHandler::class,
 
 ],
 ```
@@ -383,7 +365,7 @@ active directory authentication fails. This option would be handy in environment
 - You may have some active directory users and other users registering through the website itself (user does not exist in your AD).
 - Local development where your AD server may be unavailable
 
-To enable it, simply set the option to true in your `adldap_auth.php` configuration file:
+To enable it, simply set the option to true in your `config/adldap_auth.php` configuration file:
 
 ```php
 'login_fallback' => false, // Set to true.
