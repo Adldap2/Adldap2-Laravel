@@ -4,6 +4,7 @@ namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
 use Adldap\AdldapException;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Importer implements ImporterInterface
@@ -59,10 +60,13 @@ class Importer implements ImporterInterface
             $model = $model->withTrashed();
         }
 
-        $username = $this->getEloquentUsername();
+        foreach ($credentials as $key => $value) {
+            if (! Str::contains($key, 'password')) {
+                $model->where($key, $value);
+            }
+        }
 
-        return $model->where([$username => $credentials[$username]])
-            ->first();
+        return $model->first();
     }
 
     /**

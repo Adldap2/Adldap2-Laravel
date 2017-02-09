@@ -83,8 +83,10 @@ class WindowsAuthenticate
         $provider = $this->auth->getProvider();
 
         try {
+            $resolver = $this->getResolver();
+
             // Find the user in AD.
-            $user = $this->getResolver()->query()
+            $user = $resolver->query()
                 ->where([$key => $username])
                 ->firstOrFail();
 
@@ -93,10 +95,14 @@ class WindowsAuthenticate
 
                 return $user;
             } elseif ($provider instanceof DatabaseUserProvider) {
+                $credentials = [
+                    $resolver->getEloquentUsername() => $user->getFirstAttribute($resolver->getLdapUsername()),
+                ];
+
                 // Retrieve the Eloquent user model from our AD user instance.
                 // We'll assign the user a random password since we don't
                 // have access to it through SSO auth.
-                $model = $this->getImporter()->run($user, $this->getModel(), ['password' => str_random()]);
+                $model = $this->getImporter()->run($user, $this->getModel(), $credentials);
 
                 // Save model in case of changes.
                 $model->save();
