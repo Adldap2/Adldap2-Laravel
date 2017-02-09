@@ -1,7 +1,7 @@
 # Authentication Providers
 
-* [DatabaseUserProvider](#DatabaseUserProvider)
-* [NoDatabaseUserProvider](#NoDatabaseUserProvider)
+* [DatabaseUserProvider](#databaseuserprovider)
+* [NoDatabaseUserProvider](#nodatabaseuserprovider)
 
 ## DatabaseUserProvider
 
