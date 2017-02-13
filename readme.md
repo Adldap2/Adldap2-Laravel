@@ -17,6 +17,7 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
 * [Installation](#installation)
 * [Usage](#usage)
 * [Auth Driver](#auth-driver)
+  * [Upgrading](docs/auth/upgrading.md)
   * [Quick Start - From Scratch](docs/quick-start.md)
   * [Installation & Basic Setup](docs/auth/installation.md)
   * Features
@@ -125,11 +126,3 @@ class UserController extends Controller
 ```
 
 To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2).
-
-## Upgrading From 2.* to 3.*
-
-If using the Adldap2 auth driver, please follow these steps:
-
-1. Delete your `config/adldap_auth.php`
-2. Run `php artisan vendor:publish --tag="adldap"`
-3. Reconfigure auth driver in `config/adldap_auth.php`

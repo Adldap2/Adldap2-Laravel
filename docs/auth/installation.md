@@ -1,12 +1,11 @@
 # Auth Driver
 
-The Adldap Laravel auth driver allows you to seamlessly authenticate AD users,
+The Adldap2 Laravel auth driver allows you to seamlessly authenticate LDAP users,
 as well as have a local database record of the user.
 
 This allows you to easily attach information to the users account
 as you would a regular laravel application.
 
-> **Note**: The Adldap auth driver actually extends from and utilizes Laravel's eloquent auth driver.
 
 ## Installation
 
@@ -65,10 +64,9 @@ Change the `driver` value inside the `users` authentication provider to `adldap`
 Inside your `config/adldap_auth.php` file there is a configuration option named `usernames`.
 
 This array contains the `ldap` attribute you use for authenticating users, as well
-as the `eloquent` attribute for locating the LDAP users model.
+as the `eloquent` attribute for locating the LDAP users local model.
 
 ```php
-
 'usernames' => [
 
     'ldap' => 'userprincipalname',
@@ -86,7 +84,6 @@ If you're using a `username` field instead of `email` in your application, you w
 For example, if you'd like to login users by their `samaccountname`:
 
 ```php
-
 'usernames' => [
 
     'ldap' => 'samaccountname',
@@ -101,7 +98,7 @@ Be sure to update the `sync_attributes` option to synchronize the users `usernam
 ```php
 'sync_attributes' => [
 
-    'username' => 'samaccountname', // Changed from 'email' => 'userprincipalname'
+    'username' => 'samaccountname',
     'name' => 'cn',
 
 ],
