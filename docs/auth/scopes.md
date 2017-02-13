@@ -22,6 +22,13 @@ use Adldap\Laravel\Scopes\ScopeInterface;
 
 class AccountingScope implements ScopeInterface
 {
+    /**
+     * Apply the scope to a given LDAP query builder.
+     *
+     * @param Builer $builder
+     *
+     * @return void
+     */
     public function apply(Builder $query)
     {
         // The distinguished name of our LDAP group.
