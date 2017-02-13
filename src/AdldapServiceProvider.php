@@ -127,7 +127,7 @@ class AdldapServiceProvider extends ServiceProvider
     }
 
     /**
-     * Is this a Lumen application?
+     * Determines if the current application is Lumen.
      *
      * @return bool
      */
