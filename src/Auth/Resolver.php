@@ -3,7 +3,6 @@
 namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
-use Adldap\Query\Builder;
 use Adldap\Connections\ProviderInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
