@@ -126,7 +126,10 @@ class UserController extends Controller
 
 To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2).
 
-
 ## Upgrading From 2.* to 3.*
 
-To upgrade from `v2.*` to `v3.*`, delete your `config/adldap_auth.php` and reconfigure.
+If using the Adldap2 auth driver, please follow these steps:
+
+1. Delete your `config/adldap_auth.php`
+2. Run `php artisan vendor:publish --tag="adldap"`
+3. Reconfigure auth driver in `config/adldap_auth.php`
