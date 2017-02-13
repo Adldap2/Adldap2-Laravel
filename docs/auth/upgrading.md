@@ -6,6 +6,12 @@
   
 There are significant changes to the code base from `v2` to `v3`.
 
+### PHP
+
+Following Laravel's requirements, a minimum version of PHP 5.6 is now required.
+
+Previously, PHP 5.5 was the minimum requirement.
+
 ### Configuration
 
 1. Delete your `config/adldap_auth.php`

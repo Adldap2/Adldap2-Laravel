@@ -12,6 +12,16 @@
 Adldap2 - Laravel allows easy configuration, access, management and authentication to LDAP connections utilizing the root
 [Adldap2 Repository](http://www.github.com/Adldap2/Adldap2).
 
+## Requirements
+
+To use Adldap2-Laravel, your server must support:
+
+- PHP 5.6 or greater
+- PHP LDAP Extension
+- An Active Directory Server
+
+**Note:** OpenLDAP support is experimental, success may vary.
+
 ## Index
 
 * [Installation](#installation)
