@@ -26,9 +26,11 @@ You must specify your LDAP login attribute as well as your `eloquent` attribute.
 // v3.0
 
 'usernames' => [
+
     'ldap' => 'mail',
     
     'eloquent' => 'email',
+    
 ],
 ```
 
@@ -39,8 +41,10 @@ of the `ldap` option inside the `usernames` array.
 
 #### Binding Users to Model
 
-If you were using the `bind_user_to_model` option, you previously inserted
-the following trait onto your `User` model:
+The configuration option `bind_user_to_model` has been removed
+in favor of utilizing the trait itself instead. 
+
+If you previously inserted the following trait onto your `User` model:
  
 ```php
 Adldap\Laravel\Traits\AdldapUserModelTrait
@@ -63,8 +67,8 @@ class User extends Authenticatable
     use HasLdapUser;
 ```
 
-The configuration option itself (inside `config/adldap_auth.php`) has
-been removed in favor of utilizing the trait itself instead.
+You will then use the property `$user->ldap` instead of `$user->adldapUser`
+to access the users LDAP model throughout your application.
 
 #### Limitation Filter
 
