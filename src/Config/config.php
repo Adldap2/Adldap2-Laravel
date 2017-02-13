@@ -105,7 +105,7 @@ return [
                 |
                 */
 
-                'account_suffix' => env('ADLDAP_ACCOUNT_SUFFIX', '@acme.org'),
+                'account_suffix' => env('ADLDAP_ACCOUNT_SUFFIX', ''),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -175,7 +175,7 @@ return [
                 |
                 */
 
-                'admin_account_suffix' => env('ADLDAP_ADMIN_ACCOUNT_SUFFIX', '@acme.org'),
+                'admin_account_suffix' => env('ADLDAP_ADMIN_ACCOUNT_SUFFIX', ''),
 
                 /*
                 |--------------------------------------------------------------------------
