@@ -27,7 +27,7 @@ return redirect()
         ->with(['message' => 'Your credentials are incorrect.']);
 ```
 
-Or, if you'd like to all of your LDAP connections:
+Or, if you'd like to authenticate against all of your configured LDAP connections:
 
 ```php
 $connections = config('adldap.connections');
