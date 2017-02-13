@@ -124,4 +124,9 @@ class UserController extends Controller
 }
 ```
 
-To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2);
+To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2).
+
+
+## Upgrading From 2.* to 3.*
+
+To upgrade from `v2.*` to `v3.*`, delete your `config/adldap_auth.php` and reconfigure.
