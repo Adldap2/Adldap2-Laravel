@@ -32,6 +32,8 @@ To use Adldap2-Laravel, your server must support:
   * [Installation & Basic Setup](docs/auth/installation.md)
   * Features
     * [Providers](docs/auth/providers.md)
+    * [Scopes](docs/auth/scopes.md)
+    * [Rules](docs/auth/rules.md)
     * [Synchronizing Attributes](docs/auth/syncing.md)
     * [Binding to the User Model](docs/auth/binding.md)
     * [Login Fallback](docs/auth/fallback.md)
