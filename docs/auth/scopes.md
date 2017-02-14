@@ -17,7 +17,7 @@ Of course, you can place these scopes wherever you desire, but in this example, 
 ../my-application/app/Scopes/AccountingScope.php
 ```
 
-With this scope, we want to only allow members of an Active Directory group named `Accouting`:
+With this scope, we want to only allow members of an Active Directory group named `Accounting`:
 
 
 ```php
