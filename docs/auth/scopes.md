@@ -56,7 +56,7 @@ Now that we've created our scope (`app/Scopes/AccountingScope.php`), we can inse
 
     Adldap\Laravel\Scopes\UpnScope::class,
     
-    // Only allow members of accounting to login.
+    // Only allow members of 'Accounting' to login.
     
     App\Scopes\AccountingScope::class,
 
