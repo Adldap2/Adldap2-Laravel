@@ -79,6 +79,8 @@ Now you're all set!
 
 You can perform all methods on Adldap through its facade like so:
 ```php
+use Adldap\Laravel\Facades\Adldap;
+
 // Finding a user.
 $user = Adldap::search()->users()->find('john doe');
 
