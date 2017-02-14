@@ -11,6 +11,12 @@ To create a scope, it must implement the interface `Adldap\Laravel\Scopes\ScopeI
 
 For this example, we'll create a folder inside our `app` directory containing our scope named `Scopes`.
 
+Of course, you can place these scopes wherever you desire, but in this example, our final scope path will be:
+
+```
+../my-application/app/Scopes/AccountingScope.php
+```
+
 With this scope, we want to only allow members of an Active Directory group named `Accouting`:
 
 
