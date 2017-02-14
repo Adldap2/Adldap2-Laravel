@@ -64,6 +64,8 @@ Now that we've created our scope (`app/Scopes/AccountingScope.php`), we can inse
 ```
 
 Once you've inserted your scope into the configuration file, you will now only be able
-to authenticate with users that are a member of the `Accounting` group.
+to authenticate with users that are a member of the `Accounting` group. All other
+users will be denied authentication to your app, even if their credentials
+are valid.
 
 > **Note**: If you're caching your configuration files, make sure you run `php artisan config:clear`.
