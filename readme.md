@@ -103,10 +103,10 @@ $user = Adldap::make()->user([
 $user->save();
 ```
 
-Or you can inject the Adldap contract:
+Or you can inject the Adldap interface into your controllers:
 
 ```php
-use Adldap\Contracts\AdldapInterface;
+use Adldap\AdldapInterface;
 
 class UserController extends Controller
 {
