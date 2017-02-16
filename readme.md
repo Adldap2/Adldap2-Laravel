@@ -21,7 +21,7 @@ To use Adldap2-Laravel, your application and server must meet the following requ
 - PHP LDAP Extension
 - An Active Directory Server
 
-**Note:** OpenLDAP support is experimental, success may vary.
+> **Note:** OpenLDAP support is experimental, success may vary.
 
 ## Index
 
