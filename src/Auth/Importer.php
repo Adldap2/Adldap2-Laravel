@@ -57,20 +57,22 @@ class Importer implements ImporterInterface
             return;
         }
 
-        if (method_exists($model, 'trashed')) {
+        $query = $model->newQuery();
+
+        if ($query->getMacro('withTrashed')) {
             // If the trashed method exists on our User model, then we must be
             // using soft deletes. We need to make sure we include these
             // results so we don't create duplicate user records.
-            $model = $model->withTrashed();
+            $query->withTrashed();
         }
 
         foreach ($credentials as $key => $value) {
             if (! Str::contains($key, 'password')) {
-                $model->where($key, $value);
+                $query->where($key, $value);
             }
         }
 
-        return $model->first();
+        return $query->first();
     }
 
     /**
