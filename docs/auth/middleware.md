@@ -1,4 +1,4 @@
-# Windows Authentication (SSO) Middleware
+# Single Sign On (SSO) Middleware
 
 > **Requirements**: This feature assumes that you have enabled `Windows Authentication` in IIS, or have enabled it
 in some other means with Apache. Adldap2 does not set this up for you. To enable Windows Authentication, visit:
