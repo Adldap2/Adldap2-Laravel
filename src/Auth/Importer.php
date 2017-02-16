@@ -60,7 +60,7 @@ class Importer implements ImporterInterface
         $query = $model->newQuery();
 
         if ($query->getMacro('withTrashed')) {
-            // If the trashed method exists on our User model, then we must be
+            // If the withTrashed macro exists on our User model, then we must be
             // using soft deletes. We need to make sure we include these
             // results so we don't create duplicate user records.
             $query->withTrashed();
