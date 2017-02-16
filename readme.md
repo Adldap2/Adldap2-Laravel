@@ -78,7 +78,10 @@ Now you're all set!
 
 ## Usage
 
-You can perform all methods on Adldap through its facade like so:
+First, configure your LDAP connection in the `config/adldap.php` file.
+
+Then, you can perform all methods on your Adldap connection through its facade like so:
+
 ```php
 use Adldap\Laravel\Facades\Adldap;
 
