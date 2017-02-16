@@ -14,7 +14,7 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
 
 ## Requirements
 
-To use Adldap2-Laravel, your server must support:
+To use Adldap2-Laravel, you application and server must meet the following requirements:
 
 - Larvel 5.*
 - PHP 5.6 or greater
