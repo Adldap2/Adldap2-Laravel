@@ -38,7 +38,7 @@ To use Adldap2-Laravel, your application and server must meet the following requ
     * [Synchronizing Attributes](docs/auth/syncing.md)
     * [Binding to the User Model](docs/auth/binding.md)
     * [Login Fallback](docs/auth/fallback.md)
-    * [Windows Authentication Middleware](docs/auth/middleware.md)
+    * [Single Sign On (SSO) Middleware](docs/auth/middleware.md)
     * [Multiple Connections](docs/auth/multiple-connections.md)
     * [Password Synchronization](docs/auth/syncing/#password-synchronization)
     * [Importing Users](docs/importing.md)
