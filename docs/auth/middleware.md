@@ -13,7 +13,7 @@ configurable in your `adldap_auth.php`configuration file.
 > A user may successfully authenticate against your AD server when visiting your site, but
 > depending on your scopes, may not be imported or logged in.
 
-To use the middleware, insert it on your middleware stack:
+To use the middleware, insert it on your middleware stack inside your `app/Http/Kernel.php` file:
 
 ```php
 protected $middlewareGroups = [
