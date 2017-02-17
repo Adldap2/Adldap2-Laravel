@@ -85,8 +85,7 @@ return [
                 |
                 | The account prefix option is the prefix of your user accounts in AD.
                 |
-                | For example, if you'd prefer your users to use only their username instead
-                | of specifying a domain ('ACME\jdoe'), enter your domain name.
+                | This string is prepended to authenticating users usernames.
                 |
                 */
 
@@ -99,9 +98,7 @@ return [
                 |
                 | The account suffix option is the suffix of your user accounts in AD.
                 |
-                | For example, if your domain DN is DC=corp,DC=acme,DC=org, then your
-                | account suffix would be @corp.acme.org. This is then appended to
-                | then end of your user accounts on authentication.
+                | This string is appended to authenticating users usernames.
                 |
                 */
 
