@@ -44,7 +44,7 @@ return [
             | The connection class to use to run raw LDAP operations on.
             |
             | Custom connection classes must implement:
-            |  \Adldap\Contracts\Connections\ConnectionInterface
+            |  \Adldap\Connections\ConnectionInterface
             |
             */
 
@@ -59,7 +59,7 @@ return [
             |
             | You can also set this option to `null` to use the default schema class.
             |
-            | Custom schema classes must implement \Adldap\Contracts\Schemas\SchemaInterface
+            | Custom schema classes must implement \Adldap\Schemas\SchemaInterface
             |
             */
 
