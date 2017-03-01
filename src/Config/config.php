@@ -30,7 +30,7 @@ return [
             | in your application.
             |
             | If this is set to false, you must connect manually before running
-            | LDAP operations using: Adldap::connect();
+            | LDAP operations.
             |
             */
 
