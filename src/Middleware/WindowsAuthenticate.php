@@ -103,6 +103,12 @@ class WindowsAuthenticate
                 // assigns a random 16 character password for us.
                 $model = $this->getImporter()->run($user, $this->getModel(), $credentials);
 
+                $password = str_random();
+
+                // Set the models password.
+                $model->password = $model->hasSetMutator('password') ?
+                    $password : bcrypt($password);
+
                 // We also want to save the returned model in case it doesn't
                 // exist yet, or there are changes to be synced.
                 $model->save();

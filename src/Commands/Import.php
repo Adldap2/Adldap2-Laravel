@@ -106,6 +106,12 @@ class Import extends Command
                 // Import the user and retrieve it's model.
                 $model = $this->getImporter()->run($user, $this->model());
 
+                $password = str_random();
+
+                // Set the models password.
+                $model->password = $model->hasSetMutator('password') ?
+                    $password : bcrypt($password);
+
                 // Save the returned model.
                 $this->save($user, $model);
 
