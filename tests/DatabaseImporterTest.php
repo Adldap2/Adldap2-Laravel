@@ -4,7 +4,6 @@ namespace Adldap\Laravel\Tests;
 
 use Adldap\Laravel\Auth\Importer;
 use Adldap\Laravel\Tests\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseImporterTest extends DatabaseTestCase
 {
@@ -17,10 +16,10 @@ class DatabaseImporterTest extends DatabaseTestCase
 
         $importer = new Importer();
 
-        $model = $importer->run($user, new User(), ['password' => 'password']);
+        $model = $importer->run($user, new User());
 
         $this->assertEquals($user->getCommonName(), $model->name);
         $this->assertEquals($user->getUserPrincipalName(), $model->email);
-        $this->assertTrue(Hash::check('password', $model->password));
+        $this->assertFalse($model->exists);
     }
 }
