@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Commands;
 
+use Exception;
 use Adldap\Models\User;
 use Adldap\Laravel\Traits\UsesAdldap;
 use Illuminate\Console\Command;
@@ -120,7 +121,7 @@ class Import extends Command
                 }
 
                 $imported++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Log the unsuccessful import.
                 if ($this->isLogging()) {
                     logger()->error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
