@@ -166,11 +166,14 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $resolver = m::mock(ResolverInterface::class);
 
-        $resolver->shouldReceive('byCredentials')->twice()->andReturn(null);
+        $resolver->shouldReceive('byCredentials')->times(3)->andReturn(null);
 
         Auth::getProvider()->setResolver($resolver);
 
         $this->assertTrue(Auth::attempt($credentials));
+        $this->assertFalse(Auth::attempt(
+            array_replace($credentials, ['password' => 'Invalid'])
+        ));
 
         config(['adldap_auth.login_fallback' => false]);
 
