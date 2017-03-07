@@ -25,7 +25,7 @@ class DoeRule extends Rule
 {
     public function isValid(LdapUser $ldapUser, EloquentUser $user)
     {
-        return $ldpaUser->getLastName() == 'Doe' || $user->created_at->year > '2016';
+        return $ldapUser->getLastName() == 'Doe' || $user->created_at->year > '2016';
     }
 }
 ```
