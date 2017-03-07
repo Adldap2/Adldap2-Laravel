@@ -83,6 +83,8 @@ class AdldapServiceProvider extends ServiceProvider
     {
         // Go through each connection and construct a Provider.
         collect($connections)->each(function ($settings, $name) use ($adldap) {
+            //fix error port integer
+            $settings['connection_settings']['port'] = intval($settings['connection_settings']['port']) ;
             // Create a new provider.
             $provider = $this->newProvider(
                 $settings['connection_settings'],
