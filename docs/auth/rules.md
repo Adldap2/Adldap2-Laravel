@@ -52,3 +52,26 @@ To implement your new rule, you just need to insert it into your `config/adldap_
 
 Now when you try to authenticate, you will either need to be logging in with an LDAP user with the last name of `Doe` or 
 with a local database record that was created after 2016.
+
+## Example Rules
+
+### Group Validation
+
+To validate that an authenticating user is apart of one or more LDAP groups, we can perform this with a `Rule`:
+
+```php
+namespace App\Rules;
+
+use Adldap\Models\User as LdapUser;
+use Adldap\Laravel\Validation\Rules\Rule;
+
+class AccountingRule extends Rule
+{
+    public function isValid(LdapUser $ldapUser)
+    {
+        return $ldapUser->inGroup('Accounting');
+    }
+}
+```
+
+Once you've implemented the above rule, only LDAP users that are apart of the `Accounting` group, will be allowed to authenticate.
