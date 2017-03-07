@@ -11,8 +11,11 @@ For this example, we'll create a folder in our `app` directory containing our ru
 
 With this example rule, we only want to allow LDAP users with the last name of `Doe` or if their Eloquent model was created after 2016:
 
-> **Note**: For this example we're using the `DatabaseUserProvider`, which means we'll receive the local users Eloquent model
-> in the second argument. If you're using the `NoDatabaseUserProvider`, you will only receive the LDAP users model.
+> **Note**: For this example we're using the `DatabaseUserProvider` in our
+> `config/adldap_auth.php` file, which means we'll receive the local users
+> Eloquent model in the second argument. If you're using the
+> `NoDatabaseUserProvider`, you will only receive
+> the LDAP users model.
 
 ```php
 namespace App\Rules;
