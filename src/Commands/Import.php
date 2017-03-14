@@ -82,7 +82,9 @@ class Import extends Command
         }
 
         if ($this->confirm('Would you like these users to be imported / synchronized?')) {
-            $this->info("\nSuccessfully imported / synchronized {$this->import($users)} user(s).");
+            $imported = $this->import($users);
+
+            $this->info("\nSuccessfully imported / synchronized {$imported} user(s).");
         } else {
             $this->info('Okay, no users were imported / synchronized.');
         }
