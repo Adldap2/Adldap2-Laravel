@@ -236,8 +236,10 @@ class Import extends Command
      */
     protected function getUserCredentials(User $user)
     {
+        $username = $user->getFirstAttribute($this->getResolver()->getLdapUsername());
+
         return [
-            $this->getResolver()->getEloquentUsername() => $user->getFirstAttribute($this->getResolver()->getLdapUsername())
+            $this->getResolver()->getEloquentUsername() => $username,
         ];
     }
 
