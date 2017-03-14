@@ -97,12 +97,11 @@ class WindowsAuthenticate
                     $resolver->getEloquentUsername() => $user->getFirstAttribute($resolver->getLdapUsername()),
                 ];
 
-                // Here we'll import the AD user. If the user already exists in our local
-                // database, it will be returned from the importer. We also won't pass
-                // in any password key into the credentials array so the importer
-                // assigns a random 16 character password for us.
+                // Here we'll import the AD user. If the user already exists in
+                // our local database, it will be returned from the importer.
                 $model = $this->getImporter()->run($user, $this->getModel(), $credentials);
 
+                // We'll assign a random password for the authenticating user.
                 $password = str_random();
 
                 // Set the models password.
