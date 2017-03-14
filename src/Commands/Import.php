@@ -104,8 +104,11 @@ class Import extends Command
 
         foreach ($users as $user) {
             try {
+                // Get the users credentials array.
+                $credentials = $this->getUserCredentials($user);
+
                 // Import the user and retrieve it's model.
-                $model = $this->getImporter()->run($user, $this->model());
+                $model = $this->getImporter()->run($user, $this->model(), $credentials);
 
                 $password = str_random();
 
@@ -222,6 +225,20 @@ class Import extends Command
         return array_filter($users, function ($user) {
             return $user instanceof User;
         });
+    }
+
+    /**
+     * Returns the specified users credentials array.
+     *
+     * @param User $user
+     *
+     * @return array
+     */
+    protected function getUserCredentials(User $user)
+    {
+        return [
+            $this->getResolver()->getEloquentUsername() => $user->getFirstAttribute($this->getResolver()->getLdapUsername())
+        ];
     }
 
     /**
