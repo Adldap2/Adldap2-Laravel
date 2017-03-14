@@ -112,7 +112,7 @@ class DatabaseUserProvider extends Provider
 
             // Import / locate the local user account.
             return $this->getImporter()
-                ->run($user, $this->fallback->createModel(), $credentials);
+                ->run($user, $this->createModel(), $credentials);
         }
 
         if ($this->isFallingBack()) {
