@@ -31,7 +31,7 @@ class AccountingScope implements ScopeInterface
     /**
      * Apply the scope to a given LDAP query builder.
      *
-     * @param Builer $query
+     * @param Builder $query
      *
      * @return void
      */
