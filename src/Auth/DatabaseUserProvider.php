@@ -201,6 +201,16 @@ class DatabaseUserProvider extends Provider
     }
 
     /**
+     * Gets the name of the Eloquent user model.
+     *
+     * @return string
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+    
+    /**
      * Binds the LDAP User instance to the Eloquent model.
      *
      * @param Authenticatable $model
