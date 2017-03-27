@@ -171,17 +171,20 @@ return [
 
                 /*
                 |--------------------------------------------------------------------------
-                | Administrator Account Suffix
+                | Administrator Account Suffix / Prefix
                 |--------------------------------------------------------------------------
                 |
-                | This option allows you to set a different account suffix for your
-                | configured administrator account upon binding.
+                | This option allows you to set a different account prefix and suffix
+                | for your configured administrator account upon binding.
                 |
-                | If left empty, your `account_suffix` option will be used.
+                | If left empty or set to `null`, your `account_prefix` and
+                | `account_suffix` options above will be used.
                 |
                 */
 
+                'admin_account_prefix' => env('ADLDAP_ADMIN_ACCOUNT_PREFIX', ''),
                 'admin_account_suffix' => env('ADLDAP_ADMIN_ACCOUNT_SUFFIX', ''),
+
 
                 /*
                 |--------------------------------------------------------------------------
