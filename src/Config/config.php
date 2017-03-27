@@ -185,7 +185,6 @@ return [
                 'admin_account_prefix' => env('ADLDAP_ADMIN_ACCOUNT_PREFIX', ''),
                 'admin_account_suffix' => env('ADLDAP_ADMIN_ACCOUNT_SUFFIX', ''),
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | Administrator Username & Password
