@@ -20,15 +20,13 @@ With this example rule, we only want to allow LDAP users with the last name of `
 ```php
 namespace App\Rules;
 
-use App\User as EloquentUser;
-use Adldap\Models\User as LdapUser;
 use Adldap\Laravel\Validation\Rules\Rule;
 
 class DoeRule extends Rule
 {
-    public function isValid(LdapUser $ldapUser, EloquentUser $user)
+    public function isValid()
     {
-        return $ldapUser->getLastName() == 'Doe' || $user->created_at->year > '2016';
+        return $this->user->getLastName() == 'Doe' || $this->model->year > '2016';
     }
 }
 ```
@@ -70,9 +68,9 @@ use Adldap\Laravel\Validation\Rules\Rule;
 
 class AccountingRule extends Rule
 {
-    public function isValid(LdapUser $ldapUser)
+    public function isValid()
     {
-        return $ldapUser->inGroup('Accounting');
+        return $this->user->inGroup('Accounting');
     }
 }
 ```
