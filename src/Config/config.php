@@ -59,7 +59,15 @@ return [
             |
             | You can also set this option to `null` to use the default schema class.
             |
-            | Custom schema classes must implement \Adldap\Schemas\SchemaInterface
+            | For OpenLDAP, you must use the schema:
+            |
+            |   Adldap\Schemas\OpenLDAP::class
+            |
+            | For FreeIPA, you must use the schema:
+            |
+            |   Adldap\Schemas\FreeIPA::class
+            |
+            | Custom schema classes must implement Adldap\Schemas\SchemaInterface
             |
             */
 
