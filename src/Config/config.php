@@ -44,7 +44,8 @@ return [
             | The connection class to use to run raw LDAP operations on.
             |
             | Custom connection classes must implement:
-            |  \Adldap\Connections\ConnectionInterface
+            |
+            |  Adldap\Connections\ConnectionInterface
             |
             */
 
