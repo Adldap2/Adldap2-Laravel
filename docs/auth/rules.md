@@ -7,15 +7,15 @@ but with the ability to perform checks on the specific user authenticating.
 
 To create a rule, it must extend the class `Adldap\Laravel\Validation\Rules\Rule`.
 
-For this example, we'll create a folder in our `app` directory containing our rule named `Rules`.
+Two properties will be available to you inside the rule. A `$user` property that
+contains the LDAP user model, as well as their Eloquent `$model`
+
+> **Note**: If you utilize the `NoDatabaseUserProvider` instead of the default
+> `DatabaseUserProvider`, then only the `$user` property will be available.
+
+We'll create a folder in our `app` directory containing our rule named `Rules`.
 
 With this example rule, we only want to allow LDAP users with the last name of `Doe` or if their Eloquent model was created after 2016:
-
-> **Note**: For this example we're using the `DatabaseUserProvider` in our
-> `config/adldap_auth.php` file, which means we'll receive the local users
-> Eloquent model in the second argument. If you're using the
-> `NoDatabaseUserProvider`, you will only receive
-> the LDAP users model.
 
 ```php
 namespace App\Rules;
@@ -24,6 +24,25 @@ use Adldap\Laravel\Validation\Rules\Rule;
 
 class DoeRule extends Rule
 {
+    /**
+     * The LDAP user.
+     *
+     * @var User
+     */
+    protected $user;
+    
+    /**
+     * The Eloquent model.
+     *
+     * @var Model|null
+     */
+    protected $model;
+    
+    /**
+     * Determines if the user is allowed to authenticate.
+     *
+     * @return bool
+     */   
     public function isValid()
     {
         return $this->user->getLastName() == 'Doe' || $this->model->year > '2016';
@@ -68,6 +87,27 @@ use Adldap\Laravel\Validation\Rules\Rule;
 
 class AccountingRule extends Rule
 {
+    /**
+     * The LDAP user.
+     *
+     * @var User
+     */
+    protected $user;
+    
+    /**
+     * The Eloquent model.
+     *
+     * @var Model|null
+     */
+    protected $model;
+    
+    /**
+     * Determines if the user is allowed to authenticate.
+     *
+     * Only allows users in the `Accounting` group to authenticate.
+     *
+     * @return bool
+     */   
     public function isValid()
     {
         return $this->user->inGroup('Accounting');
