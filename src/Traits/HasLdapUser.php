@@ -18,7 +18,7 @@ trait HasLdapUser
      *
      * @param User $user
      */
-    public function setLdapUser(User $user)
+    public function setLdapUser(User $user = null)
     {
         $this->ldap = $user;
     }

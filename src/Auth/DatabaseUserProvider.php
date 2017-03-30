@@ -112,7 +112,7 @@ class DatabaseUserProvider extends Provider
 
             // Import / locate the local user account.
             return $this->getImporter()
-                ->run($user, $this->fallback->createModel(), $credentials);
+                ->run($user, $this->createModel(), $credentials);
         }
 
         if ($this->isFallingBack()) {
@@ -125,6 +125,8 @@ class DatabaseUserProvider extends Provider
      */
     public function validateCredentials(Authenticatable $model, array $credentials)
     {
+        // We'll check if we have an LDAP user, and then make sure
+        // they pass authentication before going further.
         if (
             $this->user instanceof User &&
             $this->getResolver()->authenticate($this->user, $credentials)

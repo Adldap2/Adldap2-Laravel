@@ -82,7 +82,9 @@ class Import extends Command
         }
 
         if ($this->confirm('Would you like these users to be imported / synchronized?')) {
-            $this->info("\nSuccessfully imported / synchronized {$this->import($users)} user(s).");
+            $imported = $this->import($users);
+
+            $this->info("\nSuccessfully imported / synchronized {$imported} user(s).");
         } else {
             $this->info('Okay, no users were imported / synchronized.');
         }
@@ -104,8 +106,11 @@ class Import extends Command
 
         foreach ($users as $user) {
             try {
+                // Get the users credentials array.
+                $credentials = $this->getUserCredentials($user);
+
                 // Import the user and retrieve it's model.
-                $model = $this->getImporter()->run($user, $this->model());
+                $model = $this->getImporter()->run($user, $this->model(), $credentials);
 
                 $password = str_random();
 
@@ -222,6 +227,22 @@ class Import extends Command
         return array_filter($users, function ($user) {
             return $user instanceof User;
         });
+    }
+
+    /**
+     * Returns the specified users credentials array.
+     *
+     * @param User $user
+     *
+     * @return array
+     */
+    protected function getUserCredentials(User $user)
+    {
+        $username = $user->getFirstAttribute($this->getResolver()->getLdapUsername());
+
+        return [
+            $this->getResolver()->getEloquentUsername() => $username,
+        ];
     }
 
     /**

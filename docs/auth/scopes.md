@@ -31,7 +31,7 @@ class AccountingScope implements ScopeInterface
     /**
      * Apply the scope to a given LDAP query builder.
      *
-     * @param Builer $builder
+     * @param Builder $query
      *
      * @return void
      */
@@ -40,7 +40,7 @@ class AccountingScope implements ScopeInterface
         // The distinguished name of our LDAP group.
         $accounting = 'cn=Accounting,ou=Groups,dc=acme,dc=org';
         
-        $query->whereMemeberOf($accouning);
+        $query->whereMemberOf($accounting);
     }
 }
 ```
