@@ -287,6 +287,10 @@ class DatabaseProviderTest extends DatabaseTestCase
         Auth::getProvider()->setResolver($resolver);
 
         $this->assertFalse(Auth::attempt($credentials));
+    }
 
+    public function test_calls_to_fallback_provider()
+    {
+        $this->assertEquals('Adldap\Laravel\Tests\Models\User', Auth::getProvider()->getModel());
     }
 }

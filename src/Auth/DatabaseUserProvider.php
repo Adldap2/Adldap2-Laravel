@@ -201,6 +201,19 @@ class DatabaseUserProvider extends Provider
     }
 
     /**
+     * Perform all missing method calls on the underlying EloquentUserProvider fallback.
+     *
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        return call_user_func_array([$this->fallback, $name], $arguments);
+    }
+
+    /**
      * Binds the LDAP User instance to the Eloquent model.
      *
      * @param Authenticatable $model
