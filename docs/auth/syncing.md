@@ -11,7 +11,7 @@ This means, upon login, the users `email` and `name` attribute on Laravel `User`
 LDAP users `userprincipalname` and common name (`cn`) attribute, **then saved**.
 
 Feel free to add more attributes here, however be sure that your `users` database table
-contains the key you've entered, otherwise you will receive a SQL exception.
+contains the key you've entered, otherwise you will receive a SQL exception upon authentication.
 
 ## Sync Attribute Handlers
 
