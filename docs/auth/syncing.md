@@ -13,7 +13,7 @@ LDAP users `userprincipalname` and common name (`cn`) attribute, **then saved**.
 Feel free to add more attributes here, however be sure that your `users` database table
 contains the key you've entered, otherwise you will receive a SQL exception upon authentication.
 
-## Sync Attribute Handlers
+## Attribute Handlers
 
 If you're looking to synchronize an attribute from an Adldap2 model that contains an array or an
 object, or sync attributes yourself, you can use an attribute handler class
