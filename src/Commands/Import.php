@@ -7,19 +7,22 @@ use Adldap\Models\User;
 use Adldap\Laravel\Traits\UsesAdldap;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 
 class Import extends Command
 {
     use UsesAdldap;
 
     /**
-     * The name of the console command.
+     * The signature of the console command.
      *
      * @var string
      */
-    protected $name = 'adldap:import';
+    protected $signature = 'adldap:import {user? : The specific user to import.}
+            {--f|filter= : The raw filter for limiting users imported.}
+            {--c|connection= : The LDAP connection to use to import users.}
+            {--d|delete : Soft-delete the users model if their AD account is disabled.}
+            {--r|restore : Restores soft-deleted models if their AD account is enabled.}
+            {--no-log : Disables logging successful and unsuccessful imported users.}';
 
     /**
      * The description of the console command.
@@ -27,38 +30,6 @@ class Import extends Command
      * @var string
      */
     protected $description = 'Imports LDAP users into the local database with a random 16 character hashed password.';
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['user', InputArgument::OPTIONAL, 'The specific user to import using ANR.'],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['filter', '-f', InputOption::VALUE_OPTIONAL, 'The raw filter for limiting users imported.'],
-
-            ['log', '-l', InputOption::VALUE_OPTIONAL, 'Log successful and unsuccessful imported users.', 'true'],
-
-            ['connection', '-c', InputOption::VALUE_OPTIONAL, 'The LDAP connection to use to import users.'],
-
-            ['delete', '-d', InputOption::VALUE_NONE, 'Soft-delete the users model if their AD account is disabled.'],
-
-            ['restore', '-r', InputOption::VALUE_NONE, 'Restores soft-deleted models if their AD account is enabled.'],
-        ];
-    }
 
     /**
      * Execute the console command.
@@ -174,7 +145,7 @@ class Import extends Command
      */
     public function isLogging()
     {
-        return $this->option('log') == 'true';
+        return !$this->option('no-log');
     }
 
     /**
@@ -240,10 +211,12 @@ class Import extends Command
      */
     protected function getUserCredentials(User $user)
     {
-        $username = $user->getFirstAttribute($this->getResolver()->getLdapUsername());
+        $resolver = $this->getResolver();
+
+        $username = $user->getFirstAttribute($resolver->getLdapUsername());
 
         return [
-            $this->getResolver()->getEloquentUsername() => $username,
+            $resolver->getEloquentUsername() => $username,
         ];
     }
 
@@ -286,8 +259,9 @@ class Import extends Command
             $model->trashed() &&
             $user->isEnabled()
         ) {
-            // If the model has soft-deletes enabled, the model is currently deleted, and the
-            // AD user account is enabled, we'll restore the users model.
+            // If the model has soft-deletes enabled, the model is
+            // currently deleted, and the AD user account
+            // is enabled, we'll restore the users model.
             $model->restore();
 
             if ($this->isLogging()) {
