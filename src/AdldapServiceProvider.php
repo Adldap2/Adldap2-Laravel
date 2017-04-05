@@ -72,6 +72,9 @@ class AdldapServiceProvider extends ServiceProvider
     /**
      * Adds providers to the specified Adldap instance.
      *
+     * If a provider is configured to auto connect,
+     * this method will throw a BindException.
+     *
      * @param Adldap $adldap
      * @param array  $connections
      *
