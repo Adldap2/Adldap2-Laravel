@@ -82,12 +82,12 @@ class AdldapServiceProvider extends ServiceProvider
     protected function addProviders(Adldap $adldap, array $connections = [])
     {
         // Go through each connection and construct a Provider.
-        collect($connections)->each(function ($settings, $name) use ($adldap) {
+        foreach ($connections as $name => $settings) {
             // Create a new provider.
             $provider = $this->newProvider(
                 $settings['connection_settings'],
-                new $settings['connection'](),
-                new $settings['schema']()
+                new $settings['connection'],
+                new $settings['schema']
             );
 
             // Try connecting to the provider if `auto_connect` is true.
@@ -97,7 +97,7 @@ class AdldapServiceProvider extends ServiceProvider
 
             // Add the provider to the Adldap container.
             $adldap->addProvider($provider, $name);
-        });
+        }
 
         return $adldap;
     }
