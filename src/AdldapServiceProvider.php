@@ -8,8 +8,8 @@ use Adldap\Connections\Provider;
 use Adldap\Schemas\SchemaInterface;
 use Adldap\Connections\ConnectionInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Container\Container;
+use Illuminate\Support\ServiceProvider;
 
 class AdldapServiceProvider extends ServiceProvider
 {
