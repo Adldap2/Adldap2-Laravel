@@ -100,7 +100,7 @@ class Resolver implements ResolverInterface
      */
     public function getLdapAuthUsername()
     {
-        return config('adldap_auth.usernames.ldap.authenticate');
+        return config('adldap_auth.usernames.ldap.authenticate', 'userprincipalname');
     }
 
     /**
