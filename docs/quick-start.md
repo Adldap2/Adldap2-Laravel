@@ -1,6 +1,6 @@
 # Quick Start - From Scratch
 
-Here is a step by step guide for configuring Adldap2 with a fresh new laravel project. This guide assumes you have
+Here is a step by step guide for configuring Adldap2-Laravel (and its auth driver) with a fresh new laravel project. This guide assumes you have
 knowledge working with Laravel, Active Directory, LDAP Protocol and command line tools (such as Composer and Artisan).
 
 This guide was created with the help of [@st-claude](https://github.com/st-claude) and other awesome contributors.
