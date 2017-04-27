@@ -130,11 +130,22 @@ return [
         |
         | Discover:
         |
-        |   The discover value is the attribute you would like to discover LDAP users by.
+        |   The discover value is the users attribute you would
+        |   like to locate LDAP users by.
+        |
+        |   For example, using the default configuration below, if you're
+        |   authenticating users with an email address, your LDAP server
+        |   will be queried for a user with the a `userprincipalname`
+        |   equal to the entered email address.
         |
         | Authenticate:
         |
-        |   The authenticate value is the attribute you would like to use to bind to your LDAP server.
+        |   The authenticate value is the users attribute you would
+        |   like to use to bind to your LDAP server.
+        |
+        |   For example, when a user is located by the above attribute, the attribute
+        |   you specify below will be used to bind to your LDAP server.
+        |
         |
         */
 
@@ -153,8 +164,8 @@ return [
         | Eloquent
         |--------------------------------------------------------------------------
         |
-        | This is the attribute that is used for locating
-        | and storing the LDAP username above.
+        | The value you enter is used for locating the local
+        | database record of the authenticating user.
         |
         | If you're using a `username` field instead, change this to `username`.
         |
