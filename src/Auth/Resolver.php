@@ -62,7 +62,9 @@ class Resolver implements ResolverInterface
      */
     public function authenticate(User $user, array $credentials = [])
     {
-        $username = $user->getFirstAttribute($this->getLdapUsername());
+        $attribute = $user->getAttribute($this->getLdapAuthUsername());
+
+        $username = is_array($attribute) ? array_first($attribute) : $attribute;
 
         return $this->provider->auth()->attempt($username, $credentials['password']);
     }
@@ -90,7 +92,15 @@ class Resolver implements ResolverInterface
      */
     public function getLdapUsername()
     {
-        return config('adldap_auth.usernames.ldap', 'userprincipalname');
+        return config('adldap_auth.usernames.ldap.discover', 'userprincipalname');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLdapAuthUsername()
+    {
+        return config('adldap_auth.usernames.ldap.authenticate');
     }
 
     /**

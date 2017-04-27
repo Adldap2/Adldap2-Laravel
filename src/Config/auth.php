@@ -111,8 +111,13 @@ return [
     'scopes' => [
 
         // Only allows users with a user principal name to authenticate.
+        // Remove this if you're using OpenLDAP.
 
         Adldap\Laravel\Scopes\UpnScope::class,
+
+        // Only allows users with a uid to authenticate.
+        // Uncomment if you're using OpenLDAP.
+        //Adldap\Laravel\Scopes\UidScope::class,
 
     ],
 
@@ -123,15 +128,25 @@ return [
         | LDAP
         |--------------------------------------------------------------------------
         |
-        | This is the LDAP users attribute that you use to authenticate
-        | against your LDAP server. This is usually the users
-        |'sAMAccountName' / 'userprincipalname' attribute.
+        | Discover:
         |
-        | If you'd like to use their username to login instead, insert `samaccountname`.
+        |   The discover value is the attribute you would like to discover LDAP users by.
+        |
+        | Authenticate:
+        |
+        |   The authenticate value is the attribute you would like to use to bind to your LDAP server.
         |
         */
 
-        'ldap' => 'userprincipalname',
+        'ldap' => [
+
+
+            'discover' => 'userprincipalname',
+
+
+            'authenticate' => 'userprincipalname',
+
+        ],
 
         /*
         |--------------------------------------------------------------------------
