@@ -131,7 +131,7 @@ return [
         | Discover:
         |
         |   The discover value is the users attribute you would
-        |   like to locate LDAP users by.
+        |   like to locate LDAP users by in your directory.
         |
         |   For example, using the default configuration below, if you're
         |   authenticating users with an email address, your LDAP server
@@ -143,9 +143,9 @@ return [
         |   The authenticate value is the users attribute you would
         |   like to use to bind to your LDAP server.
         |
-        |   For example, when a user is located by the above attribute, the attribute
-        |   you specify below will be used to bind to your LDAP server.
-        |
+        |   For example, when a user is located by the above 'discover'
+        |   attribute, the users attribute you specify below will
+        |   be used to bind to your LDAP server.
         |
         */
 
