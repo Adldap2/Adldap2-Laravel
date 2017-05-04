@@ -62,7 +62,7 @@ class WindowsAuthenticate
                 }
 
                 if ($user = $this->retrieveAuthenticatedUser($key, $username)) {
-                    $this->auth->login($user);
+                    $this->auth->login($user, $remember = true);
                 }
             }
         }
