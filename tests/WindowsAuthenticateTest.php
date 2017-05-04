@@ -39,5 +39,6 @@ class WindowsAuthenticateTest extends DatabaseTestCase
 
         $this->assertEquals('John Doe', $authenticated->name);
         $this->assertEquals('jdoe@email.com', $authenticated->email);
+        $this->assertNotEmpty($authenticated->remember_token);
     }
 }
