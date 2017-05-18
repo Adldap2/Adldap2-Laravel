@@ -50,7 +50,7 @@ class WindowsAuthenticate
             $key = key($auth);
 
             // Handle Windows Authentication.
-            if ($account = utf8_encode($request->server($auth[$key]))) {
+            if ($account = $this->retrieveAccountFromServer($request, $auth[$key])) {
                 // Username's may be prefixed with their domain,
                 // we just need their account name.
                 $username = explode('\\', $account);
@@ -68,6 +68,19 @@ class WindowsAuthenticate
         }
 
         return $next($request);
+    }
+
+    /**
+     * Retrieves the users SSO account name from our server.
+     *
+     * @param Request $request
+     * @param string  $key
+     *
+     * @return string
+     */
+    public function retrieveAccountFromServer(Request $request, $key)
+    {
+        return utf8_encode($request->server($key));
     }
 
     /**
