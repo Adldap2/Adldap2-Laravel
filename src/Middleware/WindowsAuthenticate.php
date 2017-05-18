@@ -23,7 +23,7 @@ class WindowsAuthenticate
     protected $auth;
 
     /**
-     * Create a new filter instance.
+     * Constructor.
      *
      * @param Guard $auth
      */
@@ -50,7 +50,7 @@ class WindowsAuthenticate
             $key = key($auth);
 
             // Handle Windows Authentication.
-            if ($account = $request->server($auth[$key])) {
+            if ($account = utf8_encode($request->server($auth[$key]))) {
                 // Username's may be prefixed with their domain,
                 // we just need their account name.
                 $username = explode('\\', $account);
@@ -71,7 +71,7 @@ class WindowsAuthenticate
     }
 
     /**
-     * Returns the authenticatable user instance.
+     * Returns the authenticatable user instance if found.
      *
      * @param string $key
      * @param string $username
@@ -117,7 +117,7 @@ class WindowsAuthenticate
                 return $model;
             }
         } catch (ModelNotFoundException $e) {
-            //
+            // User could not be located.
         }
     }
 
