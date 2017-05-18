@@ -38,8 +38,10 @@ echo $user->email;
 
 The `NoDatabaseUserProvider` allows you to authenticate LDAP users without synchronizing them.
 
-> **Note**: You will have to re-write the default Laravel views that are generated
-> with the `php artisan make:auth` command if you utilize this provider.
+> **Note**: Due to Laravel's generated auth views that utilize Eloquent models attributes, you will
+> have to re-write some of these views for compatibility if you utilize this provider.
+>
+> For example, in `layouts.app`, you will need to rewrite `Auth::user()->name` to `Auth::user()->getCommonName();`
 
 To use it, insert it in your `config/adldap_auth.php` in the `provider` option:
 
