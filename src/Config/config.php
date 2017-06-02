@@ -231,8 +231,8 @@ return [
                 |
                 */
 
-                'use_ssl' => false,
-                'use_tls' => false,
+                'use_ssl' => env('ADLDAP_USE_SSL', false),
+                'use_tls' => env('ADLDAP_USE_TLS', false),
 
             ],
 
