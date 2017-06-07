@@ -102,7 +102,11 @@ class DatabaseUserProvider extends Provider
     public function retrieveByCredentials(array $credentials)
     {
         // Retrieve the LDAP user who is authenticating.
-        $user = $this->getResolver()->byCredentials($credentials);
+        try {
+            $user = $this->getResolver()->byCredentials($credentials);
+        } catch (\Adldap\Auth\BindException $e) {
+            $user = null;
+        }
 
         if ($user instanceof User) {
             // Set the currently authenticating LDAP user.
