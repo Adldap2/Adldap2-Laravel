@@ -50,9 +50,7 @@ class DatabaseUserProvider extends Provider
         $this->model = $model;
         $this->hasher = $hasher;
 
-        $this->setFallback(
-            new EloquentUserProvider($hasher, $model)
-        );
+        $this->setFallback(new EloquentUserProvider($hasher, $model));
     }
 
     /**
@@ -60,13 +58,9 @@ class DatabaseUserProvider extends Provider
      */
     public function retrieveById($identifier)
     {
-        $model = $this->fallback->retrieveById($identifier);
-
-        if ($model && $this->isBindingUserToModel($model)) {
-            $model->setLdapUser($this->getResolver()->byModel($model));
+        if ($model = $this->fallback->retrieveById($identifier)) {
+            return $this->bindUserToModel($model);
         }
-
-        return $model;
     }
 
     /**
@@ -74,13 +68,9 @@ class DatabaseUserProvider extends Provider
      */
     public function retrieveByToken($identifier, $token)
     {
-        $model = $this->fallback->retrieveByToken($identifier, $token);
-
-        if ($model && $this->isBindingUserToModel($model)) {
-            $model->setLdapUser($this->getResolver()->byModel($model));
+        if ($model = $this->fallback->retrieveByToken($identifier, $token)) {
+            return $this->bindUserToModel($model);
         }
-
-        return $model;
     }
 
     /**
@@ -140,11 +130,8 @@ class DatabaseUserProvider extends Provider
                 // We'll check if we've been given a password and that
                 // syncing password is enabled. Otherwise we'll
                 // use a random 16 character string.
-                if ($this->isSyncingPasswords()) {
-                    $password = $credentials['password'];
-                } else {
-                    $password = str_random();
-                }
+                $password = $this->isSyncingPasswords() ?
+                    $credentials['password'] : str_random();
 
                 // If the model has a set mutator for the password then we'll
                 // assume that we're using a custom encryption method for
@@ -159,9 +146,7 @@ class DatabaseUserProvider extends Provider
                 // If binding to the eloquent model is configured, we
                 // need to make sure it's available during the
                 // same authentication request.
-                if ($this->isBindingUserToModel($model)) {
-                    $model->setLdapUser($this->user);
-                }
+                $this->bindUserToModel($model, $this->user);
 
                 return true;
             }
@@ -214,6 +199,25 @@ class DatabaseUserProvider extends Provider
     }
 
     /**
+     * Binds the specified user to their model (if enabled).
+     *
+     * @param Authenticatable $model
+     * @param User|null       $user
+     *
+     * @return Authenticatable
+     */
+    protected function bindUserToModel(Authenticatable $model, User $user = null)
+    {
+        if ($this->isBindingUserToModel($model)) {
+            // If the user isn't given, we'll locate it using
+            // the resolver and their saved model.
+            $model->setLdapUser($user ?: $this->getResolver()->byModel($model));
+        }
+
+        return $model;
+    }
+
+    /**
      * Binds the LDAP User instance to the Eloquent model.
      *
      * @param Authenticatable $model
@@ -222,6 +226,8 @@ class DatabaseUserProvider extends Provider
      */
     protected function isBindingUserToModel(Authenticatable $model)
     {
+        // We'll check if the configured Eloquent model contains the
+        // `HasLdapUser` trait, so we can utilize its methods.
         return array_key_exists(
             HasLdapUser::class,
             class_uses_recursive(get_class($model))
