@@ -69,16 +69,16 @@ class Importer implements ImporterInterface
      */
     protected function syncModelAttributes(User $user, Model $model)
     {
-        foreach ($this->getSyncAttributes() as $modelField => $adField) {
+        foreach ($this->getSyncAttributes() as $modelField => $ldapField) {
             // If the AD Field is a class, we'll assume it's an attribute handler.
-            if (class_exists($adField) && $handler = app($adField)) {
+            if (class_exists($ldapField) && $handler = app($ldapField)) {
                 if (!method_exists($handler, 'handle')) {
-                    throw new AdldapException("No handle method exists for the given handler class [$adField]");
+                    throw new AdldapException("No handle method exists for the given handler class [$ldapField]");
                 }
 
                 $handler->handle($user, $model);
             } else {
-                $model->{$modelField} = $this->getAttribute($user, $adField);
+                $model->{$modelField} = $this->getAttribute($user, $ldapField);
             }
         }
     }
