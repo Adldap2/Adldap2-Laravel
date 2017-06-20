@@ -96,6 +96,10 @@ class Import extends Command
                     $this->delete($user, $model);
                 }
 
+                if ($this->isRestoring()) {
+                    $this->restore($user, $model);
+                }
+
                 $imported++;
             } catch (Exception $e) {
                 // Log the unsuccessful import.
