@@ -91,7 +91,9 @@ class Importer implements ImporterInterface
     {
         if (class_exists($handler) && $handler = app($handler)) {
             if (!method_exists($handler, 'handle')) {
-                throw new AdldapException("No handle method exists for the given handler: $handler");
+                $name = get_class($handler);
+
+                throw new AdldapException("No handle method exists for the given handler: $name");
             }
 
             return $handler;
