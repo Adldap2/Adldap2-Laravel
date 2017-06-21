@@ -129,13 +129,11 @@ class DatabaseProviderTest extends DatabaseTestCase
     /**
      * @expectedException \Adldap\AdldapException
      */
-    public function test_config_invalid_config_attribute_handler()
+    public function test_config_invalid_attribute_handler()
     {
+        // Inserting an invalid attribute handler that
+        // does not contain a `handle` method.
         config(['adldap_auth.sync_attributes' => [\stdClass::class]]);
-
-        $default = config('adldap_auth.sync_attributes');
-
-        config(['adldap_auth.sync_attributes' => array_merge($default, [\stdClass::class])]);
 
         $importer = Auth::getProvider()->getImporter();
 
