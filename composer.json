@@ -25,5 +25,15 @@
         "psr-4": {
             "Adldap\\Laravel\\Tests\\": "tests/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Adldap\\Adldap\\AdldapServiceProvider"
+            ],
+            "aliases": {
+                "Adldap": "Adldap\\Laravel\\Facades\\Adldap"
+            }
+        }
     }
 }
