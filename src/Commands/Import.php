@@ -22,7 +22,8 @@ class Import extends Command
             {--c|connection= : The LDAP connection to use to import users.}
             {--d|delete : Soft-delete the users model if their AD account is disabled.}
             {--r|restore : Restores soft-deleted models if their AD account is enabled.}
-            {--no-log : Disables logging successful and unsuccessful imported users.}';
+            {--no-log : Disables logging successful and unsuccessful imported users.}
+            {--yes : Runs the import without asking confirmation.}';
 
     /**
      * The description of the console command.
@@ -48,11 +49,13 @@ class Import extends Command
             $this->info("Found {$count} user(s).");
         }
 
-        if ($this->confirm('Would you like to display the user(s) to be imported / synchronized?')) {
+        if ($this->option('yes') ||
+            $this->confirm('Would you like to display the user(s) to be imported / synchronized?')) {
             $this->display($users);
         }
 
-        if ($this->confirm('Would you like these users to be imported / synchronized?', $default = true)) {
+        if ($this->option('yes') ||
+            $this->confirm('Would you like these users to be imported / synchronized?', $default = true)) {
             $imported = $this->import($users);
 
             $this->info("Successfully imported / synchronized {$imported} user(s).");
