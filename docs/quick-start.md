@@ -8,7 +8,7 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 1. Create a new laravel project by running the command:
   - `laravel new my-app`
   
-  **Or (if you don't have the Laravel installer)**
+  Or (if you don't have the Laravel installer)
  
   - `composer create-project --prefer-dist laravel/laravel my-app`.
   
