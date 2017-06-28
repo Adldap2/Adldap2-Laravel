@@ -15,14 +15,14 @@ contains the LDAP user model, as well as their Eloquent `$model`
 
 We'll create a folder in our `app` directory containing our rule named `Rules`.
 
-With this example rule, we only want to allow LDAP users with the last name of `Doe` or if their Eloquent model was created after 2016:
+With this example rule, we only want to allow users to authenticate that are inside specific OU's.
 
 ```php
 namespace App\Rules;
 
 use Adldap\Laravel\Validation\Rules\Rule;
 
-class DoeRule extends Rule
+class OuRule extends Rule
 {
     /**
      * The LDAP user.
@@ -45,7 +45,12 @@ class DoeRule extends Rule
      */   
     public function isValid()
     {
-        return $this->user->getLastName() == 'Doe' || $this->model->year > '2016';
+        $ous = [
+            'ou=Accounting,dc=acme,dc=org',
+            'ou=Managers,dc=acme,dc=org',
+        ];
+    
+        return str_contains($this->user->getDn(), $ous);
     }
 }
 ```
