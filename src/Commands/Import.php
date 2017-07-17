@@ -22,7 +22,9 @@ class Import extends Command
             {--c|connection= : The LDAP connection to use to import users.}
             {--d|delete : Soft-delete the users model if their AD account is disabled.}
             {--r|restore : Restores soft-deleted models if their AD account is enabled.}
-            {--no-log : Disables logging successful and unsuccessful imported users.}';
+            {--no-log : Disables logging successful and unsuccessful imported users.}
+            {--y|noconfirm : Allows running this script with no confirmation messages (for use in scripted contexts).}';
+
 
     /**
      * The description of the console command.
@@ -48,11 +50,11 @@ class Import extends Command
             $this->info("Found {$count} user(s).");
         }
 
-        if ($this->confirm('Would you like to display the user(s) to be imported / synchronized?')) {
+        if ($this->isNoconfirm() || $this->confirm('Would you like to display the user(s) to be imported / synchronized?')) {
             $this->display($users);
         }
 
-        if ($this->confirm('Would you like these users to be imported / synchronized?', $default = true)) {
+        if ($this->isNoconfirm() || $this->confirm('Would you like these users to be imported / synchronized?', $default = true)) {
             $imported = $this->import($users);
 
             $this->info("Successfully imported / synchronized {$imported} user(s).");
@@ -139,6 +141,17 @@ class Import extends Command
 
         $this->table($headers, $data);
     }
+
+    /**
+     * Returns true if confirmation messages are bypassed.
+     *
+     * @return bool
+     */
+    public function isNoconfirm()
+    {
+        return $this->option('noconfirm');
+    }
+
 
     /**
      * Returns true / false if the current import is being logged.
