@@ -64,7 +64,7 @@ Found user 'John Doe'.
 
 ### Filter
 
-The `--filter` (or `--f`) option allows you to enter in a raw filter in combination with your scopes inside your `config/adldap_auth.php` file:
+The `--filter` (or `-f`) option allows you to enter in a raw filter in combination with your scopes inside your `config/adldap_auth.php` file:
 
 ```bash
 php artisan adldap:import --filter "(cn=John Doe)"
@@ -84,7 +84,7 @@ php artisan adldap:import --no-log
 
 ### Connection
 
-The `--connection` (or `--c`) option allows you import users with a different connection specified in your `config/adldap.php` file.
+The `--connection` (or `-c`) option allows you import users with a different connection specified in your `config/adldap.php` file.
 
 ```bash
 php artisan adldap:import --connection other-connection
@@ -92,7 +92,7 @@ php artisan adldap:import --connection other-connection
 
 ### Delete
 
-The `--delete` (or `--d`) option allows you to soft-delete deactivated AD users. No users will
+The `--delete` (or `-d`) option allows you to soft-delete deactivated AD users. No users will
 be deleted if your User model does not have soft-deletes enabled.
 
 ```bash
@@ -101,7 +101,7 @@ php artisan adldap:import --delete
 
 ### Restore
 
-The `--restore` (or `--r`) option allows you to restore soft-deleted re-activated AD users.
+The `--restore` (or `-r`) option allows you to restore soft-deleted re-activated AD users.
 
 ```bash
 php artisan adldap:import --restore
