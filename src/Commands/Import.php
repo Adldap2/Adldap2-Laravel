@@ -309,11 +309,15 @@ class Import extends Command
      */
     protected function model()
     {
-        return auth()->getProvider()->createModel();
+        /** @var \Adldap\Laravel\Auth\DatabaseUserProvider $provider */
+        $provider = auth()->getProvider();
+
+        return $provider->createModel();
     }
 
     /**
-     * Returns true / false if the model is using soft deletes.
+     * Returns true / false if the model is using soft deletes
+     * by checking if the model contains a `trashed` method.
      *
      * @param Model $model
      *
