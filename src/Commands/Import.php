@@ -267,7 +267,9 @@ class Import extends Command
             $model->restore();
 
             if ($this->isLogging()) {
-                logger()->info("Restored user {$user->getCommonName()}. Their AD user account has been re-enabled.");
+                $type = get_class($user->getSchema());
+
+                logger()->info("Restored user {$user->getCommonName()}. Their {$type} user account has been re-enabled.");
             }
         }
     }
@@ -293,7 +295,9 @@ class Import extends Command
             $model->delete();
 
             if ($this->isLogging()) {
-                logger()->info("Soft-deleted user {$user->getCommonName()}. Their AD user account is disabled.");
+                $type = get_class($user->getSchema());
+
+                logger()->info("Soft-deleted user {$user->getCommonName()}. Their {$type} user account is disabled.");
             }
         }
     }
