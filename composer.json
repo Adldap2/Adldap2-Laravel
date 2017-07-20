@@ -29,7 +29,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Adldap\\Adldap\\AdldapServiceProvider"
+                "Adldap\\Laravel\\AdldapServiceProvider"
             ],
             "aliases": {
                 "Adldap": "Adldap\\Laravel\\Facades\\Adldap"
