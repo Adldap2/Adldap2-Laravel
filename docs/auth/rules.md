@@ -70,7 +70,7 @@ To implement your new rule, you just need to insert it into your `config/adldap_
 
     // Adldap\Laravel\Validation\Rules\OnlyImported::class,
     
-    App\Rules\DoeRule::class,
+    App\Rules\OuRule::class,
 
 ],
 ```
