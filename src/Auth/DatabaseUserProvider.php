@@ -3,7 +3,6 @@
 namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
-use Adldap\Laravel\Traits\HasLdapUser;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -58,9 +57,7 @@ class DatabaseUserProvider extends Provider
      */
     public function retrieveById($identifier)
     {
-        if ($model = $this->fallback->retrieveById($identifier)) {
-            return $this->bindUserToModel($model);
-        }
+        return $this->fallback->retrieveById($identifier);
     }
 
     /**
@@ -68,9 +65,7 @@ class DatabaseUserProvider extends Provider
      */
     public function retrieveByToken($identifier, $token)
     {
-        if ($model = $this->fallback->retrieveByToken($identifier, $token)) {
-            return $this->bindUserToModel($model);
-        }
+        return $this->fallback->retrieveByToken($identifier, $token);
     }
 
     /**
@@ -126,7 +121,7 @@ class DatabaseUserProvider extends Provider
             // Here we will perform authorization on the LDAP user. If all
             // validation rules pass, we will allow the authentication
             // attempt. Otherwise, it is automatically rejected.
-            if ($this->newValidator($this->getRules($this->user, $model))->passes()) {
+            if ($this->passesValidation($model)) {
                 // We'll check if we've been given a password and that
                 // syncing password is enabled. Otherwise we'll
                 // use a random 16 character string.
@@ -142,11 +137,6 @@ class DatabaseUserProvider extends Provider
                 // All of our validation rules have passed and we can
                 // finally save the model in case of changes.
                 $model->save();
-
-                // If binding to the eloquent model is configured, we
-                // need to make sure it's available during the
-                // same authentication request.
-                $this->bindUserToModel($model, $this->user);
 
                 return true;
             }
@@ -199,49 +189,16 @@ class DatabaseUserProvider extends Provider
     }
 
     /**
-     * Binds the specified user to their model (if enabled).
-     *
-     * @param Authenticatable $model
-     * @param User|null       $user
-     *
-     * @return Authenticatable
-     */
-    protected function bindUserToModel(Authenticatable $model, User $user = null)
-    {
-        if ($this->isBindingUserToModel($model)) {
-            // If the user isn't given, we'll locate it using
-            // the resolver and their saved model.
-            $model->setLdapUser($user ?: $this->getResolver()->byModel($model));
-        }
-
-        return $model;
-    }
-
-    /**
-     * Binds the LDAP User instance to the Eloquent model.
+     * Determines if the model passes validation.
      *
      * @param Authenticatable $model
      *
      * @return bool
      */
-    protected function isBindingUserToModel(Authenticatable $model)
+    protected function passesValidation(Authenticatable $model)
     {
-        // We'll check if the configured Eloquent model contains the
-        // `HasLdapUser` trait, so we can utilize its methods.
-        return array_key_exists(
-            HasLdapUser::class,
-            class_uses_recursive(get_class($model))
-        );
-    }
-
-    /**
-     * Determines if passwords are being syncronized.
-     *
-     * @return bool
-     */
-    public function isSyncingPasswords()
-    {
-        return config('adldap_auth.password_sync', true);
+        return $this->newValidator($this->getRules($this->user, $model))
+            ->passes();
     }
 
     /**
