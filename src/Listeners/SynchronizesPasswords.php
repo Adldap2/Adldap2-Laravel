@@ -33,7 +33,10 @@ class SynchronizesPasswords
             // to be updated so we don't run
             // SQL updates needlessly.
             if (! Hash::check($password, $model->getAttribute($this->column()))) {
-                $model->setAttribute($this->column(), bcrypt($password));
+                $model->setAttribute(
+                    $this->column(),
+                    $model->hasSetMutator($this->column()) ? $password : bcrypt($password)
+                );
             }
         }
     }
