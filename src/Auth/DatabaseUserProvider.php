@@ -122,18 +122,6 @@ class DatabaseUserProvider extends Provider
             // validation rules pass, we will allow the authentication
             // attempt. Otherwise, it is automatically rejected.
             if ($this->passesValidation($model)) {
-                // We'll check if we've been given a password and that
-                // syncing password is enabled. Otherwise we'll
-                // use a random 16 character string.
-                $password = $this->isSyncingPasswords() ?
-                    $credentials['password'] : str_random();
-
-                // If the model has a set mutator for the password then we'll
-                // assume that we're using a custom encryption method for
-                // passwords. Otherwise we'll bcrypt it normally.
-                $model->password = $model->hasSetMutator('password') ?
-                    $password : bcrypt($password);
-
                 // All of our validation rules have passed and we can
                 // finally save the model in case of changes.
                 $model->save();
