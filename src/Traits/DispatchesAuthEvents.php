@@ -6,6 +6,7 @@ use Adldap\Models\User;
 use Adldap\Laravel\Events\AuthenticatedWithWindows;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 trait DispatchesAuthEvents
@@ -20,7 +21,7 @@ trait DispatchesAuthEvents
      */
     public function handleAuthenticatedWithCredentials(User $user, Authenticatable $model = null)
     {
-        event(new AuthenticatedWithCredentials($user, $model));
+        Event::fire(new AuthenticatedWithCredentials($user, $model));
     }
 
     /**
@@ -33,7 +34,7 @@ trait DispatchesAuthEvents
      */
     protected function handleAuthenticatedWithWindows(User $user, Authenticatable $model = null)
     {
-        event(new AuthenticatedWithWindows($user, $model));
+        Event::fire(new AuthenticatedWithWindows($user, $model));
     }
 
     /**
@@ -43,6 +44,6 @@ trait DispatchesAuthEvents
      */
     protected function handleDiscoveredWithCredentials(User $user)
     {
-        event(new DiscoveredWithCredentials($user));
+        Event::fire(new DiscoveredWithCredentials($user));
     }
 }
