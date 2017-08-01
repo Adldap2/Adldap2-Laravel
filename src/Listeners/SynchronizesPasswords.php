@@ -20,14 +20,13 @@ class SynchronizesPasswords
     {
         $model = $event->model;
 
-        if (
-            $this->syncing() &&
-            $this->hasPasswordColumn($model)
-        ) {
+        if ($this->hasPasswordColumn($model)) {
             // If there's no password given with the
             // credentials, we'll use a random
             // string instead.
-            $password = array_get($event->credentials, 'password', Str::random());
+            $password = $this->syncing() ?
+                array_get($event->credentials, 'password', Str::random()) :
+                Str::random();
 
             // We will verify if the password needs
             // to be updated so we don't run
