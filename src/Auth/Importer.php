@@ -4,7 +4,10 @@ namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
 use Adldap\AdldapException;
+use Adldap\Laravel\Events\Importing;
+use Adldap\Laravel\Events\Synchronizing;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
 
 class Importer implements ImporterInterface
@@ -18,6 +21,12 @@ class Importer implements ImporterInterface
         // for the LDAP user. If one isn't located,
         // we'll create a new one for them.
         $model = $this->findByCredentials($model, $credentials) ?: $model->newInstance();
+
+        if (! $model->exists) {
+            Event::fire(new Importing($user, $model, $credentials));
+        }
+
+        Event::fire(new Synchronizing($user, $model, $credentials));
 
         // Synchronize other LDAP attributes on the model.
         $this->syncModelAttributes($user, $model);
