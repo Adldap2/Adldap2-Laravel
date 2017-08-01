@@ -5,6 +5,7 @@ namespace Adldap\Laravel\Commands;
 use Exception;
 use Adldap\Models\User;
 use Adldap\Laravel\Traits\UsesAdldap;
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 
@@ -82,12 +83,6 @@ class Import extends Command
 
                 // Import the user and retrieve it's model.
                 $model = $this->getImporter()->run($user, $this->model(), $credentials);
-
-                $password = str_random();
-
-                // Set the models password.
-                $model->password = $model->hasSetMutator('password') ?
-                    $password : bcrypt($password);
 
                 // Save the returned model.
                 $this->save($user, $model);
@@ -219,6 +214,7 @@ class Import extends Command
 
         return [
             $resolver->getEloquentUsername() => $username,
+            'password' => Str::random(),
         ];
     }
 
