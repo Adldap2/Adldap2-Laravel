@@ -4,11 +4,16 @@ namespace Adldap\Laravel;
 
 use InvalidArgumentException;
 use Adldap\Laravel\Commands\Import;
+use Adldap\Laravel\Events\Synchronizing;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Adldap\Laravel\Listeners\BindsLdapUserModel;
+use Adldap\Laravel\Listeners\SynchronizesPasswords;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Auth\Events\Authenticated;
 
 class AdldapAuthServiceProvider extends ServiceProvider
 {
@@ -44,7 +49,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
             });
         }
 
-        $this->commands([Import::class]);
+        $this->commands(Import::class);
     }
 
     /**
@@ -54,7 +59,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->registerListeners();
     }
 
     /**
@@ -65,6 +70,18 @@ class AdldapAuthServiceProvider extends ServiceProvider
     public function provides()
     {
         return ['auth'];
+    }
+
+    /**
+     * Registers the event listeners.
+     *
+     * @return void
+     */
+    protected function registerListeners()
+    {
+        Event::listen(Authenticated::class, BindsLdapUserModel::class);
+
+        Event::listen(Synchronizing::class, SynchronizesPasswords::class);
     }
 
     /**
