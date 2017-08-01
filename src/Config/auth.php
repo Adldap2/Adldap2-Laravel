@@ -202,6 +202,17 @@ return [
 
         'sync' => env('ADLDAP_PASSWORD_SYNC', true),
 
+        /*
+        |--------------------------------------------------------------------------
+        | Column
+        |--------------------------------------------------------------------------
+        |
+        | This is the column of your users database table
+        | that is used to store passwords.
+        |
+        | Set this to `null` if you do not have a password column.
+        |
+        */
 
         'column' => 'password',
 
