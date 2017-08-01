@@ -5,8 +5,6 @@ namespace Adldap\Laravel\Tests;
 use Mockery as m;
 use Adldap\Models\User;
 use Adldap\Laravel\Auth\ResolverInterface;
-use Adldap\Laravel\Events\DiscoveredWithCredentials;
-use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\Auth;
 
 class NoDatabaseProviderTest extends NoDatabaseTestCase
@@ -27,11 +25,6 @@ class NoDatabaseProviderTest extends NoDatabaseTestCase
             ->shouldReceive('authenticate')->once()->withArgs([$user, $credentials])->andReturn(true);
 
         Auth::getProvider()->setResolver($resolver);
-
-        $this->expectsEvents([
-            DiscoveredWithCredentials::class,
-            AuthenticatedWithCredentials::class,
-        ]);
 
         $this->assertTrue(Auth::attempt($credentials));
 
