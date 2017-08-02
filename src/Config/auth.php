@@ -54,21 +54,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Importer
-    |--------------------------------------------------------------------------
-    |
-    | The importer that imports LDAP users into your local database.
-    |
-    | Custom importers must implement the following interface:
-    |
-    |   Adldap\Laravel\Auth\ImporterInterface
-    |
-    */
-
-    'importer' => Adldap\Laravel\Auth\Importer::class,
-
-    /*
-    |--------------------------------------------------------------------------
     | Rules
     |--------------------------------------------------------------------------
     |
