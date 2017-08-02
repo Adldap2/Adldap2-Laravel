@@ -52,16 +52,8 @@ class WindowsAuthenticate
             $key = key($auth);
 
             // Handle Windows Authentication.
-            if ($account = $this->retrieveAccountFromServer($request, $auth[$key])) {
-                // Username's may be prefixed with their domain,
-                // we just need their account name.
-                $username = explode('\\', $account);
-
-                if (count($username) === 2) {
-                    list($domain, $username) = $username;
-                } else {
-                    $username = $username[key($username)];
-                }
+            if ($account = $this->account($request, $auth[$key])) {
+                $username = $this->username($account);
 
                 if ($user = $this->retrieveAuthenticatedUser($key, $username)) {
                     $this->auth->login($user, $remember = true);
@@ -70,19 +62,6 @@ class WindowsAuthenticate
         }
 
         return $next($request);
-    }
-
-    /**
-     * Retrieves the users SSO account name from our server.
-     *
-     * @param Request $request
-     * @param string  $key
-     *
-     * @return string
-     */
-    public function retrieveAccountFromServer(Request $request, $key)
-    {
-        return utf8_encode($request->server($key));
     }
 
     /**
@@ -149,6 +128,41 @@ class WindowsAuthenticate
     protected function model()
     {
         return $this->auth->getProvider()->createModel();
+    }
+
+    /**
+     * Retrieves the users SSO account name from our server.
+     *
+     * @param Request $request
+     * @param string  $key
+     *
+     * @return string
+     */
+    public function account(Request $request, $key)
+    {
+        return utf8_encode($request->server($key));
+    }
+
+    /**
+     * Retrieves the users username from their full account name.
+     *
+     * @param string $account
+     *
+     * @return array
+     */
+    protected function username($account)
+    {
+        // Username's may be prefixed with their domain,
+        // we just need their account name.
+        $username = explode('\\', $account);
+
+        if (count($username) === 2) {
+            list($domain, $username) = $username;
+        } else {
+            $username = $username[key($username)];
+        }
+
+        return $username;
     }
 
     /**
