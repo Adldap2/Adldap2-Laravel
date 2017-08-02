@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Facades;
 
-use Adldap\Laravel\Auth\ResolverInterface;
 use Illuminate\Support\Facades\Facade;
+use Adldap\Laravel\Resolvers\ResolverInterface;
 
 class Resolver extends Facade
 {

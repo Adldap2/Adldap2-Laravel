@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel\Auth;
+namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
 use Adldap\Connections\ProviderInterface;

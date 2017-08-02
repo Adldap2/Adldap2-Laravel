@@ -46,11 +46,11 @@ return [
     |
     | Custom resolvers must implement the following interface:
     |
-    |   Adldap\Laravel\Auth\ResolverInterface
+    |   Adldap\Laravel\Resolver\ResolverInterface
     |
     */
 
-    'resolver' => Adldap\Laravel\Auth\Resolver::class,
+    'resolver' => Adldap\Laravel\Resolvers\UserResolver::class,
 
     /*
     |--------------------------------------------------------------------------

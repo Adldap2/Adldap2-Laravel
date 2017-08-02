@@ -4,8 +4,8 @@ namespace Adldap\Laravel;
 
 use InvalidArgumentException;
 use Adldap\Laravel\Facades\Adldap;
-use Adldap\Laravel\Auth\Resolver;
-use Adldap\Laravel\Auth\ResolverInterface;
+use Adldap\Laravel\Resolvers\UserResolver;
+use Adldap\Laravel\Resolvers\ResolverInterface;
 use Adldap\Laravel\Commands\Console\Import;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
@@ -169,7 +169,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     protected function resolver()
     {
-        return Config::get('adldap_auth.resolver', Resolver::class);
+        return Config::get('adldap_auth.resolver', UserResolver::class);
     }
 
     /**

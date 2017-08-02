@@ -1,12 +1,12 @@
 <?php
 
-namespace Adldap\Laravel\Auth;
+namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
 use Adldap\Connections\ProviderInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class Resolver implements ResolverInterface
+class UserResolver implements ResolverInterface
 {
     /**
      * The LDAP connection provider.
