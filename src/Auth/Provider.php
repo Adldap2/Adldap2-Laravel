@@ -2,11 +2,10 @@
 
 namespace Adldap\Laravel\Auth;
 
-use Adldap\Laravel\Traits\UsesAdldap;
-use Adldap\Laravel\Traits\DispatchesAuthEvents;
+use Adldap\Laravel\Traits\ValidatesUsers;
 use Illuminate\Contracts\Auth\UserProvider;
 
 abstract class Provider implements UserProvider
 {
-    use UsesAdldap, DispatchesAuthEvents;
+    use ValidatesUsers;
 }
