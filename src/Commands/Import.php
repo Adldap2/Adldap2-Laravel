@@ -2,325 +2,184 @@
 
 namespace Adldap\Laravel\Commands;
 
-use Exception;
 use Adldap\Models\User;
-use Adldap\Laravel\Traits\UsesAdldap;
+use Adldap\AdldapException;
+use Adldap\Laravel\Events\Importing;
+use Adldap\Laravel\Events\Synchronizing;
+use Adldap\Laravel\Events\Synchronized;
 use Illuminate\Support\Str;
-use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
 
-class Import extends Command
+class Import
 {
-    use UsesAdldap;
-
     /**
-     * The signature of the console command.
+     * The LDAP user that is being imported.
      *
-     * @var string
+     * @var User
      */
-    protected $signature = 'adldap:import {user? : The specific user to import.}
-            {--f|filter= : The raw filter for limiting users imported.}
-            {--c|connection= : The LDAP connection to use to import users.}
-            {--d|delete : Soft-delete the users model if their AD account is disabled.}
-            {--r|restore : Restores soft-deleted models if their AD account is enabled.}
-            {--no-log : Disables logging successful and unsuccessful imported users.}';
+    protected $user;
 
     /**
-     * The description of the console command.
+     * The LDAP users database model.
      *
-     * @var string
+     * @var Model
      */
-    protected $description = 'Imports LDAP users into the local database with a random 16 character hashed password.';
+    protected $model;
 
     /**
-     * Execute the console command.
+     * The LDAP users credentials.
      *
-     * @return void
+     * @var array
      */
-    public function handle()
-    {
-        $users = $this->getUsers();
-
-        $count = count($users);
-
-        if ($count === 1) {
-            $this->info("Found user '{$users[0]->getCommonName()}'.");
-        } else {
-            $this->info("Found {$count} user(s).");
-        }
-
-        if ($this->confirm('Would you like to display the user(s) to be imported / synchronized?')) {
-            $this->display($users);
-        }
-
-        if ($this->confirm('Would you like these users to be imported / synchronized?', $default = true)) {
-            $imported = $this->import($users);
-
-            $this->info("Successfully imported / synchronized {$imported} user(s).");
-        } else {
-            $this->info("Okay, no users were imported / synchronized.");
-        }
-    }
+    protected $credentials;
 
     /**
-     * Imports the specified users and returns the total
-     * number of users successfully imported.
-     *
-     * @param array $users
-     *
-     * @return int
-     */
-    public function import(array $users = [])
-    {
-        $imported = 0;
-
-        $this->output->progressStart(count($users));
-
-        foreach ($users as $user) {
-            try {
-                // Get the users credentials array.
-                $credentials = $this->getUserCredentials($user);
-
-                // Import the user and retrieve it's model.
-                $model = $this->getImporter()->run($user, $this->model(), $credentials);
-
-                // Save the returned model.
-                $this->save($user, $model);
-
-                if ($this->isDeleting()) {
-                    $this->delete($user, $model);
-                }
-
-                if ($this->isRestoring()) {
-                    $this->restore($user, $model);
-                }
-
-                $imported++;
-            } catch (Exception $e) {
-                // Log the unsuccessful import.
-                if ($this->isLogging()) {
-                    logger()->error("Unable to import user {$user->getCommonName()}. {$e->getMessage()}");
-                }
-            }
-
-            $this->output->progressAdvance();
-        }
-
-        $this->output->progressFinish();
-
-        return $imported;
-    }
-
-    /**
-     * Displays the given users in a table.
-     *
-     * @param array $users
-     *
-     * @return void
-     */
-    public function display(array $users = [])
-    {
-        $headers = ['Name', 'Account Name', 'UPN'];
-
-        $data = [];
-
-        array_map(function (User $user) use (&$data) {
-            $data[] = [
-                'name' => $user->getCommonName(),
-                'account_name' => $user->getAccountName(),
-                'upn' => $user->getUserPrincipalName(),
-            ];
-        }, $users);
-
-        $this->table($headers, $data);
-    }
-
-    /**
-     * Returns true / false if the current import is being logged.
-     *
-     * @return bool
-     */
-    public function isLogging()
-    {
-        return !$this->option('no-log');
-    }
-
-    /**
-     * Returns true / false if users are being deleted
-     * if their account is disabled in AD.
-     *
-     * @return bool
-     */
-    public function isDeleting()
-    {
-        return $this->option('delete') == 'true';
-    }
-
-    /**
-     * Returns true / false if users are being restored
-     * if their account is enabled in AD.
-     *
-     * @return bool
-     */
-    public function isRestoring()
-    {
-        return $this->option('restore') == 'true';
-    }
-
-    /**
-     * Retrieves users to be imported.
-     *
-     * @return array
-     */
-    public function getUsers()
-    {
-        $query = $this->getResolver()->query();
-
-        if ($filter = $this->option('filter')) {
-            // If the filter option was given, we'll
-            // insert it into our search query.
-            $query->rawFilter($filter);
-        }
-
-        if ($user = $this->argument('user')) {
-            $users = [$query->findOrFail($user)];
-        } else {
-            // Retrieve all users. We'll paginate our search in case we
-            // hit the 1000 record hard limit of active directory.
-            $users = $query->paginate()->getResults();
-        }
-
-        // We need to filter our results to make sure they are
-        // only users. In some cases, Contact models may be
-        // returned due the possibility of them
-        // existing in the same scope.
-        return array_filter($users, function ($user) {
-            return $user instanceof User;
-        });
-    }
-
-    /**
-     * Returns the specified users credentials array.
-     *
-     * @param User $user
-     *
-     * @return array
-     */
-    protected function getUserCredentials(User $user)
-    {
-        $resolver = $this->getResolver();
-
-        $username = $user->getFirstAttribute($resolver->getLdapUsername());
-
-        return [
-            $resolver->getEloquentUsername() => $username,
-            'password' => Str::random(),
-        ];
-    }
-
-    /**
-     * Saves the specified user with its model.
+     * Constructor.
      *
      * @param User  $user
      * @param Model $model
-     *
-     * @return bool
+     * @param array $credentials
      */
-    protected function save(User $user, Model $model)
+    public function __construct(User $user, Model $model, array $credentials = [])
     {
-        $imported = false;
-
-        if ($model->save() && $model->wasRecentlyCreated) {
-            $imported = true;
-
-            // Log the successful import.
-            if ($this->isLogging()) {
-                logger()->info("Imported user {$user->getCommonName()}");
-            }
-        }
-
-        return $imported;
+        $this->user = $user;
+        $this->model = $model;
+        $this->credentials = $credentials;
     }
 
     /**
-     * Restores soft-deleted models if their AD account is enabled.
-     *
-     * @param User  $user
-     * @param Model $model
-     *
-     * @return void
-     */
-    protected function restore(User $user, Model $model)
-    {
-        if (
-            $this->isUsingSoftDeletes($model) &&
-            $model->trashed() &&
-            $user->isEnabled()
-        ) {
-            // If the model has soft-deletes enabled, the model is
-            // currently deleted, and the AD user account
-            // is enabled, we'll restore the users model.
-            $model->restore();
-
-            if ($this->isLogging()) {
-                $type = get_class($user->getSchema());
-
-                logger()->info("Restored user {$user->getCommonName()}. Their {$type} user account has been re-enabled.");
-            }
-        }
-    }
-
-    /**
-     * Soft deletes the specified model if their AD account is disabled.
-     *
-     * @param User  $user
-     * @param Model $model
-     *
-     * @return void
-     */
-    protected function delete(User $user, Model $model)
-    {
-        if (
-            $this->isUsingSoftDeletes($model) &&
-            ! $model->trashed() &&
-            $user->isDisabled()
-        ) {
-            // If deleting is enabled, the model supports soft deletes, the model
-            // isn't already deleted, and the AD user is disabled, we'll
-            // go ahead and delete the users model.
-            $model->delete();
-
-            if ($this->isLogging()) {
-                $type = get_class($user->getSchema());
-
-                logger()->info("Soft-deleted user {$user->getCommonName()}. Their {$type} user account is disabled.");
-            }
-        }
-    }
-
-    /**
-     * Create a new instance of the configured authentication model.
+     * Imports the current LDAP user.
      *
      * @return Model
      */
-    protected function model()
+    public function handle()
     {
-        /** @var \Adldap\Laravel\Auth\DatabaseUserProvider $provider */
-        $provider = auth()->getProvider();
+        // Here we'll try to locate our local user record
+        // for the LDAP user. If one isn't located,
+        // we'll create a new one for them.
+        $model = $this->findByCredentials() ?: $this->model->newInstance();
 
-        return $provider->createModel();
+        if (! $model->exists) {
+            Event::fire(new Importing($this->user, $model));
+        }
+
+        Event::fire(new Synchronizing($this->user, $model));
+
+        // Synchronize LDAP attributes on the model.
+        $this->syncModelAttributes($model);
+
+        Event::fire(new Synchronized($this->user, $model));
+
+        return $model;
     }
 
     /**
-     * Returns true / false if the model is using soft deletes
-     * by checking if the model contains a `trashed` method.
+     * Retrieves an eloquent user by their credentials.
+     *
+     * @return Model|null
+     */
+    protected function findByCredentials()
+    {
+        if (empty($this->credentials)) {
+            return;
+        }
+
+        $query = $this->model->newQuery();
+
+        if ($query->getMacro('withTrashed')) {
+            // If the withTrashed macro exists on our User model, then we must be
+            // using soft deletes. We need to make sure we include these
+            // results so we don't create duplicate user records.
+            $query->withTrashed();
+        }
+
+        foreach ($this->credentials as $key => $value) {
+            if (! Str::contains($key, 'password')) {
+                $query->where($key, $value);
+            }
+        }
+
+        return $query->first();
+    }
+
+    /**
+     * Fills a models attributes by the specified Users attributes.
      *
      * @param Model $model
      *
-     * @return bool
+     * @throws AdldapException
+     *
+     * @return void
      */
-    protected function isUsingSoftDeletes(Model $model)
+    protected function syncModelAttributes(Model $model)
     {
-        return method_exists($model, 'trashed');
+        foreach ($this->getSyncAttributes() as $modelField => $ldapField) {
+            if ($handler = $this->getHandler($ldapField)) {
+                $handler->handle($this->user, $model);
+            } else {
+                $model->{$modelField} = $this->getAttribute($this->user, $ldapField);
+            }
+        }
+    }
+
+    /**
+     * Constructs the given handler if it exists and contains a `handle` method.
+     *
+     * @param string $handler
+     *
+     * @return mixed|null
+     *
+     * @throws AdldapException
+     */
+    protected function getHandler($handler)
+    {
+        if (class_exists($handler) && $handler = app($handler)) {
+            if (!method_exists($handler, 'handle')) {
+                $name = get_class($handler);
+
+                throw new AdldapException("No handle method exists for the given handler: $name");
+            }
+
+            return $handler;
+        }
+    }
+
+    /**
+     * Retrieves the specified field from the User model.
+     *
+     * @param User   $user
+     * @param string $field
+     *
+     * @return string|null
+     */
+    protected function getAttribute(User $user, $field)
+    {
+        return $field === $user->getSchema()->thumbnail() ?
+            $user->getThumbnailEncoded() : $user->getFirstAttribute($field);
+    }
+
+    /**
+     * Returns the configured sync attributes for filling the
+     * Laravel user model with active directory fields.
+     *
+     * @return array
+     */
+    protected function getSyncAttributes()
+    {
+        return config('adldap_auth.sync_attributes', [
+            'email' => 'userprincipalname',
+            'name' => 'cn',
+        ]);
+    }
+
+    /**
+     * Retrieves the eloquent users username attribute.
+     *
+     * @return string
+     */
+    protected function getEloquentUsername()
+    {
+        return config('adldap_auth.usernames.eloquent', 'email');
     }
 }
