@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Traits\HasLdapUser;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Authenticated;
 
 class BindsLdapUserModel
@@ -21,7 +21,7 @@ class BindsLdapUserModel
 
         if (array_key_exists(HasLdapUser::class, $traits)) {
             $event->user->setLdapUser(
-                Auth::getProvider()->getResolver()->byModel($event->user)
+                Resolver::byModel($event->user)
             );
         }
     }
