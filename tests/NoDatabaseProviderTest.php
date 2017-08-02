@@ -2,9 +2,8 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Mockery as m;
 use Adldap\Models\User;
-use Adldap\Laravel\Auth\ResolverInterface;
+use Adldap\Laravel\Facades\Resolver;
 use Illuminate\Support\Facades\Auth;
 
 class NoDatabaseProviderTest extends NoDatabaseTestCase
@@ -16,15 +15,10 @@ class NoDatabaseProviderTest extends NoDatabaseTestCase
             'password' => '12345',
         ];
 
-        $resolver = m::mock(ResolverInterface::class);
-
         $user = $this->makeLdapUser();
 
-        $resolver
-            ->shouldReceive('byCredentials')->once()->andReturn($user)
+        Resolver::shouldReceive('byCredentials')->once()->andReturn($user)
             ->shouldReceive('authenticate')->once()->withArgs([$user, $credentials])->andReturn(true);
-
-        Auth::getProvider()->setResolver($resolver);
 
         $this->assertTrue(Auth::attempt($credentials));
 

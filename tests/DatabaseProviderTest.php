@@ -2,10 +2,10 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Mockery as m;
 use Adldap\Models\User;
 use Adldap\AdldapInterface;
-use Adldap\Laravel\Auth\ResolverInterface;
+use Adldap\Laravel\Commands\Import;
+use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
@@ -48,20 +48,11 @@ class DatabaseProviderTest extends DatabaseTestCase
             'userprincipalname'  => 'jdoe@email.com',
         ]);
 
-        $resolver = m::mock(ResolverInterface::class);
-
-        $resolver->shouldReceive('byModel')
-            ->once()
-            ->andReturn($user);
-
-        Auth::getProvider()->setResolver($resolver);
-
-        $resolver
+        Resolver::shouldReceive('byModel')->once()->andReturn($user)
             ->shouldReceive('byCredentials')->once()->andReturn($user)
             ->shouldReceive('authenticate')->once()->andReturn(true);
 
         $this->assertTrue(Auth::attempt($credentials));
-        $this->assertInstanceOf(ResolverInterface::class, Auth::getProvider()->getResolver());
         $this->assertInstanceOf(EloquentUser::class, Auth::user());
         $this->assertInstanceOf(User::class, Auth::user()->ldap);
     }
@@ -73,12 +64,7 @@ class DatabaseProviderTest extends DatabaseTestCase
             'userprincipalname'  => 'jdoe@email.com',
         ]);
 
-        $resolver = m::mock(ResolverInterface::class);
-
-        Auth::getProvider()->setResolver($resolver);
-
-        $resolver
-            ->shouldReceive('byCredentials')->once()->andReturn($user)
+        Resolver::shouldReceive('byCredentials')->once()->andReturn($user)
             ->shouldReceive('authenticate')->once()->andReturn(false);
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
@@ -86,11 +72,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
     public function test_auth_fails_when_user_not_found()
     {
-        $resolver = m::mock(ResolverInterface::class);
-
-        Auth::getProvider()->setResolver($resolver);
-
-        $resolver->shouldReceive('byCredentials')->once()->andReturn(null);
+        Resolver::shouldReceive('byCredentials')->once()->andReturn(null);
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
     }
@@ -105,9 +87,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(userprincipalname=*)(cn=\4a\6f\68\6e\20\44\6f\65))';
 
-        $resolver = Auth::getProvider()->getResolver();
-
-        $this->assertEquals($expectedFilter, $resolver->query()->getQuery());
+        $this->assertEquals($expectedFilter, Resolver::query()->getQuery());
     }
 
     public function test_config_callback_attribute_handler()
@@ -132,8 +112,6 @@ class DatabaseProviderTest extends DatabaseTestCase
         // does not contain a `handle` method.
         config(['adldap_auth.sync_attributes' => [\stdClass::class]]);
 
-        $importer = Auth::getProvider()->getImporter();
-
         $user = $this->makeLdapUser([
             'cn'    => 'John Doe',
             'userprincipalname'  => 'jdoe@email.com',
@@ -141,7 +119,9 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $model = new EloquentUser();
 
-        $importer->run($user, $model);
+        $importer = new Import($user, $model);
+
+        $importer->handle();
     }
 
     public function test_config_login_fallback()
@@ -159,13 +139,8 @@ class DatabaseProviderTest extends DatabaseTestCase
             'password' => 'Password123',
         ];
 
-        $resolver = m::mock(ResolverInterface::class);
-
-        $resolver
-            ->shouldReceive('byCredentials')->times(3)->andReturn(null)
+        Resolver::shouldReceive('byCredentials')->times(3)->andReturn(null)
             ->shouldReceive('byModel')->once()->andReturn(null);
-
-        Auth::getProvider()->setResolver($resolver);
 
         $this->assertTrue(Auth::attempt($credentials));
 
@@ -203,7 +178,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
     public function test_config_password_sync_enabled()
     {
-        config(['adldap_auth.password_sync' => true]);
+        config(['adldap_auth.passwords.sync' => true]);
 
         $credentials = [
             'email' => 'jdoe@email.com',
@@ -249,14 +224,9 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $ldapUser = $this->makeLdapUser();
 
-        $resolver = m::mock(ResolverInterface::class);
-
-        $resolver
-            ->shouldReceive('byCredentials')->twice()->andReturn($ldapUser)
+        Resolver::shouldReceive('byCredentials')->twice()->andReturn($ldapUser)
             ->shouldReceive('byModel')->once()->andReturn($ldapUser)
             ->shouldReceive('authenticate')->twice()->andReturn(true);
-
-        Auth::getProvider()->setResolver($resolver);
 
         $this->assertTrue(Auth::attempt($credentials));
 
@@ -279,13 +249,8 @@ class DatabaseProviderTest extends DatabaseTestCase
             'password' => '12345',
         ];
 
-        $resolver = m::mock(ResolverInterface::class);
-
-        $resolver
-            ->shouldReceive('byCredentials')->once()->andReturn($this->makeLdapUser())
+        Resolver::shouldReceive('byCredentials')->once()->andReturn($this->makeLdapUser())
             ->shouldReceive('authenticate')->once()->andReturn(true);
-
-        Auth::getProvider()->setResolver($resolver);
 
         $this->assertFalse(Auth::attempt($credentials));
     }
