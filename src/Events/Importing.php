@@ -22,23 +22,14 @@ class Importing
     public $model;
 
     /**
-     * The users credentials.
-     *
-     * @var array
-     */
-    public $credentials;
-
-    /**
      * Constructor.
      *
      * @param User  $user
      * @param Model $model
-     * @param array $credentials
      */
-    public function __construct(User $user, Model $model, array $credentials = [])
+    public function __construct(User $user, Model $model)
     {
         $this->user = $user;
         $this->model = $model;
-        $this->credentials = $credentials;
     }
 }

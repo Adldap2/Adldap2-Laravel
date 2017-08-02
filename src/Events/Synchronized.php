@@ -5,17 +5,17 @@ namespace Adldap\Laravel\Events;
 use Adldap\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
-class Synchronizing
+class Synchronized
 {
     /**
-     * The user being synchronized.
+     * The LDAP user that was synchronized.
      *
      * @var User
      */
     public $user;
 
     /**
-     * The model belonging to the user being synchronized.
+     * The LDAP users database model.
      *
      * @var Model
      */
