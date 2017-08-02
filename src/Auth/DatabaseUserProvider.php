@@ -3,9 +3,9 @@
 namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
-use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Facades\Resolver as UserResolver;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\Bus;
@@ -94,7 +94,7 @@ class DatabaseUserProvider extends Provider
     public function retrieveByCredentials(array $credentials)
     {
         // Retrieve the LDAP user who is authenticating.
-        $user = Resolver::byCredentials($credentials);
+        $user = UserResolver::byCredentials($credentials);
 
         if ($user instanceof User) {
             // Set the currently authenticating LDAP user.
@@ -122,7 +122,7 @@ class DatabaseUserProvider extends Provider
         // they pass authentication before going further.
         if (
             $this->user instanceof User &&
-            Resolver::authenticate($this->user, $credentials)
+            UserResolver::authenticate($this->user, $credentials)
         ) {
             Event::fire(new AuthenticatedWithCredentials($this->user, $model));
 
