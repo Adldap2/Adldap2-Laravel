@@ -3,18 +3,20 @@
 namespace Adldap\Laravel\Middleware;
 
 use Closure;
-use Adldap\Models\ModelNotFoundException;
-use Adldap\Laravel\Traits\UsesAdldap;
-use Adldap\Laravel\Traits\DispatchesAuthEvents;
+use Adldap\Models\User;
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Commands\Import;
+use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Adldap\Laravel\Events\AuthenticatedWithWindows;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
 
 class WindowsAuthenticate
 {
-    use UsesAdldap, DispatchesAuthEvents;
-
     /**
      * The authenticator implementation.
      *
@@ -44,7 +46,7 @@ class WindowsAuthenticate
     {
         if (!$this->auth->check()) {
             // Retrieve the SSO login attribute.
-            $auth = $this->getWindowsAuthAttribute();
+            $auth = $this->attribute();
 
             // Retrieve the SSO input key.
             $key = key($auth);
@@ -95,43 +97,48 @@ class WindowsAuthenticate
     {
         $provider = $this->auth->getProvider();
 
-        try {
-            $resolver = $this->getResolver();
-
-            // Find the user in AD.
-            $user = $resolver->query()->where([$key => $username])->firstOrFail();
-
+        // Find the user in AD.
+        if ($user = Resolver::query()->where([$key => $username])->first()) {
             if ($provider instanceof NoDatabaseUserProvider) {
-                $this->handleAuthenticatedWithWindows($user);
+                Event::fire(new AuthenticatedWithWindows($user));
 
                 return $user;
             } elseif ($provider instanceof DatabaseUserProvider) {
-                $credentials = [
-                    $resolver->getEloquentUsername() => $user->getFirstAttribute($resolver->getLdapUsername()),
-                ];
+                $credentials = $this->makeCredentials($user);
 
                 // Here we'll import the AD user. If the user already exists in
                 // our local database, it will be returned from the importer.
-                $model = $this->getImporter()->run($user, $this->getModel(), $credentials);
+                $model = Bus::dispatch(
+                    new Import($user, $this->model(), $credentials)
+                );
 
-                // We'll assign a random password for the authenticating user.
-                $password = str_random();
-
-                // Set the models password.
-                $model->password = $model->hasSetMutator('password') ?
-                    $password : bcrypt($password);
+                // We'll sync / set the users password after
+                // our model has been synchronized.
+                Bus::dispatch(new SyncPassword($model));
 
                 // We also want to save the returned model in case it doesn't
                 // exist yet, or there are changes to be synced.
                 $model->save();
 
-                $this->handleAuthenticatedWithWindows($user, $model);
+                Event::fire(new AuthenticatedWithWindows($user, $model));
 
                 return $model;
             }
-        } catch (ModelNotFoundException $e) {
-            // User could not be located.
         }
+    }
+
+    /**
+     * Returns a credentials array to be used in the import command.
+     *
+     * @param User $user
+     *
+     * @return array
+     */
+    protected function makeCredentials(User $user)
+    {
+        return [
+            Resolver::getEloquentUsername() => $user->getFirstAttribute(Resolver::getLdapUsername()),
+        ];
     }
 
     /**
@@ -139,9 +146,9 @@ class WindowsAuthenticate
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function getModel()
+    protected function model()
     {
-        return auth()->getProvider()->createModel();
+        return $this->auth->getProvider()->createModel();
     }
 
     /**
@@ -149,7 +156,7 @@ class WindowsAuthenticate
      *
      * @return string
      */
-    protected function getWindowsAuthAttribute()
+    protected function attribute()
     {
         return config('adldap_auth.windows_auth_attribute', ['samaccountname' => 'AUTH_USER']);
     }
