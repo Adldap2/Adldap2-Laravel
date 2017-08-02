@@ -3,14 +3,16 @@
 namespace Adldap\Laravel;
 
 use InvalidArgumentException;
-use Adldap\Laravel\Commands\Import;
-use Adldap\Laravel\Events\Synchronizing;
+use Adldap\Laravel\Facades\Adldap;
+use Adldap\Laravel\Auth\Resolver;
+use Adldap\Laravel\Auth\ResolverInterface;
+use Adldap\Laravel\Commands\Console\Import;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Adldap\Laravel\Listeners\BindsLdapUserModel;
-use Adldap\Laravel\Listeners\SynchronizesPasswords;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Auth\Events\Authenticated;
@@ -59,6 +61,8 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerBindings();
+
         $this->registerListeners();
     }
 
@@ -73,6 +77,18 @@ class AdldapAuthServiceProvider extends ServiceProvider
     }
 
     /**
+     * Registers the application bindings.
+     *
+     * @return void
+     */
+    protected function registerBindings()
+    {
+        $this->app->bind(ResolverInterface::class, function () {
+            return $this->newUserResolver();
+        });
+    }
+
+    /**
      * Registers the event listeners.
      *
      * @return void
@@ -80,8 +96,6 @@ class AdldapAuthServiceProvider extends ServiceProvider
     protected function registerListeners()
     {
         Event::listen(Authenticated::class, BindsLdapUserModel::class);
-
-        Event::listen(Synchronizing::class, SynchronizesPasswords::class);
     }
 
     /**
@@ -96,7 +110,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     protected function newUserProvider(Hasher $hasher, array $config)
     {
-        $provider = $this->getUserProvider();
+        $provider = $this->userProvider();
 
         switch ($provider) {
             case DatabaseUserProvider::class:
@@ -117,12 +131,54 @@ class AdldapAuthServiceProvider extends ServiceProvider
     }
 
     /**
-     * Returns the configured user provider.
+     * Returns a new user resolver.
+     *
+     * @return ResolverInterface
+     */
+    protected function newUserResolver()
+    {
+        $resolver = $this->resolver();
+
+        return new $resolver($this->ldapProvider());
+    }
+
+    /**
+     * Retrieves a connection provider from the Adldap instance.
+     *
+     * @return \Adldap\Connections\ProviderInterface
+     */
+    protected function ldapProvider()
+    {
+        return Adldap::getProvider($this->connection());
+    }
+
+    /**
+     * Returns the configured user provider class.
      *
      * @return string
      */
-    protected function getUserProvider()
+    protected function userProvider()
     {
-        return config('adldap_auth.provider', DatabaseUserProvider::class);
+        return Config::get('adldap_auth.provider', DatabaseUserProvider::class);
+    }
+
+    /**
+     * Returns the configured user resolver class.
+     *
+     * @return string
+     */
+    protected function resolver()
+    {
+        return Config::get('adldap_auth.resolver', Resolver::class);
+    }
+
+    /**
+     * Returns the configured default connection name.
+     *
+     * @return string
+     */
+    public function connection()
+    {
+        return Config::get('adldap_auth.connection', 'default');
     }
 }
