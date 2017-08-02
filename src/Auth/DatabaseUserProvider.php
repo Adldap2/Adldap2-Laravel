@@ -3,6 +3,13 @@
 namespace Adldap\Laravel\Auth;
 
 use Adldap\Models\User;
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Commands\Import;
+use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Events\DiscoveredWithCredentials;
+use Adldap\Laravel\Events\AuthenticatedWithCredentials;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -87,17 +94,18 @@ class DatabaseUserProvider extends Provider
     public function retrieveByCredentials(array $credentials)
     {
         // Retrieve the LDAP user who is authenticating.
-        $user = $this->getResolver()->byCredentials($credentials);
+        $user = Resolver::byCredentials($credentials);
 
         if ($user instanceof User) {
             // Set the currently authenticating LDAP user.
             $this->user = $user;
 
-            $this->handleDiscoveredWithCredentials($user);
+            Event::fire(new DiscoveredWithCredentials($user));
 
             // Import / locate the local user account.
-            return $this->getImporter()
-                ->run($user, $this->createModel(), $credentials);
+            return Bus::dispatch(
+                new Import($user, $this->createModel(), $credentials)
+            );
         }
 
         if ($this->isFallingBack()) {
@@ -114,14 +122,17 @@ class DatabaseUserProvider extends Provider
         // they pass authentication before going further.
         if (
             $this->user instanceof User &&
-            $this->getResolver()->authenticate($this->user, $credentials)
+            Resolver::authenticate($this->user, $credentials)
         ) {
-            $this->handleAuthenticatedWithCredentials($this->user, $model);
+            Event::fire(new AuthenticatedWithCredentials($this->user, $model));
 
             // Here we will perform authorization on the LDAP user. If all
             // validation rules pass, we will allow the authentication
             // attempt. Otherwise, it is automatically rejected.
-            if ($this->passesValidation($model)) {
+            if ($this->passesValidation($this->user, $model)) {
+                // Sync / set the users password since it has been verified.
+                Bus::dispatch(new SyncPassword($model, $credentials));
+
                 // All of our validation rules have passed and we can
                 // finally save the model in case of changes.
                 $model->save();
@@ -174,19 +185,6 @@ class DatabaseUserProvider extends Provider
     public function __call($name, $arguments)
     {
         return call_user_func_array([$this->fallback, $name], $arguments);
-    }
-
-    /**
-     * Determines if the model passes validation.
-     *
-     * @param Authenticatable $model
-     *
-     * @return bool
-     */
-    protected function passesValidation(Authenticatable $model)
-    {
-        return $this->newValidator($this->getRules($this->user, $model))
-            ->passes();
     }
 
     /**

@@ -2,6 +2,10 @@
 
 namespace Adldap\Laravel\Auth;
 
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Events\DiscoveredWithCredentials;
+use Adldap\Laravel\Events\AuthenticatedWithCredentials;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class NoDatabaseUserProvider extends Provider
@@ -11,7 +15,7 @@ class NoDatabaseUserProvider extends Provider
      */
     public function retrieveById($identifier)
     {
-        $user = $this->getResolver()->byId($identifier);
+        $user = Resolver::byId($identifier);
 
         if ($user instanceof Authenticatable) {
             // We'll verify we have the correct instance just to ensure we
@@ -41,8 +45,8 @@ class NoDatabaseUserProvider extends Provider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        if ($user = $this->getResolver()->byCredentials($credentials)) {
-            $this->handleDiscoveredWithCredentials($user);
+        if ($user = Resolver::byCredentials($credentials)) {
+            Event::fire(new DiscoveredWithCredentials($user));
 
             return $user;
         }
@@ -55,10 +59,10 @@ class NoDatabaseUserProvider extends Provider
     {
         // Perform LDAP authentication and validate the authenticated model.
         if (
-            $this->getResolver()->authenticate($user, $credentials) &&
-            $this->newValidator($this->getRules($user))->passes()
+            Resolver::authenticate($user, $credentials) &&
+            $this->passesValidation($user)
         ) {
-            $this->handleAuthenticatedWithCredentials($user);
+            Event::fire(new AuthenticatedWithCredentials($user));
 
             return true;
         }
