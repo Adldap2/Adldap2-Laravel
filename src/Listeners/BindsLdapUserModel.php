@@ -5,6 +5,7 @@ namespace Adldap\Laravel\Listeners;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Traits\HasLdapUser;
 use Illuminate\Auth\Events\Authenticated;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class BindsLdapUserModel
 {
@@ -17,12 +18,24 @@ class BindsLdapUserModel
      */
     public function handle(Authenticated $event)
     {
-        $traits = class_uses_recursive($event->user);
-
-        if (array_key_exists(HasLdapUser::class, $traits)) {
+        if ($this->canBind($event->user)) {
             $event->user->setLdapUser(
                 Resolver::byModel($event->user)
             );
         }
+    }
+
+    /**
+     * Determines if we're able to bind to the user.
+     *
+     * @param Authenticatable $user
+     *
+     * @return bool
+     */
+    protected function canBind(Authenticatable $user)
+    {
+        $traits = class_uses_recursive($user);
+
+        return array_key_exists(HasLdapUser::class, $traits);
     }
 }
