@@ -9,6 +9,7 @@ use Adldap\Laravel\Events\Synchronizing;
 use Adldap\Laravel\Events\Synchronized;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
 class Import
@@ -167,7 +168,7 @@ class Import
      */
     protected function getSyncAttributes()
     {
-        return config('adldap_auth.sync_attributes', [
+        return Config::get('adldap_auth.sync_attributes', [
             'email' => 'userprincipalname',
             'name' => 'cn',
         ]);
@@ -180,6 +181,6 @@ class Import
      */
     protected function getEloquentUsername()
     {
-        return config('adldap_auth.usernames.eloquent', 'email');
+        return Config::get('adldap_auth.usernames.eloquent', 'email');
     }
 }

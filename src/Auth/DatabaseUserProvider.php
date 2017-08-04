@@ -10,6 +10,7 @@ use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -194,6 +195,6 @@ class DatabaseUserProvider extends Provider
      */
     protected function isFallingBack()
     {
-        return config('adldap_auth.login_fallback', false);
+        return Config::get('adldap_auth.login_fallback', false);
     }
 }

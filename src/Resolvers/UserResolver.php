@@ -4,6 +4,7 @@ namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
 use Adldap\Connections\ProviderInterface;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class UserResolver implements ResolverInterface
@@ -92,7 +93,7 @@ class UserResolver implements ResolverInterface
      */
     public function getLdapUsername()
     {
-        return config('adldap_auth.usernames.ldap.discover', 'userprincipalname');
+        return Config::get('adldap_auth.usernames.ldap.discover', 'userprincipalname');
     }
 
     /**
@@ -100,7 +101,7 @@ class UserResolver implements ResolverInterface
      */
     public function getLdapAuthUsername()
     {
-        return config('adldap_auth.usernames.ldap.authenticate', 'userprincipalname');
+        return Config::get('adldap_auth.usernames.ldap.authenticate', 'userprincipalname');
     }
 
     /**
@@ -108,7 +109,7 @@ class UserResolver implements ResolverInterface
      */
     public function getEloquentUsername()
     {
-        return config('adldap_auth.usernames.eloquent', 'email');
+        return Config::get('adldap_auth.usernames.eloquent', 'email');
     }
 
     /**
@@ -118,6 +119,6 @@ class UserResolver implements ResolverInterface
      */
     protected function getScopes()
     {
-        return config('adldap_auth.scopes', []);
+        return Config::get('adldap_auth.scopes', []);
     }
 }

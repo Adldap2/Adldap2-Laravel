@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
 
 class WindowsAuthenticate
 {
@@ -172,6 +173,6 @@ class WindowsAuthenticate
      */
     protected function attribute()
     {
-        return config('adldap_auth.windows_auth_attribute', ['samaccountname' => 'AUTH_USER']);
+        return Config::get('adldap_auth.windows_auth_attribute', ['samaccountname' => 'AUTH_USER']);
     }
 }
