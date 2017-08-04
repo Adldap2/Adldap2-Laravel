@@ -9,10 +9,9 @@ use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
-use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class DatabaseProviderTest extends DatabaseTestCase
 {
@@ -231,8 +230,6 @@ class DatabaseProviderTest extends DatabaseTestCase
         $this->assertTrue(Auth::attempt($credentials));
 
         EloquentUser::first()->delete();
-
-        $this->expectsEvents([AuthenticatedModelTrashed::class]);
 
         $this->assertFalse(Auth::attempt($credentials));
     }
