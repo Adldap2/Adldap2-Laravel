@@ -4,6 +4,7 @@ namespace Adldap\Laravel\Traits;
 
 use Adldap\Models\User;
 use Adldap\Laravel\Validation\Validator;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
 trait ValidatesUsers
@@ -18,7 +19,9 @@ trait ValidatesUsers
      */
     protected function passesValidation(User $user, Model $model = null)
     {
-        return $this->newValidator($this->getRules($user, $model))->passes();
+        return $this->newValidator(
+            $this->rules($user, $model)
+        )->passes();
     }
 
     /**
@@ -29,15 +32,25 @@ trait ValidatesUsers
      *
      * @return array
      */
-    protected function getRules(User $user, Model $model = null)
+    protected function rules(User $user, Model $model = null)
     {
         $rules = [];
 
-        foreach (config('adldap_auth.rules', []) as $rule) {
+        foreach ($this->getRules() as $rule) {
             $rules[] = new $rule($user, $model);
         }
 
         return $rules;
+    }
+
+    /**
+     * Retrieves the configured authentication rules.
+     *
+     * @return array
+     */
+    protected function getRules()
+    {
+        return Config::get('adldap_auth.rules', []);
     }
 
     /**
