@@ -94,7 +94,9 @@ class SyncPassword
      */
     protected function hasPasswordColumn()
     {
-        return Schema::hasColumn($this->model->getTable(), $this->column());
+        $column = $this->column();
+
+        return $column ? Schema::hasColumn($this->model->getTable(), $column) : false;
     }
 
     /**
