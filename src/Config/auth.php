@@ -39,21 +39,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Resolver
-    |--------------------------------------------------------------------------
-    |
-    | The resolver that locates users from your LDAP server.
-    |
-    | Custom resolvers must implement the following interface:
-    |
-    |   Adldap\Laravel\Resolver\ResolverInterface
-    |
-    */
-
-    'resolver' => Adldap\Laravel\Resolvers\UserResolver::class,
-
-    /*
-    |--------------------------------------------------------------------------
     | Rules
     |--------------------------------------------------------------------------
     |
@@ -159,6 +144,40 @@ return [
 
         'eloquent' => 'email',
 
+        /*
+        |--------------------------------------------------------------------------
+        | Windows Authentication (SSO)
+        |--------------------------------------------------------------------------
+        |
+        | Discover:
+        |
+        |   The discover value is the users attribute you would
+        |   like to locate LDAP users by in your directory.
+        |
+        |   For example, if 'samaccountname' is the value, then your LDAP server is
+        |   queried for a user with the 'samaccountname' equal to the value of
+        |   $_SERVER['AUTH_USER'].
+        |
+        |   If a user is found, they are imported (if using the DatabaseUserProvider)
+        |   into your local database, then logged in.
+        |
+        | Key:
+        |
+        |    The key value represents the 'key' of the $_SERVER
+        |    array to pull the users account name from.
+        |
+        |    For example, $_SERVER['AUTH_USER'].
+        |
+        */
+
+        'windows' => [
+
+            'discover' => 'samaccountname',
+
+            'key' => 'AUTH_USER',
+
+        ],
+
     ],
 
     'passwords' => [
@@ -219,34 +238,6 @@ return [
     */
 
     'login_fallback' => env('ADLDAP_LOGIN_FALLBACK', false),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Windows Auth Attribute
-    |--------------------------------------------------------------------------
-    |
-    | This array represents how a user is found when
-    | utilizing the Adldap Windows Auth Middleware.
-    |
-    | The key of the array represents the attribute that the user is located by.
-    |
-    |     For example, if 'samaccountname' is the key, then your LDAP server is
-    |     queried for a user with the 'samaccountname' equal to the value of
-    |     $_SERVER['AUTH_USER'].
-    |
-    |     If a user is found, they are imported (if using the DatabaseUserProvider)
-    |     into your local database, then logged in.
-    |
-    | The value of the array represents the 'key' of the $_SERVER
-    | array to pull the users username from.
-    |
-    |    For example, $_SERVER['AUTH_USER'].
-    |
-    | This must be an array with a key - value pair.
-    |
-    */
-
-    'windows_auth_attribute' => ['samaccountname' => 'AUTH_USER'],
 
     /*
     |--------------------------------------------------------------------------
