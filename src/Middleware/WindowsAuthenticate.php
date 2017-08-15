@@ -21,7 +21,7 @@ class WindowsAuthenticate
     /**
      * The authenticator implementation.
      *
-     * @var \Illuminate\Contracts\Auth\Guard
+     * @var Guard
      */
     protected $auth;
 

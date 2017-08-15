@@ -119,7 +119,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
                 }
 
                 throw new InvalidArgumentException(
-                    "No model is configured. You must configure a model to use with the [{$provider}]."
+                    "No model is configured. You must configure a model to use with the {$provider}."
                 );
             case NoDatabaseUserProvider::class:
                 return new $provider;
