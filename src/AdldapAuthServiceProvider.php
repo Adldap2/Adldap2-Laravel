@@ -137,9 +137,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     protected function newUserResolver()
     {
-        $resolver = $this->resolver();
-
-        return new $resolver($this->ldapProvider());
+        return new UserResolver($this->ldapProvider());
     }
 
     /**
@@ -160,16 +158,6 @@ class AdldapAuthServiceProvider extends ServiceProvider
     protected function userProvider()
     {
         return Config::get('adldap_auth.provider', DatabaseUserProvider::class);
-    }
-
-    /**
-     * Returns the configured user resolver class.
-     *
-     * @return string
-     */
-    protected function resolver()
-    {
-        return Config::get('adldap_auth.resolver', UserResolver::class);
     }
 
     /**
