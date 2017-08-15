@@ -46,17 +46,13 @@ class WindowsAuthenticate
     public function handle(Request $request, Closure $next)
     {
         if (!$this->auth->check()) {
-            // Retrieve the SSO login attribute.
-            $auth = $this->attribute();
-
-            // Retrieve the SSO input key.
-            $key = key($auth);
-
-            // Handle Windows Authentication.
-            if ($account = $this->account($request, $auth[$key])) {
+            // Retrieve the users account name from the request.
+            if ($account = $this->account($request)) {
+                // Retrieve the users username from their account name.
                 $username = $this->username($account);
 
-                if ($user = $this->retrieveAuthenticatedUser($key, $username)) {
+                // Finally, retrieve the users authenticatable model and log them in.
+                if ($user = $this->retrieveAuthenticatedUser($username)) {
                     $this->auth->login($user, $remember = true);
                 }
             }
@@ -68,17 +64,16 @@ class WindowsAuthenticate
     /**
      * Returns the authenticatable user instance if found.
      *
-     * @param string $key
      * @param string $username
      *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    protected function retrieveAuthenticatedUser($key, $username)
+    protected function retrieveAuthenticatedUser($username)
     {
         $provider = $this->auth->getProvider();
 
         // Find the user in AD.
-        if ($user = Resolver::query()->where([$key => $username])->first()) {
+        if ($user = $this->resolveUserByUsername($username)) {
             if ($provider instanceof NoDatabaseUserProvider) {
                 Event::fire(new AuthenticatedWithWindows($user));
 
@@ -105,6 +100,20 @@ class WindowsAuthenticate
                 return $model;
             }
         }
+    }
+
+    /**
+     * Retrieves an LDAP user by their username.
+     *
+     * @param string $username
+     *
+     * @return mixed
+     */
+    protected function resolveUserByUsername($username)
+    {
+        return Resolver::query()
+            ->where([$this->discover() => $username])
+            ->first();
     }
 
     /**
@@ -135,13 +144,12 @@ class WindowsAuthenticate
      * Retrieves the users SSO account name from our server.
      *
      * @param Request $request
-     * @param string  $key
      *
      * @return string
      */
-    public function account(Request $request, $key)
+    protected function account(Request $request)
     {
-        return utf8_encode($request->server($key));
+        return utf8_encode($request->server($this->key()));
     }
 
     /**
@@ -149,7 +157,7 @@ class WindowsAuthenticate
      *
      * @param string $account
      *
-     * @return array
+     * @return string
      */
     protected function username($account)
     {
@@ -167,12 +175,23 @@ class WindowsAuthenticate
     }
 
     /**
-     * Returns the windows authentication attribute.
+     * Returns the configured key to use for retrieving
+     * the username from the server global variable.
      *
      * @return string
      */
-    protected function attribute()
+    protected function key()
     {
-        return Config::get('adldap_auth.windows_auth_attribute', ['samaccountname' => 'AUTH_USER']);
+        return Config::get('adldap_auth.usernames.windows.key', 'AUTH_USER');
+    }
+
+    /**
+     * Returns the attribute to discover users by.
+     *
+     * @return string
+     */
+    protected function discover()
+    {
+        return Config::get('adldap_auth.usernames.windows.discover', 'samaccountname');
     }
 }
