@@ -29,9 +29,7 @@ class UserResolver implements ResolverInterface
      */
     public function byId($identifier)
     {
-        return $this->query()->where([
-            $this->provider->getSchema()->objectSid() => $identifier,
-        ])->first();
+        return $this->query()->findByGuid($identifier);
     }
 
     /**
