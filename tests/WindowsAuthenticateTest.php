@@ -9,7 +9,8 @@ use Adldap\Laravel\Middleware\WindowsAuthenticate;
 
 class WindowsAuthenticateTest extends DatabaseTestCase
 {
-    public function test_handle()
+    /** @test */
+    public function middleware_authenticates_users()
     {
         $request = app('request');
 
@@ -42,5 +43,27 @@ class WindowsAuthenticateTest extends DatabaseTestCase
         $this->assertEquals('John Doe', $authenticated->name);
         $this->assertEquals('jdoe@email.com', $authenticated->email);
         $this->assertNotEmpty($authenticated->remember_token);
+    }
+
+    /** @test */
+    public function middleware_continues_request_when_user_is_not_found()
+    {
+        $request = app('request');
+
+        $request->server->set('AUTH_USER', 'jdoe');
+
+        $middleware = app(WindowsAuthenticate::class);
+
+        $query = m::mock(Builder::class);
+
+        $query
+            ->shouldReceive('where')->once()->withArgs([['samaccountname' => 'jdoe']])->andReturn($query)
+            ->shouldReceive('first')->once()->andReturn(null);
+
+        Resolver::shouldReceive('query')->once()->andReturn($query);
+
+        $middleware->handle($request, function () {});
+
+        $this->assertNull(auth()->user());
     }
 }

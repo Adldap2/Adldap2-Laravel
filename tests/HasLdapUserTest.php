@@ -2,24 +2,28 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Mockery as m;
 use Adldap\Models\User as LdapUser;
 use Adldap\Laravel\Traits\HasLdapUser;
 use Adldap\Laravel\Tests\Models\User as EloquentUser;
 
 class HasLdapUserTest extends TestCase
 {
-    public function testSetLdapUserSetsUserOnModel()
+    /** @test */
+    public function ldap_users_can_be_applied_to_model_when_trait_is_used()
     {
         $user = $this->createEloquentUser();
 
-        $ldapUser = \Mockery::mock(LdapUser::class);
+        $ldapUser = m::mock(LdapUser::class);
 
         $user->setLdapUser($ldapUser);
 
         $this->assertEquals($ldapUser, $user->ldap);
     }
 
-    public function testSetLdapUserWithNull()
+
+    /** @test */
+    public function null_ldap_user_can_be_given()
     {
         $user = $this->createEloquentUser();
 
@@ -31,7 +35,7 @@ class HasLdapUserTest extends TestCase
     /**
      * @return HasLdapUser
      */
-    private function createEloquentUser()
+    protected function createEloquentUser()
     {
         $user = new EloquentUser();
 

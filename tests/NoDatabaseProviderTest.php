@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Auth;
 
 class NoDatabaseProviderTest extends NoDatabaseTestCase
 {
-    public function test_auth_passes()
+    /** @test */
+    public function only_ldap_is_used_when_authenticating()
     {
         $credentials = [
             'email' => 'jdoe@email.com',

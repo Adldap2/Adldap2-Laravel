@@ -7,7 +7,8 @@ use Adldap\Laravel\Tests\Models\User;
 
 class DatabaseImporterTest extends DatabaseTestCase
 {
-    public function test_handle()
+    /** @test */
+    public function ldap_users_are_imported()
     {
         $user = $this->makeLdapUser([
             'cn' => 'John Doe',
