@@ -120,9 +120,7 @@ return [
 
         'ldap' => [
 
-
             'discover' => 'userprincipalname',
-
 
             'authenticate' => 'userprincipalname',
 
@@ -259,6 +257,7 @@ return [
     'sync_attributes' => [
 
         'email' => 'userprincipalname',
+
         'name' => 'cn',
 
     ],
