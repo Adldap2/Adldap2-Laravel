@@ -89,11 +89,6 @@ $user = Adldap::search()->users()->find('john doe');
 // Searching for a user.
 $search = Adldap::search()->where('cn', '=', 'John Doe')->get();
 
-// Authenticating against your LDAP server.
-if (Adldap::auth()->attempt($username, $password)) {
-    // Passed!
-}
-
 // Running an operation under a different connection:
 $users = Adldap::getProvider('other-connection')->search()->users()->get();
 
