@@ -114,7 +114,7 @@ return [
         |
         |   For example, when a user is located by the above 'discover'
         |   attribute, the users attribute you specify below will
-        |   be used to bind to your LDAP server.
+        |   be used as the username to bind to your LDAP server.
         |
         */
 
@@ -149,7 +149,7 @@ return [
         |
         | Discover:
         |
-        |   The discover value is the users attribute you would
+        |   The 'discover' value is the users attribute you would
         |   like to locate LDAP users by in your directory.
         |
         |   For example, if 'samaccountname' is the value, then your LDAP server is
@@ -161,7 +161,7 @@ return [
         |
         | Key:
         |
-        |    The key value represents the 'key' of the $_SERVER
+        |    The 'key' value represents the 'key' of the $_SERVER
         |    array to pull the users account name from.
         |
         |    For example, $_SERVER['AUTH_USER'].
@@ -213,6 +213,8 @@ return [
         | that is used to store passwords.
         |
         | Set this to `null` if you do not have a password column.
+        |
+        | This option is only applicable to the DatabaseUserProvider.
         |
         */
 
