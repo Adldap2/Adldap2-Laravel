@@ -29,7 +29,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Adldap\\Laravel\\AdldapServiceProvider"
+                "Adldap\\Laravel\\AdldapServiceProvider",
+                "Adldap\\Laravel\\AdldapAuthServiceProvider"
             ],
             "aliases": {
                 "Adldap": "Adldap\\Laravel\\Facades\\Adldap"
