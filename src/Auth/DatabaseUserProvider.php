@@ -164,6 +164,16 @@ class DatabaseUserProvider extends Provider
     }
 
     /**
+     * Gets the name of the Eloquent user model.
+     *
+     * @return string
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+    
+    /**
      * Create a new instance of the model.
      *
      * @return \Illuminate\Database\Eloquent\Model
