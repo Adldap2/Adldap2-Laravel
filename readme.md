@@ -43,19 +43,11 @@ To use Adldap2-Laravel, your application and server must meet the following requ
 
 ## Installation
 
-Insert Adldap2-Laravel into your `composer.json` file:
-
-```json
-"adldap2/adldap2-laravel": "3.0.*",
-```
-
-Or via command line:
+Run the following command:
 
 ```bash
 composer require adldap2/adldap2-laravel
 ```
-
-Then run `composer update`.
 
 Once finished, insert the service provider in your `config/app.php` file:
 ```php
