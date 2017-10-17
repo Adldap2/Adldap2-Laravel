@@ -64,19 +64,19 @@ interface ResolverInterface
      *
      * @return string
      */
-    public function getLdapUsername();
+    public function getLdapDiscoveryAttribute();
 
     /**
      * Retrieves the configured LDAP users authenticatable username attribute.
      *
      * @return string
      */
-    public function getLdapAuthUsername();
+    public function getLdapAuthAttribute();
 
     /**
      * Retrieves the configured eloquent users username attribute.
      *
      * @return string
      */
-    public function getEloquentUsername();
+    public function getEloquentUsernameAttribute();
 }
