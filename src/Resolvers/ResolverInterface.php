@@ -18,7 +18,7 @@ interface ResolverInterface
     /**
      * Retrieves a user by the given identifier.
      *
-     * @param string $identifier
+     * @param string $identifier The users object GUID.
      *
      * @return \Adldap\Models\Model|null
      */
@@ -27,7 +27,7 @@ interface ResolverInterface
     /**
      * Retrieve a user by the given credentials.
      *
-     * @param array $credentials
+     * @param array  $credentials The users credentials
      *
      * @return \Adldap\Models\User|null
      */
@@ -36,7 +36,7 @@ interface ResolverInterface
     /**
      * Retrieve a user by the given model.
      *
-     * @param Authenticatable $model
+     * @param Authenticatable $model The users eloquent model
      *
      * @return \Adldap\Models\User|null
      */
@@ -45,8 +45,8 @@ interface ResolverInterface
     /**
      * Authenticates the user against the current provider.
      *
-     * @param User  $user
-     * @param array $credentials
+     * @param User  $user        The LDAP users model
+     * @param array $credentials The LDAP users credentials
      *
      * @return string|null
      */
