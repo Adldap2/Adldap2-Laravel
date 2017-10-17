@@ -17,7 +17,7 @@ class UserResolverTest extends TestCase
 
         $resolver = new UserResolver($provider);
 
-        $this->assertEquals('email', $resolver->getEloquentUsername());
+        $this->assertEquals('email', $resolver->getEloquentUsernameAttribute());
     }
 
     /** @test */
@@ -27,7 +27,7 @@ class UserResolverTest extends TestCase
 
         $resolver = new UserResolver($provider);
 
-        $this->assertEquals('userprincipalname', $resolver->getLdapAuthUsername());
+        $this->assertEquals('userprincipalname', $resolver->getLdapAuthAttribute());
     }
 
     /** @test */
@@ -37,7 +37,7 @@ class UserResolverTest extends TestCase
 
         $resolver = new UserResolver($provider);
 
-        $this->assertEquals('userprincipalname', $resolver->getLdapUsername());
+        $this->assertEquals('userprincipalname', $resolver->getLdapDiscoveryAttribute());
     }
 
     /** @test */
