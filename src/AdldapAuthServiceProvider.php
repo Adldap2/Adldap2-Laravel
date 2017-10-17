@@ -38,14 +38,10 @@ class AdldapAuthServiceProvider extends ServiceProvider
         $auth = Auth::getFacadeRoot();
 
         if (method_exists($auth, 'provider')) {
-            // If the provider method exists, we're running Laravel >= 5.2
-            // Register the adldap auth user provider.
             $auth->provider('adldap', function ($app, array $config) {
                 return $this->newUserProvider($app['hash'], $config);
             });
         } else {
-            // Otherwise we're using 5.0 || 5.1
-            // Extend Laravel authentication with Adldap driver.
             $auth->extend('adldap', function ($app) {
                 return $this->newUserProvider($app['hash'], $app['config']['auth']);
             });
@@ -165,7 +161,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
      *
      * @return string
      */
-    public function connection()
+    protected function connection()
     {
         return Config::get('adldap_auth.connection', 'default');
     }
