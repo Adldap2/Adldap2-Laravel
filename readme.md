@@ -43,6 +43,16 @@ To use Adldap2-Laravel, your application and server must meet the following requ
 
 ## Installation
 
+###Laravel 5.5
+
+Run the following command and the service provider will automatically register itself alongside the facade
+
+```bash
+composer require adldap2/adldap2-laravel
+```
+
+###Laravel  5.4 and below
+
 Run the following command:
 
 ```bash
