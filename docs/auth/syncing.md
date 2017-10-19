@@ -2,7 +2,16 @@
 
 Inside your `config/adldap_auth.php` file there is a configuration option named `sync_attributes`. This
 is an array of attributes where the key is the eloquent `User` model attribute, and the
-value is the active directory users attribute.
+value is the active directory users attribute:
+
+```php
+'sync_attributes' => [
+
+    'email' => 'userprincipalname',
+
+    'name' => 'cn',
+],
+```
 
 By default, the `User` models `email` and `name` attributes are synchronized to
 the LDAP users `userprincipalname` and `cn` attributes.
