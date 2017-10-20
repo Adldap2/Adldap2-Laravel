@@ -110,8 +110,8 @@ class AdldapAuthServiceProvider extends ServiceProvider
 
         switch ($provider) {
             case DatabaseUserProvider::class:
-                if (array_key_exists('model', $config)) {
-                    return new $provider($hasher, $config['model']);
+                if ($model = array_get($config, 'model')) {
+                    return new $provider($hasher, $model);
                 }
 
                 throw new InvalidArgumentException(
