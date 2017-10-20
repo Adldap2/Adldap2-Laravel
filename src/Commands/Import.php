@@ -121,8 +121,14 @@ class Import
         ]);
 
         foreach ($toSync as $modelField => $ldapField) {
+            // If the field is a loaded class, we can
+            // assume it's an attribute handler.
             if (class_exists($ldapField)) {
                 $handler = app($ldapField);
+
+                if (! method_exists($handler, 'handle')) {
+                    throw new AdldapException("A handle method must be defined when using an attribute handler.");
+                }
 
                 $handler->handle($this->user, $model);
             } else {
