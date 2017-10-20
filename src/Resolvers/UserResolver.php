@@ -3,9 +3,9 @@
 namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
+use Adldap\Connections\ProviderInterface;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
-use Adldap\Connections\ProviderInterface;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -45,6 +45,9 @@ class UserResolver implements ResolverInterface
 
         $field = $this->getLdapDiscoveryAttribute();
 
+        // Depending on the user configured user provider, the
+        // username field will differ for retrieving
+        // users by their credentials.
         switch ($this->getUserProvider()) {
             case NoDatabaseUserProvider::class:
                 $username = $credentials[$this->getLdapDiscoveryAttribute()];
@@ -74,11 +77,11 @@ class UserResolver implements ResolverInterface
      */
     public function authenticate(User $user, array $credentials = [])
     {
-        $attribute = $user->getAttribute($this->getLdapAuthAttribute());
+        $username = $user->getFirstAttribute($this->getLdapAuthAttribute());
 
-        $username = is_array($attribute) ? array_first($attribute) : $attribute;
+        $password = $this->getPasswordFromCredentials($credentials);
 
-        return $this->provider->auth()->attempt($username, $credentials['password']);
+        return $this->provider->auth()->attempt($username, $password);
     }
 
     /**
@@ -121,6 +124,18 @@ class UserResolver implements ResolverInterface
     public function getEloquentUsernameAttribute()
     {
         return Config::get('adldap_auth.usernames.eloquent', 'email');
+    }
+
+    /**
+     * Returns the password field to retrieve from the credentials.
+     *
+     * @param array $credentials
+     * 
+     * @return string|null
+     */
+    protected function getPasswordFromCredentials($credentials)
+    {
+        return array_get($credentials, 'password');
     }
 
     /**
