@@ -125,9 +125,11 @@ class WindowsAuthenticate
      */
     protected function makeCredentials(User $user)
     {
-        return [
-            Resolver::getEloquentUsername() => $user->getFirstAttribute(Resolver::getLdapUsername()),
-        ];
+        $field = Resolver::getEloquentUsernameAttribute();
+
+        $username = $user->getFirstAttribute(Resolver::getLdapDiscoveryAttribute());
+
+        return [$field => $username];
     }
 
     /**
