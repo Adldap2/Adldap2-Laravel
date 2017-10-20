@@ -105,7 +105,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
     /**
      * @test
-     * @expectedException Error
+     * @expectedException \Adldap\AdldapException
      */
     public function invalid_attribute_handlers_throw_exception()
     {
