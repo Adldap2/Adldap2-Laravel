@@ -19,7 +19,7 @@ class UserResolver implements ResolverInterface
     protected $ldap;
 
     /**
-     * The connection to utilize.
+     * The LDAP connection to utilize.
      *
      * @var string
      */
@@ -58,8 +58,6 @@ class UserResolver implements ResolverInterface
             return;
         }
 
-        $field = $this->getLdapDiscoveryAttribute();
-
         $provider = Config::get('adldap_auth.provider', DatabaseUserProvider::class);
 
         // Depending on the configured user provider, the
@@ -70,6 +68,8 @@ class UserResolver implements ResolverInterface
         } else {
             $username = $credentials[$this->getEloquentUsernameAttribute()];
         }
+
+        $field = $this->getLdapDiscoveryAttribute();
 
         return $this->query()->whereEquals($field, $username)->first();
     }
