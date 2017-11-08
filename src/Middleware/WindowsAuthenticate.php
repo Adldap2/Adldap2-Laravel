@@ -70,12 +70,12 @@ class WindowsAuthenticate
      */
     protected function retrieveAuthenticatedUser($username)
     {
-        $provider = $this->auth->getProvider();
-
         // Find the user in AD.
         if ($user = $this->resolveUserByUsername($username)) {
+            $provider = $this->auth->getProvider();
+
             if ($provider instanceof NoDatabaseUserProvider) {
-                Event::fire(new AuthenticatedWithWindows($user));
+                $this->fireAuthenticatedEvent($user);
 
                 return $user;
             } elseif ($provider instanceof DatabaseUserProvider) {
@@ -95,11 +95,24 @@ class WindowsAuthenticate
                 // exist yet, or there are changes to be synced.
                 $model->save();
 
-                Event::fire(new AuthenticatedWithWindows($user, $model));
+                $this->fireAuthenticatedEvent($user, $model);
 
                 return $model;
             }
         }
+    }
+
+    /**
+     * Fires the windows authentication event.
+     *
+     * @param User       $user
+     * @param mixed|null $model
+     * 
+     * @return void
+     */
+    protected function fireAuthenticatedEvent(User $user, $model = null)
+    {
+        Event::fire(new AuthenticatedWithWindows($user, $model));
     }
 
     /**
