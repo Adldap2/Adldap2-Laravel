@@ -248,8 +248,8 @@ return [
     | upon login, automatically synchronizing and keeping the attributes
     | up to date.
     |
-    | The array key represents the Laravel model key, and the value
-    | represents the users LDAP attribute.
+    | The array key represents the users Laravel model key, and
+    | the value represents the users LDAP attribute.
     |
     | This option must be an array and is only applicable
     | to the DatabaseUserProvider.
@@ -263,5 +263,22 @@ return [
         'name' => 'cn',
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logging
+    |--------------------------------------------------------------------------
+    |
+    | User authentication attempts will be logged using Laravel's
+    | default logger if this setting is enabled.
+    |
+    | This is usually stored in the '/storage/logs' directory
+    | in the root of your application.
+    |
+    | This option is useful for debugging as well as auditing.
+    |
+    */
+
+    'logging' => true,
 
 ];
