@@ -3,7 +3,7 @@
 namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
-use Adldap\Connections\ProviderInterface;
+use Adldap\AdldapInterface;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Illuminate\Support\Facades\Config;
@@ -12,18 +12,33 @@ use Illuminate\Contracts\Auth\Authenticatable;
 class UserResolver implements ResolverInterface
 {
     /**
-     * The LDAP connection provider.
+     * The Adldap instance.
      *
-     * @var ProviderInterface
+     * @var AdldapInterface
      */
-    protected $provider;
+    protected $ldap;
+
+    /**
+     * The connection to utilize.
+     *
+     * @var string
+     */
+    protected $connection = 'default';
 
     /**
      * {@inheritdoc}
      */
-    public function __construct(ProviderInterface $provider)
+    public function __construct(AdldapInterface $ldap)
     {
-        $this->provider = $provider;
+        $this->ldap = $ldap;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setConnection($connection)
+    {
+        $this->connection = $connection;
     }
 
     /**
@@ -45,16 +60,15 @@ class UserResolver implements ResolverInterface
 
         $field = $this->getLdapDiscoveryAttribute();
 
-        // Depending on the user configured user provider, the
+        $provider = Config::get('adldap_auth.provider', DatabaseUserProvider::class);
+
+        // Depending on the configured user provider, the
         // username field will differ for retrieving
         // users by their credentials.
-        switch ($this->getUserProvider()) {
-            case NoDatabaseUserProvider::class:
-                $username = $credentials[$this->getLdapDiscoveryAttribute()];
-                break;
-            default:
-                $username = $credentials[$this->getEloquentUsernameAttribute()];
-                break;
+        if ($provider == NoDatabaseUserProvider::class) {
+            $username = $credentials[$this->getLdapDiscoveryAttribute()];
+        } else {
+            $username = $credentials[$this->getEloquentUsernameAttribute()];
         }
 
         return $this->query()->whereEquals($field, $username)->first();
@@ -81,7 +95,7 @@ class UserResolver implements ResolverInterface
 
         $password = $this->getPasswordFromCredentials($credentials);
 
-        return $this->provider->auth()->attempt($username, $password);
+        return $this->getProvider()->auth()->attempt($username, $password);
     }
 
     /**
@@ -89,13 +103,17 @@ class UserResolver implements ResolverInterface
      */
     public function query()
     {
-        $query = $this->provider->search()->users();
+        $query = $this->getProvider()->search()->users();
 
-        foreach ($this->getScopes() as $scope) {
-            // Create the scope.
+        $scopes = Config::get('adldap_auth.scopes', []);
+
+        foreach ($scopes as $scope) {
+            // Here we will use Laravel's IoC container to construct our scope.
+            // This allows us to utilize any Laravel dependencies in
+            // the scopes constructor that may be needed.
             $scope = app($scope);
 
-            // Apply it to our query.
+            // With the scope constructed, we can apply it to our query.
             $scope->apply($query);
         }
 
@@ -139,22 +157,14 @@ class UserResolver implements ResolverInterface
     }
 
     /**
-     * Returns the configured query scopes.
+     * Retrieves the provider for the current connection.
      *
-     * @return array
-     */
-    protected function getScopes()
-    {
-        return Config::get('adldap_auth.scopes', []);
-    }
-
-    /**
-     * Returns the configured LDAP user provider.
+     * @throws \Adldap\AdldapException
      *
-     * @return string
+     * @return \Adldap\Connections\ProviderInterface
      */
-    protected function getUserProvider()
+    protected function getProvider()
     {
-        return Config::get('adldap_auth.provider', DatabaseUserProvider::class);
+        return $this->ldap->getProvider($this->connection);
     }
 }

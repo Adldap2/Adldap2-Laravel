@@ -3,7 +3,7 @@
 namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
-use Adldap\Connections\ProviderInterface;
+use Adldap\AdldapInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 interface ResolverInterface
@@ -11,9 +11,18 @@ interface ResolverInterface
     /**
      * Constructor.
      *
-     * @param ProviderInterface $provider
+     * @param AdldapInterface $ldap
      */
-    public function __construct(ProviderInterface $provider);
+    public function __construct(AdldapInterface $ldap);
+
+    /**
+     * Sets the LDAP connection to use.
+     *
+     * @param string $connection
+     *
+     * @return void
+     */
+    public function setConnection($connection);
 
     /**
      * Retrieves a user by the given identifier.
