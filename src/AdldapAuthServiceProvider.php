@@ -101,6 +101,9 @@ class AdldapAuthServiceProvider extends ServiceProvider
             Event::listen(Events\Synchronized::class, Listeners\LogSynchronized::class);
             Event::listen(Events\Synchronizing::class, Listeners\LogSynchronizing::class);
             Event::listen(Events\DiscoveredWithCredentials::class, Listeners\LogDiscovery::class);
+            Event::listen(Events\AuthenticatedWithWindows::class, Listeners\LogWindowsAuth::class);
+            Event::listen(Events\AuthenticatedModelTrashed::class, Listeners\LogTrashedModel::class);
+            Event::listen(Events\AuthenticatedWithCredentials::class, Listeners\LogCredentialAuth::class);
         }
     }
 
