@@ -15,6 +15,6 @@ class LogDiscovery
      */
     public function handle(DiscoveredWithCredentials $event)
     {
-        info("User {$event->user->getCommonName()} has been successfully found for authentication.");
+        info("User '{$event->user->getCommonName()}' has been successfully found for authentication.");
     }
 }

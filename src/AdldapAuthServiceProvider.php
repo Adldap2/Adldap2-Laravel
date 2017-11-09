@@ -97,13 +97,19 @@ class AdldapAuthServiceProvider extends ServiceProvider
         Event::listen(Authenticated::class, Listeners\BindsLdapUserModel::class);
 
         if ($this->isLogging()) {
+            // If logging is enabled, we will set up our event listeners that
+            // log each event fired throughout the authentication process.
             Event::listen(Events\Importing::class, Listeners\LogImport::class);
             Event::listen(Events\Synchronized::class, Listeners\LogSynchronized::class);
             Event::listen(Events\Synchronizing::class, Listeners\LogSynchronizing::class);
+            Event::listen(Events\Authenticated::class, Listeners\LogAuthenticated::class);
+            Event::listen(Events\Authenticating::class, Listeners\LogAuthentication::class);
+            Event::listen(Events\AuthenticationFailed::class, Listeners\LogAuthenticationFailure::class);
+            Event::listen(Events\AuthenticationRejected::class, Listeners\LogAuthenticationRejection::class);
+            Event::listen(Events\AuthenticationSuccessful::class, Listeners\LogAuthenticationSuccess::class);
             Event::listen(Events\DiscoveredWithCredentials::class, Listeners\LogDiscovery::class);
             Event::listen(Events\AuthenticatedWithWindows::class, Listeners\LogWindowsAuth::class);
             Event::listen(Events\AuthenticatedModelTrashed::class, Listeners\LogTrashedModel::class);
-            Event::listen(Events\AuthenticatedWithCredentials::class, Listeners\LogCredentialAuth::class);
         }
     }
 

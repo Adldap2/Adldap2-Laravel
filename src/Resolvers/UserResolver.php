@@ -4,8 +4,12 @@ namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
 use Adldap\AdldapInterface;
+use Adldap\Laravel\Events\Authenticated;
+use Adldap\Laravel\Events\Authenticating;
+use Adldap\Laravel\Events\AuthenticationFailed;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -95,7 +99,17 @@ class UserResolver implements ResolverInterface
 
         $password = $this->getPasswordFromCredentials($credentials);
 
-        return $this->getProvider()->auth()->attempt($username, $password);
+        Event::fire(new Authenticating($user, $username));
+
+        if ($this->getProvider()->auth()->attempt($username, $password)) {
+            Event::fire(new Authenticated($user));
+
+            return true;
+        }
+
+        Event::fire(new AuthenticationFailed($user));
+
+        return false;
     }
 
     /**

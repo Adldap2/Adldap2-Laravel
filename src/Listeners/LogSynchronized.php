@@ -15,6 +15,6 @@ class LogSynchronized
      */
     public function handle(Synchronized $event)
     {
-        info("User {$event->user->getCommonName()} has been successfully synchronized.");
+        info("User '{$event->user->getCommonName()}' has been successfully synchronized.");
     }
 }
