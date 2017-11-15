@@ -79,7 +79,7 @@ Here's an example of the information logged:
 [2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' is being imported.  
 [2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' is being synchronized.  
 [2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' has been successfully synchronized.  
-[2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' is authenticating with username: 'admin-sbauman@federalbridge.ca'  
+[2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' is authenticating with username: 'steven_bauman@outlook.com'  
 [2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' has successfully passed LDAP authentication.  
 [2017-11-14 22:19:46] local.INFO: User 'Steve Bauman' has been successfully logged in.  
 ```
