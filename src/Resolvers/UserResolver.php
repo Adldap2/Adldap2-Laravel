@@ -3,25 +3,44 @@
 namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
-use Adldap\Connections\ProviderInterface;
+use Adldap\AdldapInterface;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class UserResolver implements ResolverInterface
 {
     /**
-     * The LDAP connection provider.
+     * The underlying Adldap instance.
      *
-     * @var ProviderInterface
+     * @var AdldapInterface
      */
-    protected $provider;
+    protected $ldap;
+
+    /**
+     * The LDAP connection to utilize.
+     *
+     * @var string
+     */
+    protected $connection = 'default';
 
     /**
      * {@inheritdoc}
      */
-    public function __construct(ProviderInterface $provider)
+    public function __construct(AdldapInterface $ldap)
     {
-        $this->provider = $provider;
+        $this->ldap = $ldap;
+    }
+
+    /**
+     * Sets the LDAP connection to use.
+     *
+     * @param string $connection
+     *
+     * @return void
+     */
+    public function setConnection($connection)
+    {
+        $this->connection = $connection;
     }
 
     /**
@@ -42,7 +61,7 @@ class UserResolver implements ResolverInterface
         }
 
         return $this->query()
-            ->whereEquals($this->getLdapUsername(), $credentials[$this->getEloquentUsername()])
+            ->whereEquals($this->getLdapDiscoveryAttribute(), $credentials[$this->getEloquentUsernameAttribute()])
             ->first();
     }
 
@@ -52,7 +71,7 @@ class UserResolver implements ResolverInterface
     public function byModel(Authenticatable $model)
     {
         return $this->query()
-            ->whereEquals($this->getLdapUsername(), $model->{$this->getEloquentUsername()})
+            ->whereEquals($this->getLdapDiscoveryAttribute(), $model->{$this->getEloquentUsernameAttribute()})
             ->first();
     }
 
@@ -61,9 +80,9 @@ class UserResolver implements ResolverInterface
      */
     public function authenticate(User $user, array $credentials = [])
     {
-        $username = $user->getFirstAttribute($this->getLdapAuthUsername());
+        $username = $user->getFirstAttribute($this->getLdapAuthAttribute());
 
-        return $this->provider->auth()->attempt($username, $credentials['password']);
+        return $this->getProvider()->auth()->attempt($username, $credentials['password']);
     }
 
     /**
@@ -71,7 +90,7 @@ class UserResolver implements ResolverInterface
      */
     public function query()
     {
-        $query = $this->provider->search()->users();
+        $query = $this->getProvider()->search()->users();
 
         foreach ($this->getScopes() as $scope) {
             // Create the scope.
@@ -85,9 +104,19 @@ class UserResolver implements ResolverInterface
     }
 
     /**
+     * Returns the configured connection provider.
+     *
+     * @return \Adldap\Connections\ProviderInterface
+     */
+    protected function getProvider()
+    {
+        return $this->ldap->getProvider($this->connection);
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function getLdapUsername()
+    public function getLdapDiscoveryAttribute()
     {
         return Config::get('adldap_auth.usernames.ldap.discover', 'userprincipalname');
     }
@@ -95,7 +124,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getLdapAuthUsername()
+    public function getLdapAuthAttribute()
     {
         return Config::get('adldap_auth.usernames.ldap.authenticate', 'userprincipalname');
     }
@@ -103,7 +132,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getEloquentUsername()
+    public function getEloquentUsernameAttribute()
     {
         return Config::get('adldap_auth.usernames.eloquent', 'email');
     }
