@@ -99,17 +99,9 @@ class AdldapAuthServiceProvider extends ServiceProvider
         if ($this->isLogging()) {
             // If logging is enabled, we will set up our event listeners that
             // log each event fired throughout the authentication process.
-            Event::listen(Events\Importing::class, Listeners\LogImport::class);
-            Event::listen(Events\Synchronized::class, Listeners\LogSynchronized::class);
-            Event::listen(Events\Synchronizing::class, Listeners\LogSynchronizing::class);
-            Event::listen(Events\Authenticated::class, Listeners\LogAuthenticated::class);
-            Event::listen(Events\Authenticating::class, Listeners\LogAuthentication::class);
-            Event::listen(Events\AuthenticationFailed::class, Listeners\LogAuthenticationFailure::class);
-            Event::listen(Events\AuthenticationRejected::class, Listeners\LogAuthenticationRejection::class);
-            Event::listen(Events\AuthenticationSuccessful::class, Listeners\LogAuthenticationSuccess::class);
-            Event::listen(Events\DiscoveredWithCredentials::class, Listeners\LogDiscovery::class);
-            Event::listen(Events\AuthenticatedWithWindows::class, Listeners\LogWindowsAuth::class);
-            Event::listen(Events\AuthenticatedModelTrashed::class, Listeners\LogTrashedModel::class);
+            foreach ($this->getLoggingEvents() as $event => $listener) {
+                Event::listen($event, $listener);
+            }
         }
     }
 
@@ -152,6 +144,16 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     protected function isLogging()
     {
-        return Config::get('adldap_auth.logging', false);
+        return Config::get('adldap_auth.logging.enabled', false);
+    }
+
+    /**
+     * Returns the configured authentication events to log.
+     *
+     * @return array
+     */
+    protected function getLoggingEvents()
+    {
+        return Config::get('adldap_auth.logging.events', []);
     }
 }
