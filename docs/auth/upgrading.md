@@ -10,6 +10,12 @@ Please visit the [Adldap2](https://github.com/Adldap2/Adldap2/releases/tag/v8.0.
 
 However for this package you should only have to change your `adldap_auth.php` configuration.
 
+### Authentication Driver
+
+LDAP connection exceptions are now caught when authentication attempts occur.
+
+These exceptions are logged to your configured logging driver so you can view the stack trace and discover issues easier.
+
 ### Configuration
 
 1. Delete your `config/adldap_auth.php`
@@ -62,7 +68,21 @@ This array also now contains the `windows_auth_attribute` array (shown below).
 
 #### Logging
 
-Logging has been added 
+Logging has been added for authentication requests to your server.
+
+Which events are logged can be configured in your `adldap_auth.php` file.
+
+Here's an example of the information logged:
+
+```
+[2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' has been successfully found for authentication.  
+[2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' is being imported.  
+[2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' is being synchronized.  
+[2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' has been successfully synchronized.  
+[2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' is authenticating with username: 'admin-sbauman@federalbridge.ca'  
+[2017-11-14 22:19:45] local.INFO: User 'Steve Bauman' has successfully passed LDAP authentication.  
+[2017-11-14 22:19:46] local.INFO: User 'Steve Bauman' has been successfully logged in.  
+```
 
 #### Resolver
 
