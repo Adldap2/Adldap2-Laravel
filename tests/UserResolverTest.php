@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Adldap\AdldapInterface;
 use Mockery as m;
 use Adldap\Query\Builder;
 use Adldap\Schemas\SchemaInterface;
@@ -13,39 +14,39 @@ class UserResolverTest extends TestCase
     /** @test */
     public function eloquent_username_default()
     {
-        $provider = m::mock(ProviderInterface::class);
+        $ldap = m::mock(AdldapInterface::class);
 
-        $resolver = new UserResolver($provider);
+        $resolver = new UserResolver($ldap);
 
-        $this->assertEquals('email', $resolver->getEloquentUsername());
+        $this->assertEquals('email', $resolver->getEloquentUsernameAttribute());
     }
 
     /** @test */
     public function ldap_auth_username_default()
     {
-        $provider = m::mock(ProviderInterface::class);
+        $ldap = m::mock(AdldapInterface::class);
 
-        $resolver = new UserResolver($provider);
+        $resolver = new UserResolver($ldap);
 
-        $this->assertEquals('userprincipalname', $resolver->getLdapAuthUsername());
+        $this->assertEquals('userprincipalname', $resolver->getLdapAuthAttribute());
     }
 
     /** @test */
     public function ldap_username_default()
     {
-        $provider = m::mock(ProviderInterface::class);
+        $ldap = m::mock(AdldapInterface::class);
 
-        $resolver = new UserResolver($provider);
+        $resolver = new UserResolver($ldap);
 
-        $this->assertEquals('userprincipalname', $resolver->getLdapUsername());
+        $this->assertEquals('userprincipalname', $resolver->getLdapDiscoveryAttribute());
     }
 
     /** @test */
     public function by_credentials_returns_null_on_empty_credentials()
     {
-        $provider = m::mock(ProviderInterface::class);
+        $ldap = m::mock(AdldapInterface::class);
 
-        $resolver = new UserResolver($provider);
+        $resolver = new UserResolver($ldap);
 
         $this->assertNull($resolver->byCredentials());
     }
@@ -67,7 +68,11 @@ class UserResolverTest extends TestCase
         $provider->shouldReceive('search')->once()->andReturn($provider)
             ->shouldReceive('users')->once()->andReturn($builder);
 
-        $resolver = new UserResolver($provider);
+        $ad = m::mock(AdldapInterface::class);
+
+        $ad->shouldReceive('getProvider')->withArgs(['default'])->andReturn($provider);
+
+        $resolver = new UserResolver($ad);
 
         $this->assertInstanceOf(Builder::class, $resolver->query());
     }

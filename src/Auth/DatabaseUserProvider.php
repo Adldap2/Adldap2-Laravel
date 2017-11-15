@@ -6,6 +6,8 @@ use Adldap\Models\User;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Events\AuthenticationRejected;
+use Adldap\Laravel\Events\AuthenticationSuccessful;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\Bus;
@@ -131,15 +133,19 @@ class DatabaseUserProvider extends Provider
             // validation rules pass, we will allow the authentication
             // attempt. Otherwise, it is automatically rejected.
             if ($this->passesValidation($this->user, $model)) {
-                // Sync / set the users password since it has been verified.
+                // Here we can now synchronize / set the users password since
+                // they have successfully passed authentication
+                // and our validation rules.
                 Bus::dispatch(new SyncPassword($model, $credentials));
 
-                // All of our validation rules have passed and we can
-                // finally save the model in case of changes.
                 $model->save();
+
+                Event::fire(new AuthenticationSuccessful($this->user));
 
                 return true;
             }
+
+            Event::fire(new AuthenticationRejected($this->user));
         }
 
         if ($this->isFallingBack() && $model->exists) {

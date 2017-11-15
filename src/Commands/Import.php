@@ -56,8 +56,8 @@ class Import
      */
     public function handle()
     {
-        // Here we'll try to locate our local user record
-        // for the LDAP user. If one isn't located,
+        // Here we'll try to locate our local user model from
+        // the LDAP users model. If one isn't located,
         // we'll create a new one for them.
         $model = $this->findByCredentials() ?: $this->model->newInstance();
 
@@ -68,7 +68,7 @@ class Import
         Event::fire(new Synchronizing($this->user, $model));
 
         // Synchronize LDAP attributes on the model.
-        $this->syncModelAttributes($model);
+        $this->sync($model);
 
         Event::fire(new Synchronized($this->user, $model));
 
@@ -113,74 +113,27 @@ class Import
      *
      * @return void
      */
-    protected function syncModelAttributes(Model $model)
+    protected function sync(Model $model)
     {
-        foreach ($this->getSyncAttributes() as $modelField => $ldapField) {
-            if ($handler = $this->getHandler($ldapField)) {
-                $handler->handle($this->user, $model);
-            } else {
-                $model->{$modelField} = $this->getAttribute($this->user, $ldapField);
-            }
-        }
-    }
-
-    /**
-     * Constructs the given handler if it exists and contains a `handle` method.
-     *
-     * @param string $handler
-     *
-     * @return mixed|null
-     *
-     * @throws AdldapException
-     */
-    protected function getHandler($handler)
-    {
-        if (class_exists($handler) && $handler = app($handler)) {
-            if (!method_exists($handler, 'handle')) {
-                $name = get_class($handler);
-
-                throw new AdldapException("No handle method exists for the given handler: $name");
-            }
-
-            return $handler;
-        }
-    }
-
-    /**
-     * Retrieves the specified field from the User model.
-     *
-     * @param User   $user
-     * @param string $field
-     *
-     * @return string|null
-     */
-    protected function getAttribute(User $user, $field)
-    {
-        return $field === $user->getSchema()->thumbnail() ?
-            $user->getThumbnailEncoded() : $user->getFirstAttribute($field);
-    }
-
-    /**
-     * Returns the configured sync attributes for filling the
-     * Laravel user model with active directory fields.
-     *
-     * @return array
-     */
-    protected function getSyncAttributes()
-    {
-        return Config::get('adldap_auth.sync_attributes', [
+        $toSync = Config::get('adldap_auth.sync_attributes', [
             'email' => 'userprincipalname',
             'name' => 'cn',
         ]);
-    }
 
-    /**
-     * Retrieves the eloquent users username attribute.
-     *
-     * @return string
-     */
-    protected function getEloquentUsername()
-    {
-        return Config::get('adldap_auth.usernames.eloquent', 'email');
+        foreach ($toSync as $modelField => $ldapField) {
+            // If the field is a loaded class, we can
+            // assume it's an attribute handler.
+            if (class_exists($ldapField)) {
+                $handler = app($ldapField);
+
+                if (! method_exists($handler, 'handle')) {
+                    throw new AdldapException("A handle method must be defined when using an attribute handler.");
+                }
+
+                $handler->handle($this->user, $model);
+            } else {
+                $model->{$modelField} = $this->user->getFirstAttribute($ldapField);
+            }
+        }
     }
 }

@@ -3,6 +3,8 @@
 namespace Adldap\Laravel\Auth;
 
 use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Events\AuthenticationRejected;
+use Adldap\Laravel\Events\AuthenticationSuccessful;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\Event;
@@ -57,14 +59,16 @@ class NoDatabaseUserProvider extends Provider
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-        // Perform LDAP authentication and validate the authenticated model.
-        if (
-            Resolver::authenticate($user, $credentials) &&
-            $this->passesValidation($user)
-        ) {
+        if (Resolver::authenticate($user, $credentials)) {
             Event::fire(new AuthenticatedWithCredentials($user));
 
-            return true;
+            if ($this->passesValidation($user)) {
+                Event::fire(new AuthenticationSuccessful($user));
+
+                return true;
+            }
+
+            Event::fire(new AuthenticationRejected($user));
         }
 
         return false;
