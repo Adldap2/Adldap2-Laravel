@@ -43,13 +43,7 @@ To use Adldap2-Laravel, your application and server must meet the following requ
 
 ## Installation
 
-Insert Adldap2-Laravel into your `composer.json` file:
-
-```json
-"adldap2/adldap2-laravel": "3.0.*",
-```
-
-Or via command line:
+Run the following command:
 
 ```bash
 composer require adldap2/adldap2-laravel
@@ -90,11 +84,6 @@ $user = Adldap::search()->users()->find('john doe');
 
 // Searching for a user.
 $search = Adldap::search()->where('cn', '=', 'John Doe')->get();
-
-// Authenticating against your LDAP server.
-if (Adldap::auth()->attempt($username, $password)) {
-    // Passed!
-}
 
 // Running an operation under a different connection:
 $users = Adldap::getProvider('other-connection')->search()->users()->get();

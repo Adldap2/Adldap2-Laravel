@@ -29,7 +29,7 @@ return [
             | connectivity rather than having to connect manually
             | in your application.
             |
-            | If this is set to false, you must connect manually before running
+            | If this is set to false, you **must** connect manually before running
             | LDAP operations.
             |
             */

@@ -114,7 +114,7 @@ return [
         |
         |   For example, when a user is located by the above 'discover'
         |   attribute, the users attribute you specify below will
-        |   be used to bind to your LDAP server.
+        |   be used as the username to bind to your LDAP server.
         |
         */
 
@@ -149,7 +149,7 @@ return [
         |
         | Discover:
         |
-        |   The discover value is the users attribute you would
+        |   The 'discover' value is the users attribute you would
         |   like to locate LDAP users by in your directory.
         |
         |   For example, if 'samaccountname' is the value, then your LDAP server is
@@ -161,7 +161,7 @@ return [
         |
         | Key:
         |
-        |    The key value represents the 'key' of the $_SERVER
+        |    The 'key' value represents the 'key' of the $_SERVER
         |    array to pull the users account name from.
         |
         |    For example, $_SERVER['AUTH_USER'].
@@ -214,6 +214,8 @@ return [
         |
         | Set this to `null` if you do not have a password column.
         |
+        | This option is only applicable to the DatabaseUserProvider.
+        |
         */
 
         'column' => 'password',
@@ -246,8 +248,8 @@ return [
     | upon login, automatically synchronizing and keeping the attributes
     | up to date.
     |
-    | The array key represents the Laravel model key, and the value
-    | represents the users LDAP attribute.
+    | The array key represents the users Laravel model key, and
+    | the value represents the users LDAP attribute.
     |
     | This option must be an array and is only applicable
     | to the DatabaseUserProvider.
@@ -260,6 +262,44 @@ return [
 
         'name' => 'cn',
 
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logging
+    |--------------------------------------------------------------------------
+    |
+    | User authentication attempts will be logged using Laravel's
+    | default logger if this setting is enabled.
+    |
+    | This is usually stored in the '/storage/logs' directory
+    | in the root of your application.
+    |
+    | This option is useful for debugging as well as auditing.
+    |
+    | You can freely remove any events you would not like to log below.
+    |
+    */
+
+    'logging' => [
+
+        'enabled' => true,
+
+        'events' => [
+
+            \Adldap\Laravel\Events\Importing::class => \Adldap\Laravel\Listeners\LogImport::class,
+            \Adldap\Laravel\Events\Synchronized::class => \Adldap\Laravel\Listeners\LogSynchronized::class,
+            \Adldap\Laravel\Events\Synchronizing::class => \Adldap\Laravel\Listeners\LogSynchronizing::class,
+            \Adldap\Laravel\Events\Authenticated::class => \Adldap\Laravel\Listeners\LogAuthenticated::class,
+            \Adldap\Laravel\Events\Authenticating::class => \Adldap\Laravel\Listeners\LogAuthentication::class,
+            \Adldap\Laravel\Events\AuthenticationFailed::class => \Adldap\Laravel\Listeners\LogAuthenticationFailure::class,
+            \Adldap\Laravel\Events\AuthenticationRejected::class => \Adldap\Laravel\Listeners\LogAuthenticationRejection::class,
+            \Adldap\Laravel\Events\AuthenticationSuccessful::class => \Adldap\Laravel\Listeners\LogAuthenticationSuccess::class,
+            \Adldap\Laravel\Events\DiscoveredWithCredentials::class => \Adldap\Laravel\Listeners\LogDiscovery::class,
+            \Adldap\Laravel\Events\AuthenticatedWithWindows::class => \Adldap\Laravel\Listeners\LogWindowsAuth::class,
+            \Adldap\Laravel\Events\AuthenticatedModelTrashed::class => \Adldap\Laravel\Listeners\LogTrashedModel::class,
+
+        ],
     ],
 
 ];

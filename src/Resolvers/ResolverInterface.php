@@ -3,7 +3,7 @@
 namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
-use Adldap\Connections\ProviderInterface;
+use Adldap\AdldapInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 interface ResolverInterface
@@ -11,14 +11,23 @@ interface ResolverInterface
     /**
      * Constructor.
      *
-     * @param ProviderInterface $provider
+     * @param AdldapInterface $ldap
      */
-    public function __construct(ProviderInterface $provider);
+    public function __construct(AdldapInterface $ldap);
+
+    /**
+     * Sets the LDAP connection to use.
+     *
+     * @param string $connection
+     *
+     * @return void
+     */
+    public function setConnection($connection);
 
     /**
      * Retrieves a user by the given identifier.
      *
-     * @param string $identifier
+     * @param string $identifier The users object GUID.
      *
      * @return \Adldap\Models\Model|null
      */
@@ -27,7 +36,7 @@ interface ResolverInterface
     /**
      * Retrieve a user by the given credentials.
      *
-     * @param array $credentials
+     * @param array  $credentials The users credentials
      *
      * @return \Adldap\Models\User|null
      */
@@ -36,7 +45,7 @@ interface ResolverInterface
     /**
      * Retrieve a user by the given model.
      *
-     * @param Authenticatable $model
+     * @param Authenticatable $model The users eloquent model
      *
      * @return \Adldap\Models\User|null
      */
@@ -45,8 +54,8 @@ interface ResolverInterface
     /**
      * Authenticates the user against the current provider.
      *
-     * @param User  $user
-     * @param array $credentials
+     * @param User  $user        The LDAP users model
+     * @param array $credentials The LDAP users credentials
      *
      * @return string|null
      */
@@ -64,19 +73,19 @@ interface ResolverInterface
      *
      * @return string
      */
-    public function getLdapUsername();
+    public function getLdapDiscoveryAttribute();
 
     /**
      * Retrieves the configured LDAP users authenticatable username attribute.
      *
      * @return string
      */
-    public function getLdapAuthUsername();
+    public function getLdapAuthAttribute();
 
     /**
      * Retrieves the configured eloquent users username attribute.
      *
      * @return string
      */
-    public function getEloquentUsername();
+    public function getEloquentUsernameAttribute();
 }

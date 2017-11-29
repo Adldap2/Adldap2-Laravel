@@ -64,10 +64,12 @@ class SyncPassword
      */
     protected function applyPassword($password)
     {
-        $this->model->setAttribute(
-            $this->column(),
-            $this->model->hasSetMutator($this->column()) ? $password : bcrypt($password)
-        );
+        // If the model has a mutator for the password field, we
+        // can assume hashing passwords is taken care of.
+        // Otherwise, we will bcrypt it normally.
+        $password = $this->model->hasSetMutator($this->column()) ? $password : bcrypt($password);
+
+        $this->model->setAttribute($this->column(), $password);
     }
 
     /**

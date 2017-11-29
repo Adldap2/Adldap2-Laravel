@@ -3,25 +3,46 @@
 namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
-use Adldap\Connections\ProviderInterface;
+use Adldap\AdldapInterface;
+use Adldap\Laravel\Events\Authenticated;
+use Adldap\Laravel\Events\Authenticating;
+use Adldap\Laravel\Events\AuthenticationFailed;
+use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class UserResolver implements ResolverInterface
 {
     /**
-     * The LDAP connection provider.
+     * The Adldap instance.
      *
-     * @var ProviderInterface
+     * @var AdldapInterface
      */
-    protected $provider;
+    protected $ldap;
+
+    /**
+     * The LDAP connection to utilize.
+     *
+     * @var string
+     */
+    protected $connection = 'default';
 
     /**
      * {@inheritdoc}
      */
-    public function __construct(ProviderInterface $provider)
+    public function __construct(AdldapInterface $ldap)
     {
-        $this->provider = $provider;
+        $this->ldap = $ldap;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setConnection($connection)
+    {
+        $this->connection = $connection;
     }
 
     /**
@@ -41,9 +62,20 @@ class UserResolver implements ResolverInterface
             return;
         }
 
-        return $this->query()
-            ->whereEquals($this->getLdapUsername(), $credentials[$this->getEloquentUsername()])
-            ->first();
+        $provider = Config::get('adldap_auth.provider', DatabaseUserProvider::class);
+
+        // Depending on the configured user provider, the
+        // username field will differ for retrieving
+        // users by their credentials.
+        if ($provider == NoDatabaseUserProvider::class) {
+            $username = $credentials[$this->getLdapDiscoveryAttribute()];
+        } else {
+            $username = $credentials[$this->getEloquentUsernameAttribute()];
+        }
+
+        $field = $this->getLdapDiscoveryAttribute();
+
+        return $this->query()->whereEquals($field, $username)->first();
     }
 
     /**
@@ -51,9 +83,11 @@ class UserResolver implements ResolverInterface
      */
     public function byModel(Authenticatable $model)
     {
-        return $this->query()
-            ->whereEquals($this->getLdapUsername(), $model->{$this->getEloquentUsername()})
-            ->first();
+        $field = $this->getLdapDiscoveryAttribute();
+
+        $username = $model->{$this->getEloquentUsernameAttribute()};
+
+        return $this->query()->whereEquals($field, $username)->first();
     }
 
     /**
@@ -61,11 +95,21 @@ class UserResolver implements ResolverInterface
      */
     public function authenticate(User $user, array $credentials = [])
     {
-        $attribute = $user->getAttribute($this->getLdapAuthUsername());
+        $username = $user->getFirstAttribute($this->getLdapAuthAttribute());
 
-        $username = is_array($attribute) ? array_first($attribute) : $attribute;
+        $password = $this->getPasswordFromCredentials($credentials);
 
-        return $this->provider->auth()->attempt($username, $credentials['password']);
+        Event::fire(new Authenticating($user, $username));
+
+        if ($this->getProvider()->auth()->attempt($username, $password)) {
+            Event::fire(new Authenticated($user));
+
+            return true;
+        }
+
+        Event::fire(new AuthenticationFailed($user));
+
+        return false;
     }
 
     /**
@@ -73,13 +117,17 @@ class UserResolver implements ResolverInterface
      */
     public function query()
     {
-        $query = $this->provider->search()->users();
+        $query = $this->getProvider()->search()->users();
 
-        foreach ($this->getScopes() as $scope) {
-            // Create the scope.
+        $scopes = Config::get('adldap_auth.scopes', []);
+
+        foreach ($scopes as $scope) {
+            // Here we will use Laravel's IoC container to construct our scope.
+            // This allows us to utilize any Laravel dependencies in
+            // the scopes constructor that may be needed.
             $scope = app($scope);
 
-            // Apply it to our query.
+            // With the scope constructed, we can apply it to our query.
             $scope->apply($query);
         }
 
@@ -89,7 +137,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getLdapUsername()
+    public function getLdapDiscoveryAttribute()
     {
         return Config::get('adldap_auth.usernames.ldap.discover', 'userprincipalname');
     }
@@ -97,7 +145,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getLdapAuthUsername()
+    public function getLdapAuthAttribute()
     {
         return Config::get('adldap_auth.usernames.ldap.authenticate', 'userprincipalname');
     }
@@ -105,18 +153,32 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getEloquentUsername()
+    public function getEloquentUsernameAttribute()
     {
         return Config::get('adldap_auth.usernames.eloquent', 'email');
     }
 
     /**
-     * Returns the configured query scopes.
+     * Returns the password field to retrieve from the credentials.
      *
-     * @return array
+     * @param array $credentials
+     *
+     * @return string|null
      */
-    protected function getScopes()
+    protected function getPasswordFromCredentials($credentials)
     {
-        return Config::get('adldap_auth.scopes', []);
+        return array_get($credentials, 'password');
+    }
+
+    /**
+     * Retrieves the provider for the current connection.
+     *
+     * @throws \Adldap\AdldapException
+     *
+     * @return \Adldap\Connections\ProviderInterface
+     */
+    protected function getProvider()
+    {
+        return $this->ldap->getProvider($this->connection);
     }
 }

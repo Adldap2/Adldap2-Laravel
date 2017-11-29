@@ -6,6 +6,8 @@ use Adldap\Models\User;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Events\AuthenticationRejected;
+use Adldap\Laravel\Events\AuthenticationSuccessful;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\Bus;
@@ -119,27 +121,33 @@ class DatabaseUserProvider extends Provider
      */
     public function validateCredentials(Authenticatable $model, array $credentials)
     {
-        // We'll check if we have an LDAP user, and then make sure
-        // they pass authentication before going further.
-        if (
-            $this->user instanceof User &&
-            Resolver::authenticate($this->user, $credentials)
-        ) {
-            Event::fire(new AuthenticatedWithCredentials($this->user, $model));
+        if ($this->user instanceof User) {
+            // If an LDAP user was discovered, we can go
+            // ahead and try to authenticate them.
+            if (Resolver::authenticate($this->user, $credentials)) {
+                Event::fire(new AuthenticatedWithCredentials($this->user, $model));
 
-            // Here we will perform authorization on the LDAP user. If all
-            // validation rules pass, we will allow the authentication
-            // attempt. Otherwise, it is automatically rejected.
-            if ($this->passesValidation($this->user, $model)) {
-                // Sync / set the users password since it has been verified.
-                Bus::dispatch(new SyncPassword($model, $credentials));
+                // Here we will perform authorization on the LDAP user. If all
+                // validation rules pass, we will allow the authentication
+                // attempt. Otherwise, it is automatically rejected.
+                if ($this->passesValidation($this->user, $model)) {
+                    // Here we can now synchronize / set the users password since
+                    // they have successfully passed authentication
+                    // and our validation rules.
+                    Bus::dispatch(new SyncPassword($model, $credentials));
 
-                // All of our validation rules have passed and we can
-                // finally save the model in case of changes.
-                $model->save();
+                    $model->save();
 
-                return true;
+                    Event::fire(new AuthenticationSuccessful($this->user));
+
+                    return true;
+                }
+
+                Event::fire(new AuthenticationRejected($this->user));
             }
+
+            // LDAP Authentication failed.
+            return false;
         }
 
         if ($this->isFallingBack() && $model->exists) {

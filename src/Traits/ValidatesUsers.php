@@ -19,9 +19,9 @@ trait ValidatesUsers
      */
     protected function passesValidation(User $user, Model $model = null)
     {
-        return $this->newValidator(
+        return (new Validator(
             $this->rules($user, $model)
-        )->passes();
+        ))->passes();
     }
 
     /**
@@ -51,17 +51,5 @@ trait ValidatesUsers
     protected function getRules()
     {
         return Config::get('adldap_auth.rules', []);
-    }
-
-    /**
-     * Returns a new authentication validator.
-     *
-     * @param array $rules
-     *
-     * @return Validator
-     */
-    protected function newValidator(array $rules = [])
-    {
-        return new Validator($rules);
     }
 }
