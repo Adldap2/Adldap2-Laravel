@@ -277,7 +277,8 @@ return [
     |
     | This option is useful for debugging as well as auditing.
     |
-    | You can freely remove any events you would not like to log below.
+    | You can freely remove any events you would not like to log below,
+    | as well as use your own listeners if you would prefer.
     |
     */
 
