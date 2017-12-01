@@ -1,6 +1,6 @@
 # Rules
 
-Authentication rules allow you to restrict which LDAP users are able to authenticate, much like [scopes](docs/scopes.md),
+Authentication rules allow you to restrict which LDAP users are able to authenticate, much like [scopes](scopes.md),
 but with the ability to perform checks on the specific user authenticating.
 
 ## Creating a Rule
