@@ -216,10 +216,10 @@ class Import extends Command
     {
         $resolver = Resolver::getFacadeRoot();
 
-        $username = $user->getFirstAttribute($resolver->getLdapUsername());
+        $username = $user->getFirstAttribute($resolver->getLdapDiscoveryAttribute());
 
         return [
-            $resolver->getEloquentUsername() => $username,
+            $resolver->getEloquentUsernameAttribute() => $username,
         ];
     }
 
