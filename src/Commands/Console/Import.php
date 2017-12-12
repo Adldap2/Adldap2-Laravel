@@ -50,14 +50,11 @@ class Import extends Command
             $this->info("Found {$count} user(s).");
         }
 
-        $interactive = ! $this->option('no-interaction');
-
-        if (!$interactive || $this->confirm('Would you like to display the user(s) to be imported / synchronized?')) {
+        if ($this->confirm('Would you like to display the user(s) to be imported / synchronized?', $default = false)) {
             $this->display($users);
         }
 
-        if (!$interactive || $this->confirm('Would you like these users to be imported / synchronized?',
-                $default = true)) {
+        if ($this->confirm('Would you like these users to be imported / synchronized?', $default = true)) {
             $imported = $this->import($users);
 
             $this->info("Successfully imported / synchronized {$imported} user(s).");
