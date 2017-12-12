@@ -113,7 +113,7 @@ Once a user is authenticated, retrieve them as you would regularly:
 ```php
 public function login(Request $request)
 {
-    if (Auth::attempt($request->only(['email', 'password'])) {
+    if (Auth::attempt($request->only(['email', 'password']))) {
         
         // Returns \App\User model configured in `config/auth.php`.
         $user = Auth::user();
