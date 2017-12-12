@@ -28,7 +28,7 @@ class UserResolverTest extends TestCase
 
         $resolver = new UserResolver($ldap);
 
-        $this->assertEquals('userprincipalname', $resolver->getLdapAuthAttribute());
+        $this->assertEquals('distinguishedname', $resolver->getLdapAuthAttribute());
     }
 
     /** @test */
