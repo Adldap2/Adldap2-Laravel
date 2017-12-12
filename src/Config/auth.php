@@ -122,7 +122,7 @@ return [
 
             'discover' => 'userprincipalname',
 
-            'authenticate' => 'userprincipalname',
+            'authenticate' => 'distinguishedname',
 
         ],
 
