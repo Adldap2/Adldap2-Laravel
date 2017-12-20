@@ -201,7 +201,7 @@ class DatabaseUserProvider extends Provider
      *
      * @return bool
      */
-    protected function isFallingBack()
+    protected function isFallingBack() : bool
     {
         return Config::get('adldap_auth.login_fallback', false);
     }
