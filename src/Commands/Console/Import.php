@@ -37,6 +37,8 @@ class Import extends Command
      * Execute the console command.
      *
      * @return void
+     *
+     * @throws \Adldap\Models\ModelNotFoundException
      */
     public function handle()
     {
