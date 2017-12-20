@@ -187,15 +187,15 @@ return [
         |
         | The password sync option allows you to automatically synchronize
         | users AD passwords to your local database. These passwords are
-        | hashed natively by laravel using the bcrypt() method.
+        | hashed natively by Laravel using the bcrypt() method.
         |
         | Enabling this option would also allow users to login to their
         | accounts using the password last used when an AD connection
         | was present.
         |
-        | If this option is disabled, the local user account is applied
-        | a random 16 character hashed password, and will lose access
-        | to this account upon loss of AD connectivity.
+        | If this option is disabled, the local database account is applied a
+        | random 16 character hashed password upon every login, and will
+        | lose access to this account upon loss of AD connectivity.
         |
         | This option must be true or false and is only applicable
         | to the DatabaseUserProvider.
@@ -271,6 +271,8 @@ return [
     |
     | User authentication attempts will be logged using Laravel's
     | default logger if this setting is enabled.
+    |
+    | No credentials are logged, only usernames.
     |
     | This is usually stored in the '/storage/logs' directory
     | in the root of your application.

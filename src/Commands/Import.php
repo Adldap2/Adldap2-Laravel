@@ -53,6 +53,8 @@ class Import
      * Imports the current LDAP user.
      *
      * @return Model
+     *
+     * @throws AdldapException
      */
     public function handle()
     {
