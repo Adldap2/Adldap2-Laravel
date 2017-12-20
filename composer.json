@@ -10,7 +10,7 @@
     },
     "require-dev": {
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~5.6",
+        "phpunit/phpunit": "~6.0",
         "orchestra/testbench": "~3.2"
     },
     "archive": {
