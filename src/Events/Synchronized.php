@@ -15,7 +15,7 @@ class Synchronized
     public $user;
 
     /**
-     * The LDAP users database model.
+     * The LDAP users database model that was synchronized.
      *
      * @var Model
      */

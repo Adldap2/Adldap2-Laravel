@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Importing
 {
     /**
-     * The user being synchronized.
+     * The user being imported.
      *
      * @var User
      */
     public $user;
 
     /**
-     * The model belonging to the user being synchronized.
+     * The model belonging to the user being imported.
      *
      * @var Model
      */

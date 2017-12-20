@@ -185,17 +185,16 @@ return [
         | Password Sync
         |--------------------------------------------------------------------------
         |
-        | The password sync option allows you to automatically synchronize
-        | users AD passwords to your local database. These passwords are
-        | hashed natively by Laravel using the bcrypt() method.
+        | The password sync option allows you to automatically synchronize users
+        | LDAP passwords to your local database. These passwords are hashed
+        | natively by Laravel using the bcrypt() method.
         |
-        | Enabling this option would also allow users to login to their
-        | accounts using the password last used when an AD connection
-        | was present.
+        | Enabling this option would also allow users to login to their accounts
+        | using the password last used when an LDAP connection was present.
         |
         | If this option is disabled, the local database account is applied a
         | random 16 character hashed password upon every login, and will
-        | lose access to this account upon loss of AD connectivity.
+        | lose access to this account upon loss of LDAP connectivity.
         |
         | This option must be true or false and is only applicable
         | to the DatabaseUserProvider.
