@@ -74,7 +74,7 @@ interface ResolverInterface
      *
      * @return string
      */
-    public function getLdapDiscoveryAttribute();
+    public function getLdapDiscoveryAttribute() : string;
 
     /**
      * Retrieves the configured LDAP users authenticatable username attribute.

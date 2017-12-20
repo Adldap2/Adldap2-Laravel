@@ -177,9 +177,12 @@ class Import extends Command
      * Retrieves users to be imported.
      *
      * @return array
+     *
+     * @throws \Adldap\Models\ModelNotFoundException
      */
     public function getUsers() : array
     {
+        /** @var \Adldap\Query\Builder $query */
         $query = Resolver::query();
 
         if ($filter = $this->option('filter')) {
