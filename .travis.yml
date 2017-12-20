@@ -4,6 +4,7 @@ php:
   - 5.6
   - 7.0
   - 7.1
+  - 7.2
 
 before_install: echo "extension=ldap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
