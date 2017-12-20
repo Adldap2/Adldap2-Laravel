@@ -126,6 +126,9 @@ class Import
             // If the field is a loaded class, we can
             // assume it's an attribute handler.
             if (class_exists($ldapField)) {
+                // We will construct the attribute handler using Laravel's
+                // IoC to allow developers to utilize application
+                // dependencies in the constructor.
                 $handler = app($ldapField);
 
                 if (! method_exists($handler, 'handle')) {
