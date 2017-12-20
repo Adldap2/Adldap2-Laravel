@@ -3,7 +3,9 @@
 namespace Adldap\Laravel\Resolvers;
 
 use Adldap\Models\User;
+use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
+use Adldap\Connections\ProviderInterface;
 use Adldap\Laravel\Events\Authenticated;
 use Adldap\Laravel\Events\Authenticating;
 use Adldap\Laravel\Events\AuthenticationFailed;
@@ -115,20 +117,24 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function query()
+    public function query() : Builder
     {
         $query = $this->getProvider()->search()->users();
 
         $scopes = Config::get('adldap_auth.scopes', []);
 
-        foreach ($scopes as $scope) {
-            // Here we will use Laravel's IoC container to construct our scope.
-            // This allows us to utilize any Laravel dependencies in
-            // the scopes constructor that may be needed.
-            $scope = app($scope);
+        if (is_array($scopes)) {
+            foreach ($scopes as $scope) {
+                // Here we will use Laravel's IoC container to construct our scope.
+                // This allows us to utilize any Laravel dependencies in
+                // the scopes constructor that may be needed.
 
-            // With the scope constructed, we can apply it to our query.
-            $scope->apply($query);
+                /** @var \Adldap\Laravel\Scopes\ScopeInterface $scope */
+                $scope = app($scope);
+
+                // With the scope constructed, we can apply it to our query.
+                $scope->apply($query);
+            }
         }
 
         return $query;
@@ -145,7 +151,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getLdapAuthAttribute()
+    public function getLdapAuthAttribute() : string
     {
         return Config::get('adldap_auth.usernames.ldap.authenticate', 'dn');
     }
@@ -153,7 +159,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getEloquentUsernameAttribute()
+    public function getEloquentUsernameAttribute() : string
     {
         return Config::get('adldap_auth.usernames.eloquent', 'email');
     }
@@ -177,7 +183,7 @@ class UserResolver implements ResolverInterface
      *
      * @return \Adldap\Connections\ProviderInterface
      */
-    protected function getProvider()
+    protected function getProvider() : ProviderInterface
     {
         return $this->ldap->getProvider($this->connection);
     }

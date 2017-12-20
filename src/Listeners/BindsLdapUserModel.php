@@ -32,7 +32,7 @@ class BindsLdapUserModel
      *
      * @return bool
      */
-    protected function canBind(Authenticatable $user)
+    protected function canBind(Authenticatable $user) : bool
     {
         $traits = class_uses_recursive($user);
 

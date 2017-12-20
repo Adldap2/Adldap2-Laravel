@@ -71,7 +71,7 @@ class Import extends Command
      *
      * @return int
      */
-    public function import(array $users = [])
+    public function import(array $users = []) : int
     {
         $imported = 0;
 
@@ -146,7 +146,7 @@ class Import extends Command
      *
      * @return bool
      */
-    public function isLogging()
+    public function isLogging() : bool
     {
         return !$this->option('no-log');
     }
@@ -157,7 +157,7 @@ class Import extends Command
      *
      * @return bool
      */
-    public function isDeleting()
+    public function isDeleting() : bool
     {
         return $this->option('delete') == 'true';
     }
@@ -168,7 +168,7 @@ class Import extends Command
      *
      * @return bool
      */
-    public function isRestoring()
+    public function isRestoring() : bool
     {
         return $this->option('restore') == 'true';
     }
@@ -178,7 +178,7 @@ class Import extends Command
      *
      * @return array
      */
-    public function getUsers()
+    public function getUsers() : array
     {
         $query = Resolver::query();
 
@@ -212,7 +212,7 @@ class Import extends Command
      *
      * @return array
      */
-    protected function getUserCredentials(User $user)
+    protected function getUserCredentials(User $user) : array
     {
         $resolver = Resolver::getFacadeRoot();
 
@@ -231,7 +231,7 @@ class Import extends Command
      *
      * @return bool
      */
-    protected function save(User $user, Model $model)
+    protected function save(User $user, Model $model) : bool
     {
         $imported = false;
 
@@ -282,6 +282,8 @@ class Import extends Command
      * @param Model $model
      *
      * @return void
+     *
+     * @throws Exception
      */
     protected function delete(User $user, Model $model)
     {
@@ -308,7 +310,7 @@ class Import extends Command
      *
      * @return Model
      */
-    protected function model()
+    protected function model() : Model
     {
         return Auth::getProvider()->createModel();
     }
@@ -321,7 +323,7 @@ class Import extends Command
      *
      * @return bool
      */
-    protected function isUsingSoftDeletes(Model $model)
+    protected function isUsingSoftDeletes(Model $model) : bool
     {
         return method_exists($model, 'trashed');
     }

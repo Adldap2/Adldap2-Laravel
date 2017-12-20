@@ -41,7 +41,7 @@ class SyncPassword
      *
      * @return Model
      */
-    public function handle()
+    public function handle() : Model
     {
         if ($this->hasPasswordColumn()) {
             $password = $this->canSync() ?
@@ -82,7 +82,7 @@ class SyncPassword
      *
      * @return bool
      */
-    protected function passwordNeedsUpdate($password = null)
+    protected function passwordNeedsUpdate($password = null) : bool
     {
         $current = $this->currentPassword();
 
@@ -94,7 +94,7 @@ class SyncPassword
      *
      * @return bool
      */
-    protected function hasPasswordColumn()
+    protected function hasPasswordColumn() : bool
     {
         $column = $this->column();
 
@@ -126,7 +126,7 @@ class SyncPassword
      *
      * @return bool
      */
-    protected function canSync()
+    protected function canSync() : bool
     {
         return array_key_exists('password', $this->credentials) && $this->syncing();
     }
@@ -136,7 +136,7 @@ class SyncPassword
      *
      * @return bool
      */
-    protected function syncing()
+    protected function syncing() : bool
     {
         return Config::get('adldap_auth.passwords.sync', false);
     }
@@ -146,7 +146,7 @@ class SyncPassword
      *
      * @return string
      */
-    protected function column()
+    protected function column() : string
     {
         return Config::get('adldap_auth.passwords.column', 'password');
     }
