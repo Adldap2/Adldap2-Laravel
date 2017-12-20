@@ -147,7 +147,7 @@ class UserResolver implements ResolverInterface
      */
     public function getLdapAuthAttribute()
     {
-        return Config::get('adldap_auth.usernames.ldap.authenticate', 'userprincipalname');
+        return Config::get('adldap_auth.usernames.ldap.authenticate', 'dn');
     }
 
     /**
