@@ -6,10 +6,20 @@ use Adldap\Connections\Ldap;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\AdldapServiceProvider;
 use Adldap\Laravel\AdldapAuthServiceProvider;
+use Illuminate\Support\Facades\Hash;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
+    public function createApplication()
+    {
+        $app = parent::createApplication();
+
+        Hash::setRounds(4);
+
+        return $app;
+    }
+
     protected function getPackageProviders($app)
     {
         return [
