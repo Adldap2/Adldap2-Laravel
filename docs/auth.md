@@ -338,8 +338,8 @@ echo $user->email;
 The `NoDatabaseUserProvider` allows you to authenticate LDAP users without synchronizing them.
 
 > **Note**: Due to Laravel's generated blade views with the `auth:make` command, any
-> views that utilize Eloquent User model attributes, you will have to re-write some
-> of these views for compatibility if you utilize this provider.
+> views that utilize Eloquent User model attributes will need to be
+> re-written for compatibility with this provider.
 >
 > For example, in the generated `resources/views/layouts/app.blade.php`, you will
 > need to rewrite `Auth::user()->name` to `Auth::user()->getCommonName();`
@@ -385,7 +385,7 @@ then these will feel very similar.
 
 To create a scope, it must implement the interface `Adldap\Laravel\Scopes\ScopeInterface`.
 
-For this example, we'll create a folder inside our `app` directory containing our scope named `Scopes`.
+For this example, we'll create a folder inside our `app` directory containing our scope named: `Scopes`.
 
 Of course, you can place these scopes wherever you desire, but in this example, our final scope path will be:
 
@@ -393,7 +393,7 @@ Of course, you can place these scopes wherever you desire, but in this example, 
 ../my-application/app/Scopes/AccountingScope.php
 ```
 
-With this scope, we want to only allow members of an Active Directory group named `Accounting`:
+With this scope, we want to only allow members of an Active Directory group named: `Accounting`:
 
 ```php
 namespace App\Scopes;
@@ -443,7 +443,8 @@ to authenticate with users that are a member of the `Accounting` group.
 
 All other users will be denied authentication, even if their credentials are valid.
 
-> **Note**: If you're caching your configuration files, make sure you run `php artisan config:clear`.
+> **Note**: If you're caching your configuration files, make sure you
+> run `php artisan config:clear` to be able to use your new scope.
 
 ### Rules
 
@@ -462,14 +463,14 @@ contains the LDAP user model, as well as their Eloquent `$model`
 
 We'll create a folder in our `app` directory containing our rule named `Rules`.
 
-With this example rule, we only want to allow users to authenticate that are inside specific OU's.
+With this example rule, we only want to allow users to login if they are inside specific OU's:
 
 ```php
 namespace App\Rules;
 
 use Adldap\Laravel\Validation\Rules\Rule;
 
-class OuRule extends Rule
+class OnlyManagersAndAccountingRule extends Rule
 {
     /**
      * The LDAP user.
@@ -508,22 +509,14 @@ To implement your new rule, you just need to insert it into your `config/adldap_
 
 ```php
 'rules' => [
-
-    // Denys deleted users from authenticating.
-
-    Adldap\Laravel\Validation\Rules\DenyTrashed::class,
-
-    // Allows only manually imported users to authenticate.
-
-    // Adldap\Laravel\Validation\Rules\OnlyImported::class,
     
-    App\Rules\OuRule::class,
+    App\Rules\OnlyManagersAndAccountingRule::class,
 
 ],
 ```
 
-Now when you try to authenticate, you will either need to be logging in with an LDAP user with the last name of `Doe` or 
-with a local database record that was created after 2016.
+Now when you try to login, the LDAP user you login with will need to be
+apart of either the `Accounting` or `Managers` Organizational Unit.
 
 #### Example Rules
 
