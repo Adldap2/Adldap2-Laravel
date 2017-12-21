@@ -66,7 +66,7 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 
     *  Two files will be published inside your `config` folder, `adldap.php` and `adldap_auth.php`.
 
-10. Modify the `config/adldap.php` file for your AD server configuration.
+10. Modify the `config/adldap.php` and `config/adldap_auth.php` files for your LDAP server configuration.
 
 11. Run the command `php artisan make:auth` to scaffold login controllers and routes.
 

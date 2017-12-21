@@ -634,16 +634,16 @@ class LdapAttributeHandler
 #### Password Synchronization
 
 The password sync option allows you to automatically synchronize
-users AD passwords to your local database. These passwords are
+users LDAP passwords to your local database. These passwords are
 hashed natively by laravel.
 
 Enabling this option would also allow users to login to their
-accounts using the password last used when an AD connection
+accounts using the password last used when an LDAP connection
 was present.
 
 If this option is disabled, the local user account is applied
 a random 16 character hashed password, and will lose access
-to this account upon loss of AD connectivity.
+to this account upon loss of LDAP connectivity.
 
 This feature is disabled by default.
 
@@ -670,8 +670,9 @@ There are several events fired during each operation that takes place in Adldap2
 The login fallback option allows you to login as a local database user using the default Eloquent authentication
 driver if LDAP authentication fails. This option would be handy in environments where:
  
-- You may have some active directory users and other users registering through the website itself (user does not exist in your AD).
-- Local development where your AD server may be unavailable
+- You may have some active directory users and other users registering through
+  the website itself (user does not exist in your LDAP directory).
+- Local development where your LDAP server may be unavailable
 
 To enable it, simply set the option to true in your `config/adldap_auth.php` configuration file:
 
@@ -679,18 +680,19 @@ To enable it, simply set the option to true in your `config/adldap_auth.php` con
 'login_fallback' => env('ADLDAP_LOGIN_FALLBACK', true), // Set to true.
 ```
 
-#### Developing Locally without an AD connection
+#### Developing Locally without an LDAP connection
 
-You can continue to develop and login to your application without a connection to your AD server in the following scenario:
+You can continue to develop and login to your application without a
+connection to your LDAP server in the following scenario:
 
 * You have `auto_connect` set to `false` in your `adldap.php` configuration
- > This is necessary so we don't automatically try and bind to your AD server when your application boots.
+ > This is necessary so we don't automatically try and bind to your LDAP server when your application boots.
 
 * You have `login_fallback` set to `true` in your `adldap_auth.php` configuration
  > This is necessary so we fallback to the standard `eloquent` auth driver.
 
 * You have `password_sync` set to `true` in your `adldap_auth.php` configuration
- > This is necessary so we can login to the account with the last password that was used when an AD connection was present.
+ > This is necessary so we can login to the account with the last password that was used when an LDAP connection was present.
 
 * You have logged into the synchronized LDAP account previously
  > This is necessary so the account actually exists in your local app's database.
@@ -703,9 +705,9 @@ application without a persistent connection to your LDAP server.
 Model binding allows you to attach the users LDAP model to their Eloquent
 model so their LDAP data is available on every request automatically.
 
-> **Note**: Before we begin, enabling this option will perform a single query on your AD server for a logged
+> **Note**: Before we begin, enabling this option will perform a single query on your LDAP server for a logged
 in user **per request**. Eloquent already does this for authentication, however
-this could lead to slightly longer load times (depending on your AD
+this could lead to slightly longer load times (depending on your LDAP
 server and network speed of course).
 
 To begin, insert the `Adldap\Laravel\Traits\HasLdapUser` trait onto your `User` model:
@@ -757,7 +759,7 @@ in some other means with Apache. Adldap2 does not set this up for you. To enable
 https://www.iis.net/configreference/system.webserver/security/authentication/windowsauthentication/providers/add
 
 > **Note**: The WindowsAuthenticate middleware utilizes the `scopes` inside your `config/adldap.php` file.
-> A user may successfully authenticate against your AD server when visiting your site, but
+> A user may successfully authenticate against your LDAP server when visiting your site, but
 > depending on your scopes, may not be imported or logged in.
 
 To use the middleware, insert it on your middleware stack inside your `app/Http/Kernel.php` file:
@@ -803,5 +805,5 @@ authentication enabled, IIS will set the PHP server variable `AUTH_USER`. This v
 is usually equal to the currently logged in users `samaccountname`.
 
 The configuration array represents this mapping. The WindowsAuthenticate middleware will
-check if the server variable is set, and try to locate the user in your AD server
+check if the server variable is set, and try to locate the user in your LDAP server
 by their `samaccountname`.

@@ -83,7 +83,7 @@ php artisan adldap:import --no-log
 
 ### Delete
 
-The `--delete` (or `-d`) option allows you to soft-delete deactivated AD users. No users will
+The `--delete` (or `-d`) option allows you to soft-delete deactivated LDAP users. No users will
 be deleted if your User model does not have soft-deletes enabled.
 
 ```bash
@@ -92,7 +92,7 @@ php artisan adldap:import --delete
 
 ### Restore
 
-The `--restore` (or `-r`) option allows you to restore soft-deleted re-activated AD users.
+The `--restore` (or `-r`) option allows you to restore soft-deleted re-activated LDAP users.
 
 ```bash
 php artisan adldap:import --restore

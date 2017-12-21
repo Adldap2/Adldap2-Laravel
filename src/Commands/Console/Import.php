@@ -155,7 +155,7 @@ class Import extends Command
 
     /**
      * Returns true / false if users are being deleted
-     * if their account is disabled in AD.
+     * if their account is disabled in LDAP.
      *
      * @return bool
      */
@@ -166,7 +166,7 @@ class Import extends Command
 
     /**
      * Returns true / false if users are being restored
-     * if their account is enabled in AD.
+     * if their account is enabled in LDAP.
      *
      * @return bool
      */
@@ -253,7 +253,7 @@ class Import extends Command
     }
 
     /**
-     * Restores soft-deleted models if their AD account is enabled.
+     * Restores soft-deleted models if their LDAP account is enabled.
      *
      * @param User  $user
      * @param Model $model
@@ -268,7 +268,7 @@ class Import extends Command
             $user->isEnabled()
         ) {
             // If the model has soft-deletes enabled, the model is
-            // currently deleted, and the AD user account
+            // currently deleted, and the LDAP user account
             // is enabled, we'll restore the users model.
             $model->restore();
 
@@ -281,7 +281,7 @@ class Import extends Command
     }
 
     /**
-     * Soft deletes the specified model if their AD account is disabled.
+     * Soft deletes the specified model if their LDAP account is disabled.
      *
      * @param User  $user
      * @param Model $model
@@ -298,7 +298,7 @@ class Import extends Command
             $user->isDisabled()
         ) {
             // If deleting is enabled, the model supports soft deletes, the model
-            // isn't already deleted, and the AD user is disabled, we'll
+            // isn't already deleted, and the LDAP user is disabled, we'll
             // go ahead and delete the users model.
             $model->delete();
 

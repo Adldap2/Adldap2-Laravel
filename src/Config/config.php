@@ -92,7 +92,7 @@ return [
                 | Account Prefix
                 |--------------------------------------------------------------------------
                 |
-                | The account prefix option is the prefix of your user accounts in AD.
+                | The account prefix option is the prefix of your user accounts in LDAP directory.
                 |
                 | This string is prepended to authenticating users usernames.
                 |
@@ -105,7 +105,7 @@ return [
                 | Account Suffix
                 |--------------------------------------------------------------------------
                 |
-                | The account suffix option is the suffix of your user accounts in AD.
+                | The account suffix option is the suffix of your user accounts in your LDAP directory.
                 |
                 | This string is appended to authenticating users usernames.
                 |
@@ -134,7 +134,7 @@ return [
                 | Port
                 |--------------------------------------------------------------------------
                 |
-                | The port option is used for authenticating and binding to your AD server.
+                | The port option is used for authenticating and binding to your LDAP server.
                 |
                 */
 
@@ -190,7 +190,7 @@ return [
                 | Administrator Username & Password
                 |--------------------------------------------------------------------------
                 |
-                | When connecting to your AD server, a username and password is required
+                | When connecting to your LDAP server, a username and password is required
                 | to be able to query and run operations on your server(s). You can
                 | use any user account that has these permissions. This account
                 | does not need to be a domain administrator unless you

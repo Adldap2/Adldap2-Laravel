@@ -70,7 +70,7 @@ class WindowsAuthenticate
      */
     protected function retrieveAuthenticatedUser($username)
     {
-        // Find the user in AD.
+        // Find the user in LDAP.
         if ($user = $this->resolveUserByUsername($username)) {
             $provider = $this->auth->getProvider();
 
@@ -81,7 +81,7 @@ class WindowsAuthenticate
             } elseif ($provider instanceof DatabaseUserProvider) {
                 $credentials = $this->makeCredentials($user);
 
-                // Here we'll import the AD user. If the user already exists in
+                // Here we'll import the LDAP user. If the user already exists in
                 // our local database, it will be returned from the importer.
                 $model = Bus::dispatch(
                     new Import($user, $this->model(), $credentials)
