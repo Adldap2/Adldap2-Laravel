@@ -653,17 +653,68 @@ This feature is disabled by default.
 
 ### Events
 
-There are several events fired during each operation that takes place in Adldap2-Laravel.
+Adldap2-Laravel raises a variety of events throughout authentication attempts.
 
-| Event                                              | Fired                                                                                                                                                                                                               | Limitations                                      |
-|----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
-| `Adldap\Laravel\Events\AuthenticatedModelTrashed`    | When the configured authentication rule `Adldap\Laravel\Validation\Rules\DenyTrashed` is used, this event will be fired when a user has passed LDAP authentication, but their Eloquent model has been soft deleted. |                                                  |
-| `Adldap\Laravel\Events\AuthenticatedWithCredentials` | When a user successfully passes LDAP authentication.                                                                                                                                                                |                                                  |
-| `Adldap\Laravel\Events\AuthenticatedWithWindows`     | When a user has authenticated successfully using the `WindowsAuthenticate` middleware.                                                                                                                              |                                                  |
-| `Adldap\Laravel\Events\DiscoveredWithCredentials`    | When a users LDAP record has been successfully been found. Fired before LDAP authentication.                                                                                                                        |                                                  |
-| `Adldap\Laravel\Events\Importing`                    | When an LDAP user is being imported for the first time. Not fired on subsequent logins after being imported. Use the `Synchronized` / `Synchronizing` event for this purpose.                                       | Only fired when using the `DatabaseUserProvider` |
-| `Adldap\Laravel\Events\Synchronizing`                | When an LDAP users attributes are being synchronized. Fired on every authentication attempt after the LDAP user has been located.                                                                                   | Onlyfired when using the `DatabaseUserProvider`  |
-| `Adldap\Laravel\Events\Synchronized`                 | When an LDAP users attributes have been fully synchronized. Fired on every authentication attempt after the LDAP user has been located.                                                                             | Onlyfired when using the `DatabaseUserProvider`  |
+You may attach listeners to these events in your `EventServiceProvider`:
+
+```php
+/**
+ * The event listener mappings for the application.
+ *
+ * @var array
+ */
+protected $listen = [
+
+    'Adldap\Laravel\Events\Authenticating' => [
+        'App\Listeners\LogAuthenticating',
+    ],
+
+    'Adldap\Laravel\Events\Authenticated' => [
+        'App\Listeners\LogLdapAuthSuccessful',
+    ],
+    
+    'Adldap\Laravel\Events\AuthenticationSuccessful' => [
+        'App\Listeners\LogAuthSuccessful'
+    ],
+    
+    'Adldap\Laravel\Events\AuthenticationFailed' => [
+        'App\Listeners\LogAuthFailure',
+    ],
+    
+    'Adldap\Laravel\Events\AuthenticationRejected' => [
+        'App\Listeners\LogAuthRejected',
+    ],
+    
+    'Adldap\Laravel\Events\AuthenticatedModelTrashed' => [
+        'App\Listeners\LogUserModelIsTrashed',
+    ],
+    
+    'Adldap\Laravel\Events\AuthenticatedWithCredentials' => [
+         'App\Listeners\LogAuthWithCredentials',
+    ],
+    
+    'Adldap\Laravel\Events\AuthenticatedWithWindows' => [
+        'App\Listeners\LogSSOAuth',
+    ],
+    
+    'Adldap\Laravel\Events\DiscoveredWithCredentials' => [
+         'App\Listeners\LogAuthUserLocated',
+    ],
+    
+    'Adldap\Laravel\Events\Importing' => [
+        'App\Listeners\LogImportingUser',
+    ],
+    
+    'Adldap\Laravel\Events\Synchronized' => [
+         'App\Listeners\LogSynchronizedUser',
+    ],
+    
+    'Adldap\Laravel\Events\Synchronizing' => [
+        'App\Listeners\LogSynchronizingUser',
+    ],
+
+];
+```
 
 ### Fallback
 
