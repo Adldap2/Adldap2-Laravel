@@ -15,31 +15,29 @@ Adldap2 - Laravel allows easy configuration, access, management and authenticati
 To use Adldap2-Laravel, your application and server must meet the following requirements:
 
 - Laravel 5.*
-- PHP 5.6 or greater
-- PHP LDAP Extension
-- An Active Directory Server
-
-> **Note:** OpenLDAP support is experimental, success may vary.
+- PHP 7.0 or greater
+- PHP LDAP extension enabled
+- An LDAP Server
 
 ## Index
 
 * [Installation](#installation)
 * [Usage](#usage)
 * Auth Driver
-  * [Upgrading](docs/auth/upgrading.md)
+  * [Upgrading](docs/auth.md#upgrading-from-3.*-to-4.*)
   * [Quick Start - From Scratch](docs/quick-start.md)
-  * [Installation & Basic Setup](docs/auth/installation.md)
+  * [Installation & Basic Setup](docs/auth.md#installation)
   * Features
-    * [Providers](docs/auth/providers.md)
-    * [Scopes](docs/auth/scopes.md)
-    * [Rules](docs/auth/rules.md)
-    * [Synchronizing Attributes](docs/auth/syncing.md)
-    * [Binding to the User Model](docs/auth/binding.md)
-    * [Login Fallback](docs/auth/fallback.md)
-    * [Single Sign On (SSO) Middleware](docs/auth/middleware.md)
-    * [Password Synchronization](docs/auth/syncing.md#password-synchronization)
+    * [Providers](docs/auth.md#providers)
+    * [Scopes](docs/auth.md#scopes)
+    * [Rules](docs/auth.md#rules)
+    * [Events](docs/auth.md#events)
+    * [Synchronizing Attributes](docs/auth.md#syncing-attributes)
+    * [Model Binding](docs/auth.md#model-binding)
+    * [Login Fallback](docs/auth.md#fallback)
+    * [Single Sign On (SSO) Middleware](docs/auth.md#middleware)
+    * [Password Synchronization](docs/auth.md#password-synchronization)
     * [Importing Users](docs/importing.md)
-    * [Developing without an AD connection](docs/auth/fallback.md#developing-locally-without-an-ad-connection)
 
 ## Installation
 
@@ -97,7 +95,8 @@ $user = Adldap::make()->user([
 $user->save();
 ```
 
-Or you can inject the Adldap interface into your controllers:
+Or you can inject the Adldap interface into your controllers, which gives
+you access to all of your LDAP connections and resources.
 
 ```php
 use Adldap\AdldapInterface;
@@ -107,16 +106,16 @@ class UserController extends Controller
     /**
      * @var Adldap
      */
-    protected $adldap;
+    protected $ldap;
     
     /**
      * Constructor.
      *
      * @param AdldapInterface $adldap
      */
-    public function __construct(AdldapInterface $adldap)
+    public function __construct(AdldapInterface $ldap)
     {
-        $this->adldap = $adldap;
+        $this->ldap = $ldap;
     }
     
     /**
@@ -126,7 +125,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->adldap->search()->users()->get();
+        $users = $this->ldap->search()->users()->get();
         
         return view('users.index', compact('users'));
     }
