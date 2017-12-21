@@ -8,53 +8,53 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 1. Create a new laravel project by running the command:
   - `laravel new my-app`
   
-  Or (if you don't have the Laravel installer)
+  Or (if you don't have the [Laravel Installer](https://laravel.com/docs/5.2#installation))
  
   - `composer create-project --prefer-dist laravel/laravel my-app`.
-  
-   [Laravel Installation](https://laravel.com/docs/5.2#installation)
 
-2. Open up your `composer.json` file and insert the following in the `require: {}` array:
-  - `"adldap2/adldap2-laravel": "3.0.*"`
+2. Run the following command to install Adldap2-Laravel:
 
-3. Run the `composer update` command in the root directory of your project to pull in Adldap2 and its dependencies.
+  - `composer require adldap2-laravel`
 
-4. Create a new database in your desired database interface (such as PhpMyAdmin, MySQL Workbench, command line etc.)
+3. Create a new database in your desired database interface (such as PhpMyAdmin, MySQL Workbench, command line etc.)
 
-5. Enter your database details and credentials inside the `.env` file located in your project root directory (if there is not one there, rename the `.env.example` to `.env`).
+4. Enter your database details and credentials inside the `.env` file located in your project root directory (if there is not one there, rename the `.env.example` to `.env`).
 
-6. If you're using username's to login users **instead** of their emails, you will need to change
+5. If you're using username's to login users **instead** of their emails, you will need to change
    the default `email` column in `database/migrations/2014_10_12_000000_create_users_table.php`.
    
-```php
-// database/migrations/2014_10_12_000000_create_users_table.php
+    ```php
+    // database/migrations/2014_10_12_000000_create_users_table.php
+       
+    Schema::create('users', function (Blueprint $table) {
+        $table->increments('id');
+        $table->string('name');
+          
+        // From:
+        $table->string('email')->unique();
+          
+        // To:
+        $table->string('username')->unique();
+          
+        $table->string('password');
+        $table->rememberToken();
+        $table->timestamps();
+    });
+    ```
    
-Schema::create('users', function (Blueprint $table) {
-    $table->increments('id');
-    $table->string('name');
-      
-    // From:
-    $table->string('email')->unique();
-      
-    // To:
-    $table->string('username')->unique();
-      
-    $table->string('password');
-    $table->rememberToken();
-    $table->timestamps();
-});
-```
-   
-7. Now run `php artisan migrate`.
+6. Now run `php artisan migrate`.
 
-8. Insert the following service providers in your `config/app.php` file (in the `providers` array):
+7. Insert the following service providers in your `config/app.php` file (in the `providers` array):
+
+    > **Note**: This step is only required for Laravel 5.0 - 5.4.
+    > They are registered automatically in Laravel 5.5.
 
    ```php
    Adldap\Laravel\AdldapServiceProvider::class,
    Adldap\Laravel\AdldapAuthServiceProvider::class,
    ```
 
-9. Now, insert the facade into your `config/app.php` file (in the `aliases` array):
+8. Now, insert the facade into your `config/app.php` file (in the `aliases` array):
 
    ```php
    'Adldap' => Adldap\Laravel\Facades\Adldap::class,
@@ -62,18 +62,18 @@ Schema::create('users', function (Blueprint $table) {
 
    > **Note**: Insertion of this alias in your `app.php` file isn't necessary unless you're planning on utilizing it.
 
-10. Now run `php artisan vendor:publish` in your root project directory to publish Adldap2's configuration files.
+9. Now run `php artisan vendor:publish` in your root project directory to publish Adldap2's configuration files.
 
     *  Two files will be published inside your `config` folder, `adldap.php` and `adldap_auth.php`.
 
-11. Modify the `config/adldap.php` file for your AD server configuration.
+10. Modify the `config/adldap.php` file for your AD server configuration.
 
-12. Run the command `php artisan make:auth` to scaffold authentication controllers and routes.
+11. Run the command `php artisan make:auth` to scaffold login controllers and routes.
 
-13. If you require logging in by another attribute, such as a username instead of email follow
+12. If you require logging in by another attribute, such as a username instead of email follow
 the process below for your Laravel version. Otherwise ignore this step.
 
- * **Laravel <= 5.2**
+ **Laravel <= 5.2**
 
   Inside the generated `app/Http/Controllers/Auth/AuthController.php`, you'll need to add the `protected $username` property if you're logging in users by username.
 
@@ -83,7 +83,7 @@ the process below for your Laravel version. Otherwise ignore this step.
       protected $username = 'username';
   ```
 
- * **Laravel > 5.3**
+ **Laravel > 5.3**
 
   Inside the generated `app/Http/Controllers/Auth/LoginController.php`, you'll need to add the public method `username()`:
 
@@ -94,7 +94,7 @@ the process below for your Laravel version. Otherwise ignore this step.
   }
   ```
 
-14. Now insert a new auth driver inside your `config/auth.php` file:
+13. Now insert a new auth driver inside your `config/auth.php` file:
 
   ```php
   'providers' => [
@@ -105,7 +105,7 @@ the process below for your Laravel version. Otherwise ignore this step.
   ],
   ```
 
-15. Inside your `resources/views/auth/login.blade.php` file, if you're requiring the user logging in by username, you'll
+14. Inside your `resources/views/auth/login.blade.php` file, if you're requiring the user logging in by username, you'll
     need to modify the HTML input to `username` instead of `email`. Ignore this step otherwise.
 
     From:
@@ -119,8 +119,8 @@ the process below for your Laravel version. Otherwise ignore this step.
     <input type="text" class="form-control" name="username" value="{{ old('username') }}">
     ```
 
-16. You should now be able to login to your Laravel application using LDAP authentication! If you check out your database
+15. You should now be able to login to your Laravel application using LDAP authentication! If you check out your database
   in your `users` table, you'll see that your LDAP account was synchronized to a local user account. This means that
   you can attach data regularly to this user as you would with standard Laravel authentication.
 
-17. Congratulations, you're awesome.
+16. Congratulations, you're awesome.
