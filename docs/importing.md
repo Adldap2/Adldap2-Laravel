@@ -38,7 +38,7 @@ Confirming the display of users to will show a table of users that will be impor
 +------------------------------+----------------------+----------------------------------------------+
 ```
 
-After it has displayed all user, you will then be asked:
+After it has displayed all users, you will then be asked:
 
 
 ```bash
@@ -82,14 +82,6 @@ By default, this is enabled.
 php artisan adldap:import --no-log
 ```
 
-### Connection
-
-The `--connection` (or `-c`) option allows you import users with a different connection specified in your `config/adldap.php` file.
-
-```bash
-php artisan adldap:import --connection other-connection
-```
-
 ### Delete
 
 The `--delete` (or `-d`) option allows you to soft-delete deactivated AD users. No users will
@@ -108,6 +100,27 @@ php artisan adldap:import --restore
 ```
 
 > **Note**: Usually the `--restore` and `--delete` options are used in tandem to allow full synchronization.
+
+### No Interaction
+
+To run the import command via a schedule, use the `--no-interaction` flag:
+
+```php
+php artisan adldap:import --no-interaction
+```
+
+Users will be imported automatically with no prompts.
+
+If you are calling the import command from another command, or the Laravel
+scheduler, make sure you supply a `true` value to the flag, if
+you are using multiple flags / parameters:
+
+```php
+$schedule->command('adldap:import', [
+    '--filter' => '(cn=johndoe)',
+    '--no-interaction' => true,
+])->hourly();
+```
 
 ## Tips
 
