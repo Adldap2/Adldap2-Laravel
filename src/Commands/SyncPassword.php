@@ -84,9 +84,13 @@ class SyncPassword
      */
     protected function passwordNeedsUpdate($password = null) : bool
     {
-        $current = $this->currentPassword();
+        $current = $this->currentModelPassword();
 
-        return is_null($current) || ! Hash::check($password, $current);
+        if ($this->canSync()) {
+            return ! Hash::check($password, $current);
+        }
+
+        return is_null($current);
     }
 
     /**
@@ -116,7 +120,7 @@ class SyncPassword
      *
      * @return string|null
      */
-    protected function currentPassword()
+    protected function currentModelPassword()
     {
         return $this->model->getAttribute($this->column());
     }

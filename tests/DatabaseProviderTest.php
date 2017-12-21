@@ -198,7 +198,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     }
 
     /** @test */
-    public function passwords_are_not_synced_when_enabled()
+    public function passwords_are_not_synced_when_sync_is_disabled()
     {
         config(['adldap_auth.passwords.sync' => false]);
 
@@ -213,6 +213,25 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         // This check will fail due to password synchronization being disabled.
         $this->assertFalse(Hash::check($credentials['password'], $user->password));
+    }
+
+    /** @test */
+    public function passwords_are_not_updated_when_sync_is_disabled()
+    {
+        config(['adldap_auth.passwords.sync' => false]);
+
+        $credentials = [
+            'email' => 'jdoe@email.com',
+            'password' => '12345',
+        ];
+
+        $this->auth_passes($credentials);
+
+        $user = EloquentUser::first();
+
+        $this->auth_passes($credentials);
+
+        $this->assertEquals($user->password, $user->fresh()->password);
     }
 
     /** @test */
