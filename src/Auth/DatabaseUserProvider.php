@@ -138,17 +138,24 @@ class DatabaseUserProvider extends Provider
                     // We'll check if we've been given a password and that
                     // syncing password is enabled. Otherwise we'll
                     // use a random 16 character string.
+
+                    $password = null;
                     if ($this->isSyncingPasswords()) {
                         $password = $credentials['password'];
                     } else {
-                        $password = str_random();
+                        if(null === $model->password || empty($model->password)) {
+                            // password unset
+                            $password = str_random();
+                        }
                     }
 
                     // If the model has a set mutator for the password then we'll
                     // assume that we're using a custom encryption method for
                     // passwords. Otherwise we'll bcrypt it normally.
-                    $model->password = $model->hasSetMutator('password') ?
-                        $password : bcrypt($password);
+                    if(null !== $password) {
+                        $model->password = $model->hasSetMutator('password') ?
+                            $password : bcrypt($password);
+                    }
 
                     // All of our validation rules have passed and we can
                     // finally save the model in case of changes.
