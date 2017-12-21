@@ -716,6 +716,9 @@ protected $listen = [
 ];
 ```
 
+> **Note:** For some real examples, you can browse the listeners located
+> in: `vendor/adldap2/adldap2-laravel/src/Listeners` and see their usage.
+
 ### Fallback
 
 The login fallback option allows you to login as a local database user using the default Eloquent authentication
