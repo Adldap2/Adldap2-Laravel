@@ -49,7 +49,7 @@ composer require adldap2/adldap2-laravel
 
 Then run `composer update`.
 
-> **Note**: If you are using laravel 5.5 or higher you should skip the service provider
+> **Note**: If you are using laravel 5.5 or higher you can skip the service provider
 > and facade registration and continue with publishing the configuration file.
 
 Once finished, insert the service provider in your `config/app.php` file:
