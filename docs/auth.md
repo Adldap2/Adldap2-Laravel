@@ -299,8 +299,8 @@ Authentication providers allow you to choose how LDAP users are authenticated in
 
 There are two built in providers. Please view their documentation to see which one is right for you.
 
-* [DatabaseUserProvider](#DatabaseUserProvider)
-* [NoDatabaseUserProvider](#NoDatabaseUserProvider)
+* [DatabaseUserProvider](#databaseuserprovider)
+* [NoDatabaseUserProvider](#nodatabaseuserprovider-1)
 
 ##### DatabaseUserProvider
 
