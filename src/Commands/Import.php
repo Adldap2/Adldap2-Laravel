@@ -113,7 +113,7 @@ class Import extends Command
                 $model = $this->getImporter()->run($user, $this->model(), $credentials);
 
                 // Only set a new password if we are creating a new user
-                if (!isset($model->password)) {
+                if (!isset($model->password) || empty($model->password)) {
                     $password = str_random();
 
                     // Set the models password.
