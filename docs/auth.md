@@ -645,10 +645,10 @@ If this option is disabled, the local user account is applied
 a random 16 character hashed password, and will lose access
 to this account upon loss of AD connectivity.
 
-This feature is enabled by default.
+This feature is disabled by default.
 
 ```php
-'password_sync' => env('ADLDAP_PASSWORD_SYNC', true),
+'password_sync' => env('ADLDAP_PASSWORD_SYNC', false),
 ```
 
 ### Events
@@ -676,7 +676,7 @@ driver if LDAP authentication fails. This option would be handy in environments 
 To enable it, simply set the option to true in your `config/adldap_auth.php` configuration file:
 
 ```php
-'login_fallback' => false, // Set to true.
+'login_fallback' => env('ADLDAP_LOGIN_FALLBACK', true), // Set to true.
 ```
 
 #### Developing Locally without an AD connection
@@ -783,7 +783,19 @@ with a random 16 character string password and then automatically logged in. Nea
 You can configure the attributes users are logged in by in your configuration:
 
 ```php
-'windows_auth_attribute' => ['samaccountname' => 'AUTH_USER'],
+'usernames' => [
+
+    //..//
+
+    'windows' => [
+    
+        'discover' => 'samaccountname',
+    
+        'key' => 'AUTH_USER',
+    
+    ],
+
+],
 ```
 
 If a user is logged into a domain joined computer and is visiting your website with windows
