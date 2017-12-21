@@ -40,7 +40,6 @@ Confirming the display of users to will show a table of users that will be impor
 
 After it has displayed all users, you will then be asked:
 
-
 ```bash
  Would you like these users to be imported / synchronized? (yes/no) [no]:
  > y
