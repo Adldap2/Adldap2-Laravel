@@ -145,9 +145,9 @@ class SyncPassword
     /**
      * Retrieves the password column to use.
      *
-     * @return string
+     * @return string|null
      */
-    protected function column() : string
+    protected function column()
     {
         return Config::get('adldap_auth.passwords.column', 'password');
     }
