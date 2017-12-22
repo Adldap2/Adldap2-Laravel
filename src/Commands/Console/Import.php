@@ -21,7 +21,6 @@ class Import extends Command
      */
     protected $signature = 'adldap:import {user? : The specific user to import.}
             {--f|filter= : The raw filter for limiting users imported.}
-            {--c|connection= : The LDAP connection to use to import users.}
             {--d|delete : Soft-delete the users model if their LDAP account is disabled.}
             {--r|restore : Restores soft-deleted models if their LDAP account is enabled.}
             {--no-log : Disables logging successful and unsuccessful imported users.}';
