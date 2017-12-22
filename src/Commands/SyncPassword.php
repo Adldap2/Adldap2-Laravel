@@ -5,7 +5,6 @@ namespace Adldap\Laravel\Commands;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 
 class SyncPassword
@@ -94,15 +93,13 @@ class SyncPassword
     }
 
     /**
-     * Determines if the database schema contains a password column.
+     * Determines if the developer has configured a password column.
      *
      * @return bool
      */
     protected function hasPasswordColumn() : bool
     {
-        $column = $this->column();
-
-        return $column ? Schema::hasColumn($this->model->getTable(), $column) : false;
+        return $this->column() ?: false;
     }
 
     /**

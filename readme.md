@@ -24,9 +24,9 @@ To use Adldap2-Laravel, your application and server must meet the following requ
 * [Installation](#installation)
 * [Usage](#usage)
 * Auth Driver
-  * [Upgrading](docs/auth.md#upgrading-from-3-to-4)
-  * [Quick Start - From Scratch](docs/quick-start.md)
   * [Installation & Basic Setup](docs/auth.md#installation)
+  * [Quick Start - From Scratch](docs/quick-start.md)
+  * [Upgrading](docs/auth.md#upgrading-from-3-to-4)
   * Features
     * [Providers](docs/auth.md#providers)
     * [Scopes](docs/auth.md#scopes)
