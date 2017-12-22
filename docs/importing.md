@@ -110,15 +110,28 @@ php artisan adldap:import --no-interaction
 
 Users will be imported automatically with no prompts.
 
-If you are calling the import command from another command, or the Laravel
-scheduler, make sure you supply a `true` value to the flag, if
-you are using multiple flags / parameters:
+You can also call the command from the Laravel Scheduler, or other commands:
 
 ```php
-$schedule->command('adldap:import', [
-    '--filter' => '(cn=johndoe)',
-    '--no-interaction' => true,
-])->hourly();
+// Importing one user
+$schedule->command('adldap:import sbauman', ['--no-interaction'])
+            ->everyMinute();
+```
+
+```php
+// Importing all users
+$schedule->command('adldap:import', ['--no-interaction'])
+            ->everyMinute();
+```
+
+```php
+// Importing users with a filter
+$dn = 'CN=Accounting,OU=SecurityGroups,DC=Acme,DC=Org';
+
+$filter = sprintf('(memberof:1.2.840.113556.1.4.1941:=%s)', $dn);
+
+$schedule->command('adldap:import', ['--no-interaction', '--filter' => $filter])
+    ->everyMinute();
 ```
 
 ## Tips
