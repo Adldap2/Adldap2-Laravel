@@ -99,7 +99,7 @@ class SyncPassword
      */
     protected function hasPasswordColumn() : bool
     {
-        return $this->column() ?: false;
+        return ! is_null($this->column());
     }
 
     /**
