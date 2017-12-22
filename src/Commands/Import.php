@@ -121,12 +121,12 @@ class Import extends Command
                 // Save the returned model.
                 $this->save($user, $model);
 
-                if ($this->isRestoring()) {
-                    $this->restore($user, $model);
-                }
-                
                 if ($this->isDeleting()) {
                     $this->delete($user, $model);
+                }
+                
+                if ($this->isRestoring()) {
+                    $this->restore($user, $model);
                 }
 
                 $imported++;
