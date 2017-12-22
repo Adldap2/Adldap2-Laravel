@@ -41,28 +41,29 @@ To use Adldap2-Laravel, your application and server must meet the following requ
 
 ## Installation
 
-Run the following command:
+Run the following command in the root of your project:
 
 ```bash
 composer require adldap2/adldap2-laravel
 ```
 
-Then run `composer update`.
-
 > **Note**: If you are using laravel 5.5 or higher you can skip the service provider
 > and facade registration and continue with publishing the configuration file.
 
 Once finished, insert the service provider in your `config/app.php` file:
+
 ```php
 Adldap\Laravel\AdldapServiceProvider::class,
 ```
 
 Then insert the facade:
+
 ```php
 'Adldap' => Adldap\Laravel\Facades\Adldap::class
 ```
 
 Publish the configuration file by running:
+
 ```bash
 php artisan vendor:publish --tag="adldap"
 ```
