@@ -7,11 +7,11 @@ use Adldap\Laravel\Events\AuthenticationRejected;
 class LogAuthenticationRejection
 {
     /**
-     * Constructor.
+     * Handle the event.
      *
      * @param AuthenticationRejected $event
      */
-    public function __construct(AuthenticationRejected $event)
+    public function handle(AuthenticationRejected $event)
     {
         info("User '{$event->user->getCommonName()}' has failed validation. They have been denied authentication.");
     }
