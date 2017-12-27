@@ -519,20 +519,6 @@ use Adldap\Laravel\Validation\Rules\Rule;
 class IsAccountant extends Rule
 {
     /**
-     * The LDAP user.
-     *
-     * @var User
-     */
-    protected $user;
-    
-    /**
-     * The Eloquent model.
-     *
-     * @var Model|null
-     */
-    protected $model;
-    
-    /**
      * Determines if the user is allowed to authenticate.
      *
      * Only allows users in the `Accounting` group to authenticate.
