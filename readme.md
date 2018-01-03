@@ -7,7 +7,7 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/adldap2/adldap2-laravel.svg?style=flat-square)](https://packagist.org/packages/adldap2/adldap2-laravel)
 [![License](https://img.shields.io/packagist/l/adldap2/adldap2-laravel.svg?style=flat-square)](https://packagist.org/packages/adldap2/adldap2-laravel)
 
-Adldap2 - Laravel allows easy configuration, access, management and authentication to LDAP connections utilizing the root
+Easy configuration, access, management and authentication to LDAP servers utilizing the root
 [Adldap2 Repository](http://www.github.com/Adldap2/Adldap2).
 
 ## Requirements
