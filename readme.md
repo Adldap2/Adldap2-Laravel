@@ -138,6 +138,18 @@ class UserController extends Controller
         
         return view('users.index', compact('users'));
     }
+    
+    /**
+     * Displays the specified LDAP user.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function show($id)
+    {
+        $user = $this->ldap->search()->findByGuid($id);
+        
+        return view('users.show', compact('user'));
+    }
 }
 ```
 
