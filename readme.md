@@ -104,8 +104,8 @@ Upon performing operations without specifying a connection, your default
 connection will be connected to and bound automatically
 using your configured username and password.
 
-You can also inject the Adldap interface into your controllers, which gives
-you access to all of your LDAP connections and resources.
+If you would prefer, you can also inject the Adldap interface into your controllers,
+which gives you access to all of your LDAP connections and resources as the facade.
 
 ```php
 use Adldap\AdldapInterface;
@@ -141,4 +141,4 @@ class UserController extends Controller
 }
 ```
 
-To see more usage in detail, please visit the [Adldap2 Repository](http://github.com/Adldap2/Adldap2).
+To see more usage in detail, please visit the [Adldap2](http://github.com/Adldap2/Adldap2) repository.
