@@ -74,29 +74,37 @@ Now you're all set!
 
 First, configure your LDAP connection in the `config/adldap.php` file.
 
-Then, you can perform all methods on your Adldap connection through its facade like so:
+Then, you can perform methods on your default connection through the `Adldap` facade like so:
 
 ```php
 use Adldap\Laravel\Facades\Adldap;
 
-// Finding a user.
+// Finding a user:
 $user = Adldap::search()->users()->find('john doe');
 
-// Searching for a user.
+// Searching for a user:
 $search = Adldap::search()->where('cn', '=', 'John Doe')->get();
 
 // Running an operation under a different connection:
 $users = Adldap::getProvider('other-connection')->search()->users()->get();
 
-// Creating a user.
+// Creating a user:
 $user = Adldap::make()->user([
     'cn' => 'John Doe',
 ]);
 
+// Saving a user:
 $user->save();
 ```
 
-Or you can inject the Adldap interface into your controllers, which gives
+If you do not specify an alternate connection using `getProvider()`, your
+`default` connection will be utilized for all methods.
+
+Upon performing operations without specifying a connection, your default
+connection will be connected to and bound automatically
+using your configured username and password.
+
+You can also inject the Adldap interface into your controllers, which gives
 you access to all of your LDAP connections and resources.
 
 ```php
