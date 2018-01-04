@@ -14,7 +14,7 @@ class Authenticating
     public $user;
 
     /**
-     * The username that is being authenticated.
+     * The username being used for authentication.
      *
      * @var string
      */
