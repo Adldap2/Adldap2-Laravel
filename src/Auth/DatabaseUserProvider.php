@@ -138,12 +138,12 @@ class DatabaseUserProvider extends Provider
 
                     $model->save();
 
-                    Event::fire(new AuthenticationSuccessful($this->user));
+                    Event::fire(new AuthenticationSuccessful($this->user, $model));
 
                     return true;
                 }
 
-                Event::fire(new AuthenticationRejected($this->user));
+                Event::fire(new AuthenticationRejected($this->user, $model));
             }
 
             // LDAP Authentication failed.
