@@ -470,22 +470,8 @@ namespace App\Rules;
 
 use Adldap\Laravel\Validation\Rules\Rule;
 
-class OnlyManagersAndAccountingRule extends Rule
+class OnlyManagersAndAccounting extends Rule
 {
-    /**
-     * The LDAP user.
-     *
-     * @var User
-     */
-    protected $user;
-    
-    /**
-     * The Eloquent model.
-     *
-     * @var Model|null
-     */
-    protected $model;
-    
     /**
      * Determines if the user is allowed to authenticate.
      *
@@ -510,7 +496,7 @@ To implement your new rule, you just need to insert it into your `config/adldap_
 ```php
 'rules' => [
     
-    App\Rules\OnlyManagersAndAccountingRule::class,
+    App\Rules\OnlyManagersAndAccounting::class,
 
 ],
 ```
@@ -530,22 +516,8 @@ namespace App\Rules;
 use Adldap\Models\User as LdapUser;
 use Adldap\Laravel\Validation\Rules\Rule;
 
-class AccountingRule extends Rule
+class IsAccountant extends Rule
 {
-    /**
-     * The LDAP user.
-     *
-     * @var User
-     */
-    protected $user;
-    
-    /**
-     * The Eloquent model.
-     *
-     * @var Model|null
-     */
-    protected $model;
-    
     /**
      * Determines if the user is allowed to authenticate.
      *

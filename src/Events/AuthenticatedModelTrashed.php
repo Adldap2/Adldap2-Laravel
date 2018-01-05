@@ -15,7 +15,7 @@ class AuthenticatedModelTrashed
     public $user;
 
     /**
-     * The authenticated LDAP users model.
+     * The trashed authenticated LDAP users model.
      *
      * @var Authenticatable
      */

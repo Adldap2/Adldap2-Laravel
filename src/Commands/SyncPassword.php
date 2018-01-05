@@ -74,7 +74,7 @@ class SyncPassword
     /**
      * Determines if the current model requires a password update.
      *
-     * This checks if the model does not current have a
+     * This checks if the model does not currently have a
      * password, or if the password fails a hash check.
      *
      * @param string|null $password

@@ -69,7 +69,6 @@ class Import
 
         Event::fire(new Synchronizing($this->user, $model));
 
-        // Synchronize LDAP attributes on the model.
         $this->sync($model);
 
         Event::fire(new Synchronized($this->user, $model));
