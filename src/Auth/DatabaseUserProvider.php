@@ -6,6 +6,7 @@ use Adldap\Models\User;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Events\Imported;
 use Adldap\Laravel\Events\AuthenticationRejected;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
@@ -137,6 +138,12 @@ class DatabaseUserProvider extends Provider
                     Bus::dispatch(new SyncPassword($model, $credentials));
 
                     $model->save();
+
+                    if ($model->wasRecentlyCreated) {
+                        // If the model was recently created, they
+                        // have been imported successfully.
+                        Event::fire(new Imported($this->user, $model));
+                    }
 
                     Event::fire(new AuthenticationSuccessful($this->user, $model));
 
