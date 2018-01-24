@@ -3,9 +3,9 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\Connections\Ldap;
-use Adldap\Schemas\ActiveDirectory;
-use Adldap\Laravel\Tests\Models\User;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Tests\Models\User;
+use Adldap\Schemas\ActiveDirectory;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseTestCase extends TestCase
@@ -58,6 +58,10 @@ class DatabaseTestCase extends TestCase
         $app['config']->set('auth.providers', [
             'adldap' => [
                 'driver' => 'adldap',
+                'model'  => User::class,
+            ],
+            'users'  => [
+                'driver' => 'eloquent',
                 'model'  => User::class,
             ],
         ]);
