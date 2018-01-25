@@ -93,6 +93,7 @@ the process below for your Laravel version. Otherwise ignore this step.
       return 'username';
   }
   ```
+  > **Note**: For Adldap2 version 4.* use: `return 'samaccountname';`
 
 13. Now insert a new auth driver inside your `config/auth.php` file:
 
@@ -106,7 +107,7 @@ the process below for your Laravel version. Otherwise ignore this step.
   ```
 
 14. Inside your `resources/views/auth/login.blade.php` file, if you're requiring the user logging in by username, you'll
-    need to modify the HTML input to `username` instead of `email`. Ignore this step otherwise.
+    need to modify the HTML input to `username` (`samaccountname` for Adldap2 version 4.*) instead of `email`. Ignore this step otherwise.
 
     From:
     ```html
