@@ -20,7 +20,7 @@ class BindsLdapUserModel
      */
     public function handle(Authenticated $event)
     {
-        if ($this->usesAdldapProvider() && $this->canBind($event->user)) {
+        if ($this->isUsingAdldapProvider() && $this->canBind($event->user)) {
             $event->user->setLdapUser(
                 Resolver::byModel($event->user)
             );
@@ -32,7 +32,7 @@ class BindsLdapUserModel
      *
      * @return bool
      */
-    protected function usesAdldapProvider() : bool
+    protected function isUsingAdldapProvider() : bool
     {
         return Auth::getProvider() instanceof Provider;
     }

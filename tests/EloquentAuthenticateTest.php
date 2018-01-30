@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class EloquentAuthenticateTest extends DatabaseTestCase
 {
     /** @test */
-    public function it_doenst_set_the_ldap_user_if_the_auth_provider_is_not_ldap()
+    public function it_does_not_set_the_ldap_user_if_the_auth_provider_is_not_adldap()
     {
         $this->app['config']->set('auth.guards.web.provider', 'users');
 

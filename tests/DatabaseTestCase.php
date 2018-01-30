@@ -3,9 +3,9 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\Connections\Ldap;
-use Adldap\Laravel\Auth\DatabaseUserProvider;
-use Adldap\Laravel\Tests\Models\User;
 use Adldap\Schemas\ActiveDirectory;
+use Adldap\Laravel\Tests\Models\User;
+use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseTestCase extends TestCase
