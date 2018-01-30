@@ -131,10 +131,10 @@ return [
         | Eloquent
         |--------------------------------------------------------------------------
         |
-        | The value you enter is used for locating the local
-        | database record of the authenticating user.
+        | The value you enter is the database column name used for locating
+        | the local database record of the authenticating user.
         |
-        | If you're using a `username` field instead, change this to `username`.
+        | If you're using a `username` column instead, change this to `username`.
         |
         | This option is only applicable to the DatabaseUserProvider.
         |
