@@ -97,7 +97,16 @@ class UserResolver implements ResolverInterface
      */
     public function authenticate(User $user, array $credentials = [])
     {
-        $username = $user->getFirstAttribute($this->getLdapAuthAttribute());
+        $attribute = $this->getLdapAuthAttribute();
+
+        // If the developer has inserted 'dn' as their LDAP
+        // authentication attribute, we'll convert it to
+        // the full attribute name for convenience.
+        if ($attribute == 'dn') {
+            $attribute = $user->getSchema()->distinguishedName();
+        }
+
+        $username = $user->getFirstAttribute($attribute);
 
         $password = $this->getPasswordFromCredentials($credentials);
 
