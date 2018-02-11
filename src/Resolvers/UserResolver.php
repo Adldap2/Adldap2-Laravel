@@ -37,6 +37,8 @@ class UserResolver implements ResolverInterface
     public function __construct(AdldapInterface $ldap)
     {
         $this->ldap = $ldap;
+
+        $this->setConnection($this->getAuthConnection());
     }
 
     /**
@@ -195,5 +197,15 @@ class UserResolver implements ResolverInterface
     protected function getProvider() : ProviderInterface
     {
         return $this->ldap->getProvider($this->connection);
+    }
+
+    /**
+     * Returns the connection name of the authentication provider.
+     *
+     * @return string
+     */
+    protected function getAuthConnection()
+    {
+        return Config::get('adldap_auth.connection', 'default');
     }
 }
