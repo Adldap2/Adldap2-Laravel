@@ -101,6 +101,7 @@ as the `eloquent` attribute for locating the LDAP users local model.
     
     'windows' => [
         'discover' => 'samaccountname',
+        
         'key' => 'AUTH_USER',
     ],
 
