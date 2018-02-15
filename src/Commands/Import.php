@@ -131,7 +131,7 @@ class Import
                 $handler = app($ldapField);
 
                 if (! method_exists($handler, 'handle')) {
-                    throw new AdldapException("A handle method must be defined when using an attribute handler.");
+                    throw new AdldapException("A public 'handle()' method must be defined when using an attribute handler.");
                 }
 
                 $handler->handle($this->user, $model);
