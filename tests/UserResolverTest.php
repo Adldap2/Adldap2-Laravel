@@ -2,12 +2,13 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Adldap\AdldapInterface;
 use Mockery as m;
 use Adldap\Query\Builder;
+use Adldap\AdldapInterface;
 use Adldap\Schemas\SchemaInterface;
 use Adldap\Connections\ProviderInterface;
 use Adldap\Laravel\Resolvers\UserResolver;
+use Illuminate\Support\Facades\Config;
 
 class UserResolverTest extends TestCase
 {
@@ -75,5 +76,17 @@ class UserResolverTest extends TestCase
         $resolver = new UserResolver($ad);
 
         $this->assertInstanceOf(Builder::class, $resolver->query());
+    }
+
+    /** @test */
+    public function connection_is_set_upon_creation()
+    {
+        Config::shouldReceive('get')->once()->withArgs(['adldap_auth.connection', 'default']);
+
+        $ad = m::mock(AdldapInterface::class);
+
+        $ad->shouldReceive('getProvider')->withArgs(['other-connection']);
+
+        new UserResolver($ad);
     }
 }
