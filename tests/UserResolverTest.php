@@ -6,6 +6,7 @@ use Mockery as m;
 use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
 use Adldap\Schemas\SchemaInterface;
+use Adldap\Laravel\Scopes\UpnScope;
 use Adldap\Connections\ProviderInterface;
 use Adldap\Laravel\Resolvers\UserResolver;
 use Illuminate\Support\Facades\Config;
@@ -55,6 +56,8 @@ class UserResolverTest extends TestCase
     /** @test */
     public function scopes_are_applied_when_query_is_called()
     {
+        config(['adldap_auth.scopes' => [UpnScope::class]]);
+
         $schema = m::mock(SchemaInterface::class);
 
         $schema->shouldReceive('userPrincipalName')->once()->withNoArgs()->andReturn('userprincipalname');

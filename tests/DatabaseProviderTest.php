@@ -78,13 +78,9 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function config_scopes_are_applied()
     {
-        $scopes = config('adldap_auth.scopes', []);
+        config(['adldap_auth.scopes' => [JohnDoeScope::class]]);
 
-        $scopes[] = JohnDoeScope::class;
-
-        config(['adldap_auth.scopes' => $scopes]);
-
-        $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(userprincipalname=*)(cn=\4a\6f\68\6e\20\44\6f\65))';
+        $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(cn=\4a\6f\68\6e\20\44\6f\65))';
 
         $this->assertEquals($expectedFilter, Resolver::query()->getQuery());
     }
