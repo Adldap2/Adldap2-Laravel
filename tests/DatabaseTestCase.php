@@ -6,6 +6,7 @@ use Adldap\Connections\Ldap;
 use Adldap\Schemas\ActiveDirectory;
 use Adldap\Laravel\Tests\Models\User;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseTestCase extends TestCase
@@ -24,6 +25,8 @@ class DatabaseTestCase extends TestCase
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Hash::setRounds(4);
     }
 
     /**
