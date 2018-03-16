@@ -193,7 +193,7 @@ return [
         | using the password last used when an LDAP connection was present.
         |
         | If this option is disabled, the local database account is applied a
-        | random 16 character hashed password upon every login, and will
+        | random 16 character hashed password upon first login, and will
         | lose access to this account upon loss of LDAP connectivity.
         |
         | This option must be true or false and is only applicable
