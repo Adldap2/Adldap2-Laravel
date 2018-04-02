@@ -14,7 +14,7 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 
 2. Run the following command to install Adldap2-Laravel:
 
-  - `composer require adldap2-laravel`
+  - `composer require adldap2/adldap2-laravel`
 
 3. Create a new database in your desired database interface (such as PhpMyAdmin, MySQL Workbench, command line etc.)
 
