@@ -93,6 +93,9 @@ $user = Adldap::make()->user([
     'cn' => 'John Doe',
 ]);
 
+// Modifying Attributes:
+$user->cn = 'Jane Doe';
+
 // Saving a user:
 $user->save();
 ```
