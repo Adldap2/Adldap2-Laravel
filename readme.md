@@ -160,7 +160,7 @@ To see more usage in detail, please visit the [Adldap2](http://github.com/Adldap
 
 ## Versioning
 
-Adldap2 is versioned under the [Semantic Versioning](http://semver.org/) guidelines as much as possible.
+Adldap2-Laravel is versioned under the [Semantic Versioning](http://semver.org/) guidelines as much as possible.
 
 Releases will be numbered with the following format:
 
