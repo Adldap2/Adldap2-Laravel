@@ -195,8 +195,8 @@ return [
                 |
                 */
 
-                'admin_username' => env('ADLDAP_ADMIN_USERNAME', ''),
-                'admin_password' => env('ADLDAP_ADMIN_PASSWORD', ''),
+                'admin_username' => env('ADLDAP_ADMIN_USERNAME'),
+                'admin_password' => env('ADLDAP_ADMIN_PASSWORD'),
 
                 /*
                 |--------------------------------------------------------------------------
