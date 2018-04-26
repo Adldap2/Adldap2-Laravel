@@ -19,11 +19,9 @@ class NoDatabaseUserProvider extends Provider
     {
         $user = Resolver::byId($identifier);
 
-        if ($user instanceof Authenticatable) {
-            // We'll verify we have the correct instance just to ensure we
-            // don't return an incompatible model that may be returned.
-            return $user;
-        }
+        // We'll verify we have the correct instance just to ensure we
+        // don't return an incompatible model that may be returned.
+        return $user instanceof Authenticatable ? $user : null;
     }
 
     /**
