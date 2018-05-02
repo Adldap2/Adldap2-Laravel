@@ -31,17 +31,9 @@ Easy configuration, access, management and authentication to LDAP servers utiliz
 
 ---
 
-## Requirements
-
-To use Adldap2-Laravel, your application and server must meet the following requirements:
-
-- Laravel 5.*
-- PHP 7.0 or greater
-- PHP LDAP extension enabled
-- An LDAP Server
-
 ## Index
 
+* [Requirements](#requirements)
 * [Installation](#installation)
 * [Usage](#usage)
 * Auth Driver
@@ -59,6 +51,15 @@ To use Adldap2-Laravel, your application and server must meet the following requ
     * [Single Sign On (SSO) Middleware](docs/auth.md#middleware)
     * [Password Synchronization](docs/auth.md#password-synchronization)
     * [Importing Users](docs/importing.md)
+
+## Requirements
+
+To use Adldap2-Laravel, your application and server must meet the following requirements:
+
+- Laravel 5.*
+- PHP 7.0 or greater
+- PHP LDAP extension enabled
+- An LDAP Server
 
 ## Installation
 
