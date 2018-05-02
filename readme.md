@@ -1,4 +1,4 @@
-# Adldap2 - Laravel
+<h1 align="center">Adldap2 - Laravel</h1>
 
 <p align="center">
  <a href="www.laravel.com">
