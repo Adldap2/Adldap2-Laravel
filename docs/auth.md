@@ -336,6 +336,14 @@ echo $user->email;
 
 ##### NoDatabaseUserProvider
 
+###### Important Notes About Session Drivers
+
+When using the `database` session driver with the `NoDatabaseUserProvider`, you **must**
+change the `user_id` data type in the generated Laravel sessions migration (`database/migrations/2018_05_03_182019_create_sessions_table.php`)
+to `varchar`. This is because the identifier for LDAP records is
+a GUID - which contains letters and dashes (incompatible with
+the `integer` type of databases).
+
 The `NoDatabaseUserProvider` allows you to authenticate LDAP users without synchronizing them.
 
 > **Note**: Due to Laravel's generated blade views with the `auth:make` command, any
