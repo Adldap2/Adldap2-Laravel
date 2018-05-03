@@ -336,7 +336,9 @@ echo $user->email;
 
 ##### NoDatabaseUserProvider
 
-###### Important Notes About Session Drivers
+The `NoDatabaseUserProvider` allows you to authenticate LDAP users without synchronizing them.
+
+###### Important Note About Session Drivers
 
 When using the `database` session driver with the `NoDatabaseUserProvider`, you **must**
 change the `user_id` data type in the generated Laravel sessions migration (`database/migrations/2018_05_03_182019_create_sessions_table.php`)
@@ -344,16 +346,21 @@ to `varchar`. This is because the identifier for LDAP records is
 a GUID - which contains letters and dashes (incompatible with
 the `integer` type of databases).
 
-The `NoDatabaseUserProvider` allows you to authenticate LDAP users without synchronizing them.
+###### Important Note About Default Views
 
-> **Note**: Due to Laravel's generated blade views with the `auth:make` command, any
-> views that utilize Eloquent User model attributes will need to be
-> re-written for compatibility with this provider.
->
-> For example, in the generated `resources/views/layouts/app.blade.php`, you will
-> need to rewrite `Auth::user()->name` to `Auth::user()->getCommonName();`
->
-> You will receive exceptions otherwise.
+Due to Laravel's generated blade views with the `auth:make` command, any
+views that utilize Eloquent User model attributes will need to be
+re-written for compatibility with this provider.
+
+For example, in the generated `resources/views/layouts/app.blade.php`, you will
+need to rewrite `Auth::user()->name` to `Auth::user()->getCommonName();`
+
+This is because the authenticated user will not be a standard Eloquent
+model, it will be a `Adldap\Models\User` instance.
+
+You will receive exceptions otherwise.
+
+---
 
 To use it, insert it in your `config/adldap_auth.php` in the `provider` option:
 
