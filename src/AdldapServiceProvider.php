@@ -6,7 +6,6 @@ use Adldap\Adldap;
 use Adldap\AdldapInterface;
 use Adldap\Auth\BindException;
 use Adldap\Connections\Provider;
-use Adldap\Schemas\SchemaInterface;
 use Adldap\Connections\ConnectionInterface;
 use Adldap\Laravel\Exceptions\ConfigurationMissingException;
 use Illuminate\Container\Container;
@@ -91,8 +90,7 @@ class AdldapServiceProvider extends ServiceProvider
             // Create a new provider.
             $provider = $this->newProvider(
                 $settings['connection_settings'],
-                new $settings['connection'],
-                new $settings['schema']
+                new $settings['connection']
             );
 
             if ($this->shouldAutoConnect($settings)) {
@@ -128,13 +126,12 @@ class AdldapServiceProvider extends ServiceProvider
      *
      * @param array                    $configuration
      * @param ConnectionInterface|null $connection
-     * @param SchemaInterface          $schema
      *
      * @return Provider
      */
-    protected function newProvider($configuration = [], ConnectionInterface $connection = null, SchemaInterface $schema = null)
+    protected function newProvider($configuration = [], ConnectionInterface $connection = null)
     {
-        return new Provider($configuration, $connection, $schema);
+        return new Provider($configuration, $connection);
     }
 
     /**
