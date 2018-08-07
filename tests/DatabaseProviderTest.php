@@ -80,7 +80,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     {
         config(['adldap_auth.scopes' => [JohnDoeScope::class]]);
 
-        $expectedFilter = '(&(objectclass=\70\65\72\73\6f\6e)(objectcategory=\70\65\72\73\6f\6e)(cn=\4a\6f\68\6e\20\44\6f\65))';
+        $expectedFilter = '(&(objectclass=\75\73\65\72)(objectcategory=\70\65\72\73\6f\6e)(!(objectclass=\63\6f\6e\74\61\63\74))(cn=\4a\6f\68\6e\20\44\6f\65))';
 
         $this->assertEquals($expectedFilter, Resolver::query()->getQuery());
     }

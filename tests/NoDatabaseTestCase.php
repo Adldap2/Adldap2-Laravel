@@ -18,10 +18,10 @@ class NoDatabaseTestCase extends TestCase
         // Adldap connection setup.
         $app['config']->set('adldap.connections.default.auto_connect', false);
         $app['config']->set('adldap.connections.default.connection', Ldap::class);
-        $app['config']->set('adldap.connections.default.schema', ActiveDirectory::class);
         $app['config']->set('adldap.connections.default.connection_settings', [
-            'admin_username' => 'admin',
-            'admin_password' => 'password',
+            'username' => 'admin',
+            'password' => 'password',
+            'schema' => ActiveDirectory::class,
         ]);
 
         // Adldap auth setup.
