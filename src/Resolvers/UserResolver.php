@@ -14,6 +14,7 @@ use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Guard;
 
 class UserResolver implements ResolverInterface
 {
@@ -23,6 +24,7 @@ class UserResolver implements ResolverInterface
      * @var AdldapInterface
      */
     protected $ldap;
+    protected $auth;
 
     /**
      * The LDAP connection to utilize.
@@ -36,6 +38,7 @@ class UserResolver implements ResolverInterface
      */
     public function __construct(AdldapInterface $ldap)
     {
+        $this->auth = app()->make(Guard::class);
         $this->ldap = $ldap;
 
         $this->setConnection($this->getAuthConnection());
@@ -71,7 +74,8 @@ class UserResolver implements ResolverInterface
         // Depending on the configured user provider, the
         // username field will differ for retrieving
         // users by their credentials.
-        if ($provider == NoDatabaseUserProvider::class) {
+        $provider = $this->auth->getProvider();
+        if ($provider instanceof NoDatabaseUserProvider) {
             $username = $credentials[$this->getLdapDiscoveryAttribute()];
         } else {
             $username = $credentials[$this->getEloquentUsernameAttribute()];
