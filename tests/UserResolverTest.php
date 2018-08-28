@@ -7,7 +7,9 @@ use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
 use Adldap\Schemas\SchemaInterface;
 use Adldap\Connections\ProviderInterface;
+use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Adldap\Laravel\Resolvers\UserResolver;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
 class UserResolverTest extends TestCase
@@ -71,7 +73,7 @@ class UserResolverTest extends TestCase
 
         $ad = m::mock(AdldapInterface::class);
 
-        $ad->shouldReceive('getProvider')->withArgs(['default'])->andReturn($provider);
+        $ad->shouldReceive('getProvider')->with('default')->andReturn($provider);
 
         $resolver = new UserResolver($ad);
 
@@ -81,12 +83,44 @@ class UserResolverTest extends TestCase
     /** @test */
     public function connection_is_set_upon_creation()
     {
-        Config::shouldReceive('get')->once()->withArgs(['adldap_auth.connection', 'default']);
+        Config::shouldReceive('get')->once()->with('adldap_auth.connection', 'default')->andReturn('other-test');
 
         $ad = m::mock(AdldapInterface::class);
 
-        $ad->shouldReceive('getProvider')->withArgs(['other-connection']);
-
         new UserResolver($ad);
+    }
+
+    /** @test */
+    public function by_credentials_retrieves_alternate_username_attribute_depending_on_user_provider()
+    {
+        // Setup our builder.
+        $query = m::mock(Builder::class);
+
+        //
+        $query->shouldReceive('whereEquals')->once()->with('userprincipalname', 'jdoe')->andReturnSelf()
+            ->shouldReceive('first')->andReturnNull();
+
+        $ldapProvider = m::mock(ProviderInterface::class);
+
+        $ldapProvider->shouldReceive('search')->once()->andReturnSelf()
+            ->shouldReceive('users')->once()->andReturn($query);
+
+        $ad = m::mock(AdldapInterface::class);
+
+        $ad->shouldReceive('getProvider')->once()->andReturn($ldapProvider);
+
+        $ad->shouldReceive('getProvider')->andReturnSelf();
+
+        $authProvider = m::mock(NoDatabaseUserProvider::class);
+
+        Auth::shouldReceive('guard')->once()->andReturnSelf()->shouldReceive('getProvider')->once()->andReturn($authProvider);
+
+        Config::shouldReceive('get')->with('adldap_auth.connection', 'default')->andReturn('default')
+            ->shouldReceive('get')->with('adldap_auth.usernames.ldap.discover', 'userprincipalname')->andReturn('userprincipalname')
+            ->shouldReceive('get')->with('adldap_auth.scopes', [])->andReturn([]);
+
+        $resolver = new UserResolver($ad);
+
+        $resolver->byCredentials(['userprincipalname' => 'jdoe', 'password' => 'Password1']);
     }
 }
