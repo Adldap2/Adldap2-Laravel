@@ -465,7 +465,7 @@ All other users will be denied authentication, even if their credentials are val
 ### Rules
 
 Authentication rules allow you to restrict which LDAP users are able to authenticate, much like [scopes](#scopes),
-but with the ability to perform checks on the specific user authenticating.
+but with the ability to perform checks on the specific user authenticating, rather than a global scope.
 
 #### Creating a Rule
 
