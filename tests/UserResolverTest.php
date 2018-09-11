@@ -93,10 +93,8 @@ class UserResolverTest extends TestCase
     /** @test */
     public function by_credentials_retrieves_alternate_username_attribute_depending_on_user_provider()
     {
-        // Setup our builder.
         $query = m::mock(Builder::class);
 
-        //
         $query->shouldReceive('whereEquals')->once()->with('userprincipalname', 'jdoe')->andReturnSelf()
             ->shouldReceive('first')->andReturnNull();
 
