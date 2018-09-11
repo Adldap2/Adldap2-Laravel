@@ -5,9 +5,9 @@ namespace Adldap\Laravel\Listeners;
 use Adldap\Laravel\Auth\Provider;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Traits\HasLdapUser;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Auth;
 
 class BindsLdapUserModel
 {
