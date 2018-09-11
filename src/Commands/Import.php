@@ -3,7 +3,6 @@
 namespace Adldap\Laravel\Commands;
 
 use Adldap\Models\User;
-use Adldap\AdldapException;
 use Adldap\Laravel\Events\Importing;
 use Adldap\Laravel\Events\Synchronized;
 use Adldap\Laravel\Events\Synchronizing;
@@ -53,8 +52,6 @@ class Import
      * Imports the current LDAP user.
      *
      * @return Model
-     *
-     * @throws AdldapException
      */
     public function handle()
     {
@@ -110,8 +107,6 @@ class Import
      *
      * @param Model $model
      *
-     * @throws AdldapException
-     *
      * @return void
      */
     protected function sync(Model $model)
@@ -122,17 +117,14 @@ class Import
         ]);
 
         foreach ($toSync as $modelField => $ldapField) {
-            // If the field is a loaded class, we can
-            // assume it's an attribute handler.
-            if (class_exists($ldapField)) {
+            // If the field is a loaded class and contains a `handle()` method,
+            // we need to construct the attribute handler.
+            if (class_exists($ldapField) && method_exists($ldapField, 'handle')) {
                 // We will construct the attribute handler using Laravel's
                 // IoC to allow developers to utilize application
                 // dependencies in the constructor.
+                /** @var mixed $handler */
                 $handler = app($ldapField);
-
-                if (! method_exists($handler, 'handle')) {
-                    throw new AdldapException("A public 'handle()' method must be defined when using an attribute handler.");
-                }
 
                 $handler->handle($this->user, $model);
             } else {

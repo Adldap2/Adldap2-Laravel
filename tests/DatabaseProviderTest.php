@@ -103,11 +103,8 @@ class DatabaseProviderTest extends DatabaseTestCase
         $this->assertEquals('handled', $user->name);
     }
 
-    /**
-     * @test
-     * @expectedException \Adldap\AdldapException
-     */
-    public function invalid_attribute_handlers_throw_exception()
+    /** @test */
+    public function invalid_attribute_handlers_does_not_throw_exception()
     {
         // Inserting an invalid attribute handler that
         // does not contain a `handle` method.
@@ -118,11 +115,9 @@ class DatabaseProviderTest extends DatabaseTestCase
             'userprincipalname'  => 'jdoe@email.com',
         ]);
 
-        $model = new EloquentUser();
+        $importer = new Import($user, new EloquentUser());
 
-        $importer = new Import($user, $model);
-
-        $importer->handle();
+        $this->assertInstanceOf(EloquentUser::class, $importer->handle());
     }
 
     /** @test */
