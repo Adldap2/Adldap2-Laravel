@@ -85,7 +85,7 @@ class SyncPassword
     {
         $current = $this->currentModelPassword();
 
-        if ($this->canSync()) {
+        if ($current !== null && $this->canSync()) {
             return ! Hash::check($password, $current);
         }
 
