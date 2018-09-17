@@ -250,6 +250,8 @@ return [
     | The array key represents the users Laravel model key, and
     | the value represents the users LDAP attribute.
     |
+    | You **must** include the users login attribute here.
+    |
     | This option must be an array and is only applicable
     | to the DatabaseUserProvider.
     |
