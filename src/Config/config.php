@@ -94,7 +94,7 @@ return [
                 |
                 | The account prefix option is the prefix of your user accounts in LDAP directory.
                 |
-                | This string is prepended to authenticating users usernames.
+                | This string is prepended to all authenticating users usernames.
                 |
                 */
 
@@ -107,7 +107,7 @@ return [
                 |
                 | The account suffix option is the suffix of your user accounts in your LDAP directory.
                 |
-                | This string is appended to authenticating users usernames.
+                | This string is appended to all authenticating users usernames.
                 |
                 */
 
