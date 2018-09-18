@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 
 class LogTrashedModel
@@ -15,6 +16,6 @@ class LogTrashedModel
      */
     public function handle(AuthenticatedModelTrashed $event)
     {
-        info("User '{$event->user->getCommonName()}' was denied authentication because their model has been soft-deleted.");
+        Log::info("User '{$event->user->getCommonName()}' was denied authentication because their model has been soft-deleted.");
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\AuthenticationFailed;
 
 class LogAuthenticationFailure
@@ -15,6 +16,6 @@ class LogAuthenticationFailure
      */
     public function handle(AuthenticationFailed $event)
     {
-        info("User '{$event->user->getCommonName()}' has failed LDAP authentication.");
+        Log::info("User '{$event->user->getCommonName()}' has failed LDAP authentication.");
     }
 }

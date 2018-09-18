@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 use Adldap\Laravel\Events\Authenticating;
 
@@ -18,7 +19,7 @@ class LogAuthentication
     {
         $username = $this->getPrefix().$event->username.$this->getSuffix();
 
-        info("User '{$event->user->getCommonName()}' is authenticating with username: '{$username}'");
+        Log::info("User '{$event->user->getCommonName()}' is authenticating with username: '{$username}'");
     }
 
     /**
@@ -50,6 +51,6 @@ class LogAuthentication
     {
         $connection = Config::get('adldap_auth.connection');
 
-        return "adldap.connections.$connection.connection_settings";
+        return "adldap.connections.$connection.settings";
     }
 }

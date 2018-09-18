@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\Synchronizing;
 
 class LogSynchronizing
@@ -15,6 +16,6 @@ class LogSynchronizing
      */
     public function handle(Synchronizing $event)
     {
-        info("User '{$event->user->getCommonName()}' is being synchronized.");
+        Log::info("User '{$event->user->getCommonName()}' is being synchronized.");
     }
 }

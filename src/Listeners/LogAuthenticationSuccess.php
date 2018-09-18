@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
 
 class LogAuthenticationSuccess
@@ -15,6 +16,6 @@ class LogAuthenticationSuccess
      */
     public function handle(AuthenticationSuccessful $event)
     {
-        info("User '{$event->user->getCommonName()}' has been successfully logged in.");
+        Log::info("User '{$event->user->getCommonName()}' has been successfully logged in.");
     }
 }

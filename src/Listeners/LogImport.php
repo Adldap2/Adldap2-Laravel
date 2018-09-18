@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\Importing;
 
 class LogImport
@@ -15,6 +16,6 @@ class LogImport
      */
     public function handle(Importing $event)
     {
-        info("User '{$event->user->getCommonName()}' is being imported.");
+        Log::info("User '{$event->user->getCommonName()}' is being imported.");
     }
 }

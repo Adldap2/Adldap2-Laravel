@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\AuthenticatedWithWindows;
 
 class LogWindowsAuth
@@ -15,6 +16,6 @@ class LogWindowsAuth
      */
     public function handle(AuthenticatedWithWindows $event)
     {
-        info("User '{$event->user->getCommonName()}' has successfully authenticated via NTLM.");
+        Log::info("User '{$event->user->getCommonName()}' has successfully authenticated via NTLM.");
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\Authenticated;
 
 class LogAuthenticated
@@ -15,6 +16,6 @@ class LogAuthenticated
      */
     public function handle(Authenticated $event)
     {
-        info("User '{$event->user->getCommonName()}' has successfully passed LDAP authentication.");
+        Log::info("User '{$event->user->getCommonName()}' has successfully passed LDAP authentication.");
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Listeners;
 
+use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 
 class LogDiscovery
@@ -15,6 +16,6 @@ class LogDiscovery
      */
     public function handle(DiscoveredWithCredentials $event)
     {
-        info("User '{$event->user->getCommonName()}' has been successfully found for authentication.");
+        Log::info("User '{$event->user->getCommonName()}' has been successfully found for authentication.");
     }
 }
