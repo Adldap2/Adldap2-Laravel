@@ -86,14 +86,14 @@ class AdldapServiceProvider extends ServiceProvider
     protected function addProviders(Adldap $adldap, array $connections = [])
     {
         // Go through each connection and construct a Provider.
-        foreach ($connections as $name => $settings) {
+        foreach ($connections as $name => $config) {
             // Create a new provider.
             $provider = $this->newProvider(
-                $settings['connection_settings'],
-                new $settings['connection']
+                $config['settings'],
+                new $config['connection']
             );
 
-            if ($this->shouldAutoConnect($settings)) {
+            if ($this->shouldAutoConnect($config)) {
                 try {
                     $provider->connect();
                 } catch (BindException $e) {
