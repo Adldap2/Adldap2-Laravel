@@ -5,7 +5,7 @@ namespace Adldap\Laravel\Tests;
 use Mockery as m;
 use Adldap\Models\User as LdapUser;
 use Adldap\Laravel\Traits\HasLdapUser;
-use Adldap\Laravel\Tests\Models\User as EloquentUser;
+use Adldap\Laravel\Tests\Models\TestUser as EloquentUser;
 
 class HasLdapUserTest extends TestCase
 {
@@ -40,7 +40,7 @@ class HasLdapUserTest extends TestCase
         $user = new EloquentUser();
 
         if (! array_key_exists(HasLdapUser::class, class_uses(EloquentUser::class))) {
-            $this->fail('User model does not use ' . HasLdapUser::class);
+            $this->fail('TestUser model does not use ' . HasLdapUser::class);
         }
 
         return $user;

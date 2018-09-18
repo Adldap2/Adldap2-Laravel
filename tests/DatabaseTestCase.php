@@ -4,7 +4,7 @@ namespace Adldap\Laravel\Tests;
 
 use Adldap\Connections\Ldap;
 use Adldap\Schemas\ActiveDirectory;
-use Adldap\Laravel\Tests\Models\User;
+use Adldap\Laravel\Tests\Models\TestUser;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
@@ -47,7 +47,7 @@ class DatabaseTestCase extends TestCase
         // Adldap connection setup.
         $app['config']->set('adldap.connections.default.auto_connect', false);
         $app['config']->set('adldap.connections.default.connection', Ldap::class);
-        $app['config']->set('adldap.connections.default.connection_settings', [
+        $app['config']->set('adldap.connections.default.settings', [
             'username' => 'admin@email.com',
             'password' => 'password',
             'schema' => ActiveDirectory::class,
@@ -61,11 +61,11 @@ class DatabaseTestCase extends TestCase
         $app['config']->set('auth.providers', [
             'adldap' => [
                 'driver' => 'adldap',
-                'model'  => User::class,
+                'model'  => TestUser::class,
             ],
             'users'  => [
                 'driver' => 'eloquent',
-                'model'  => User::class,
+                'model'  => TestUser::class,
             ],
         ]);
     }

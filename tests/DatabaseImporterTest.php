@@ -3,7 +3,7 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\Laravel\Commands\Import;
-use Adldap\Laravel\Tests\Models\User;
+use Adldap\Laravel\Tests\Models\TestUser;
 
 class DatabaseImporterTest extends DatabaseTestCase
 {
@@ -15,7 +15,7 @@ class DatabaseImporterTest extends DatabaseTestCase
             'userprincipalname' => 'jdoe@email.com',
         ]);
 
-        $importer = new Import($user, new User());
+        $importer = new Import($user, new TestUser());
 
         $model = $importer->handle();
 

@@ -5,7 +5,7 @@ namespace Adldap\Laravel\Tests\Console;
 use Mockery as m;
 use Adldap\Query\Builder;
 use Adldap\Laravel\Facades\Resolver;
-use Adldap\Laravel\Tests\Models\User;
+use Adldap\Laravel\Tests\Models\TestUser;
 use Adldap\Laravel\Tests\DatabaseTestCase;
 use Adldap\Models\Attributes\AccountControl;
 
@@ -64,7 +64,7 @@ class ImportTest extends DatabaseTestCase
 
     public function test_model_will_be_restored_when_ldap_account_is_active()
     {
-        $model = User::create([
+        $model = TestUser::create([
             'email' => 'jdoe@email.com',
             'name' => 'John Doe',
             'password' => bcrypt('password'),
@@ -101,7 +101,7 @@ class ImportTest extends DatabaseTestCase
 
     public function test_model_will_be_soft_deleted_when_ldap_account_is_disabled()
     {
-        $model = User::create([
+        $model = TestUser::create([
             'email' => 'jdoe@email.com',
             'name' => 'John Doe',
             'password' => bcrypt('password'),

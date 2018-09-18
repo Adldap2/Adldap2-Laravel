@@ -7,7 +7,7 @@ use Adldap\AdldapInterface;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
-use Adldap\Laravel\Tests\Models\User as EloquentUser;
+use Adldap\Laravel\Tests\Models\TestUser as EloquentUser;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
@@ -166,7 +166,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $user = Auth::user();
 
-        $this->assertInstanceOf('Adldap\Laravel\Tests\Models\User', $user);
+        $this->assertInstanceOf('Adldap\Laravel\Tests\Models\TestUser', $user);
         $this->assertEquals('jdoe@email.com', $user->email);
     }
 
@@ -273,6 +273,6 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function method_calls_are_passed_to_fallback_provider()
     {
-        $this->assertEquals('Adldap\Laravel\Tests\Models\User', Auth::getProvider()->getModel());
+        $this->assertEquals('Adldap\Laravel\Tests\Models\TestUser', Auth::getProvider()->getModel());
     }
 }

@@ -6,9 +6,12 @@ use Adldap\Laravel\Traits\HasLdapUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class TestUser extends Authenticatable
 {
     use SoftDeletes, HasLdapUser;
+
+
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
