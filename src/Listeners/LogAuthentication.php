@@ -50,6 +50,6 @@ class LogAuthentication
     {
         $connection = Config::get('adldap_auth.connection');
 
-        return "adldap.$connection.connection_settings";
+        return "adldap.connections.$connection.connection_settings";
     }
 }
