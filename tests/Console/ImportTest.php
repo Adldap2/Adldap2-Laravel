@@ -23,9 +23,11 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('mail')
             ->shouldReceive('getEloquentUsernameAttribute')->once()->andReturn('email');
 
-        $r = $this->artisan('adldap:import', ['user' => 'jdoe', '--no-interaction']);
+        $this->artisan('adldap:import', ['user' => 'jdoe', '--no-interaction' => true])
+            ->expectsOutput("Found user 'John Doe'.")
+            ->expectsOutput("Successfully imported / synchronized 1 user(s).")
+            ->assertExitCode(0);
 
-        $this->assertEquals(0, $r);
         $this->assertDatabaseHas('users', ['email' => 'jdoe@email.com']);
     }
 
@@ -55,11 +57,35 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getLdapDiscoveryAttribute')->twice()->andReturn('mail')
             ->shouldReceive('getEloquentUsernameAttribute')->twice()->andReturn('email');
 
-        $r = $this->artisan('adldap:import', ['--no-interaction']);
+        $this->artisan('adldap:import', ['--no-interaction' => true])
+            ->expectsOutput("Found 2 user(s).")
+            ->expectsOutput("Successfully imported / synchronized 2 user(s).")
+            ->assertExitCode(0);
 
-        $this->assertEquals(0, $r);
         $this->assertDatabaseHas('users', ['email' => 'johndoe@email.com']);
         $this->assertDatabaseHas('users', ['email' => 'janedoe@email.com']);
+    }
+
+    public function test_questions_asked_with_interaction()
+    {
+        $b = m::mock(Builder::class);
+
+        $u = $this->makeLdapUser();
+
+        $b->shouldReceive('findOrFail')->once()->with('jdoe')->andReturn($u);
+
+        Resolver::shouldReceive('query')->once()->andReturn($b)
+            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('mail')
+            ->shouldReceive('getEloquentUsernameAttribute')->once()->andReturn('email');
+
+        $this->artisan('adldap:import', ['user' => 'jdoe'])
+            ->expectsOutput("Found user 'John Doe'.")
+            ->expectsQuestion('Would you like to display the user(s) to be imported / synchronized?', 'no')
+            ->expectsQuestion('Would you like these users to be imported / synchronized?', 'yes')
+            ->expectsOutput("Successfully imported / synchronized 1 user(s).")
+            ->assertExitCode(0);
+
+        $this->assertDatabaseHas('users', ['email' => 'jdoe@email.com']);
     }
 
     public function test_model_will_be_restored_when_ldap_account_is_active()
@@ -93,9 +119,11 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('mail')
             ->shouldReceive('getEloquentUsernameAttribute')->once()->andReturn('email');
 
-        $r = $this->artisan('adldap:import', ['--restore' => true, '--no-interaction' => true]);
+        $this->artisan('adldap:import', ['--restore' => true, '--no-interaction' => true])
+            ->expectsOutput("Found user 'John Doe'.")
+            ->expectsOutput("Successfully imported / synchronized 1 user(s).")
+            ->assertExitCode(0);
 
-        $this->assertEquals(0, $r);
         $this->assertFalse($model->fresh()->trashed());
     }
 
@@ -128,12 +156,17 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('mail')
             ->shouldReceive('getEloquentUsernameAttribute')->once()->andReturn('email');
 
-        $r = $this->artisan('adldap:import', ['--delete' => true, '--no-interaction' => true]);
-
-        $this->assertEquals(0, $r);
+        $this->artisan('adldap:import', ['--delete' => true, '--no-interaction' => true])
+            ->expectsOutput("Found user 'John Doe'.")
+            ->expectsOutput("Successfully imported / synchronized 1 user(s).")
+            ->assertExitCode(0);
+        
         $this->assertTrue($model->fresh()->trashed());
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
     public function test_filter_option_applies_to_ldap_query()
     {
         $f = '(samaccountname=jdoe)';
@@ -141,14 +174,12 @@ class ImportTest extends DatabaseTestCase
         $b = m::mock(Builder::class);
 
         $b
-            ->shouldReceive('rawFilter')->once()->with($f)->andReturn($b)
-            ->shouldReceive('paginate')->once()->andReturn($b)
+            ->shouldReceive('rawFilter')->once()->with($f)->andReturnSelf()
+            ->shouldReceive('paginate')->once()->andReturnSelf()
             ->shouldReceive('getResults')->once()->andReturn([]);
 
         Resolver::shouldReceive('query')->once()->andReturn($b);
 
-        $r = $this->artisan('adldap:import', ['--filter' => $f, '--no-interaction' => true]);
-
-        $this->assertEquals(0, $r);
+        $this->artisan('adldap:import', ['--filter' => $f, '--no-interaction' => true]);
     }
 }

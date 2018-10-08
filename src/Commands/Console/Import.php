@@ -39,6 +39,7 @@ class Import extends Command
      *
      * @return void
      *
+     * @throws \RuntimeException
      * @throws \Adldap\Models\ModelNotFoundException
      */
     public function handle()
@@ -47,17 +48,25 @@ class Import extends Command
 
         $count = count($users);
 
-        if ($count === 1) {
+        if ($count === 0) {
+            throw new \RuntimeException("There were no users found to import.");
+        } else if ($count === 1) {
             $this->info("Found user '{$users[0]->getCommonName()}'.");
         } else {
             $this->info("Found {$count} user(s).");
         }
 
-        if ($this->confirm('Would you like to display the user(s) to be imported / synchronized?', $default = false)) {
+        if (
+            $this->input->isInteractive() &&
+            $this->confirm('Would you like to display the user(s) to be imported / synchronized?', $default = false)
+        ) {
             $this->display($users);
         }
 
-        if ($this->confirm('Would you like these users to be imported / synchronized?', $default = true)) {
+        if (
+            ! $this->input->isInteractive() ||
+            $this->confirm('Would you like these users to be imported / synchronized?', $default = true)
+        ) {
             $imported = $this->import($users);
 
             $this->info("Successfully imported / synchronized {$imported} user(s).");
