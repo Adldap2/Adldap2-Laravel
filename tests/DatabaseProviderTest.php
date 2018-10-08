@@ -17,7 +17,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 {
     /**
      * @test
-     * @expectedException \Adldap\Laravel\Exceptions\ConfigurationMissingException
+     * @expectedException \RuntimeException
      */
     public function configuration_not_found_exception_when_config_is_null()
     {

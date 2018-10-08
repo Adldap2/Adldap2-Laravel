@@ -7,7 +7,6 @@ use Adldap\AdldapInterface;
 use Adldap\Auth\BindException;
 use Adldap\Connections\Provider;
 use Adldap\Connections\ConnectionInterface;
-use Adldap\Laravel\Exceptions\ConfigurationMissingException;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
@@ -49,7 +48,7 @@ class AdldapServiceProvider extends ServiceProvider
             if (is_null($config)) {
                 $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish --tag="adldap"`.';
 
-                throw new ConfigurationMissingException($message);
+                throw new \RuntimeException($message);
             }
 
             return $this->addProviders($this->newAdldap(), $config['connections']);
