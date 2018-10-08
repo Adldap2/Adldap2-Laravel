@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.1",
         "adldap2/adldap2": "^9.0"
     },
     "require-dev": {
