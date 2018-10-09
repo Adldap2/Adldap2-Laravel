@@ -167,7 +167,7 @@ return [
                 |
                 */
 
-                'base_dn' => env('LDAP_BASEDN', 'dc=corp,dc=acme,dc=org'),
+                'base_dn' => env('LDAP_BASE_DN', 'dc=corp,dc=acme,dc=org'),
 
                 /*
                 |--------------------------------------------------------------------------
