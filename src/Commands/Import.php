@@ -128,7 +128,9 @@ class Import
 
                 $handler->handle($this->user, $model);
             } else {
-                $model->{$modelField} = $this->user->getFirstAttribute($ldapField);
+                // We'll try to retrieve the value from the LDAP model. If nothing is returned
+                // we'll assume it's a raw value (such as a boolean, array, integer etc.).
+                $model->{$modelField} = $this->user->getFirstAttribute($ldapField) ?? $ldapField;
             }
         }
     }
