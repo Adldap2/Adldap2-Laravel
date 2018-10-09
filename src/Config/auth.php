@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'connection' => env('ADLDAP_CONNECTION', 'default'),
+    'connection' => env('LDAP_CONNECTION', 'default'),
 
     /*
     |--------------------------------------------------------------------------
@@ -201,7 +201,7 @@ return [
         |
         */
 
-        'sync' => env('ADLDAP_PASSWORD_SYNC', false),
+        'sync' => env('LDAP_PASSWORD_SYNC', false),
 
         /*
         |--------------------------------------------------------------------------
@@ -236,7 +236,7 @@ return [
     |
     */
 
-    'login_fallback' => env('ADLDAP_LOGIN_FALLBACK', false),
+    'login_fallback' => env('LDAP_LOGIN_FALLBACK', false),
 
     /*
     |--------------------------------------------------------------------------
