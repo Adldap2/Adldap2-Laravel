@@ -2,7 +2,7 @@
 
 ## Usernames
 
-Inside your `config/adldap_auth.php` file there is a configuration option named `usernames`.
+Inside your `config/ldap_auth.php` file there is a configuration option named `usernames`.
 
 This array contains the `ldap` attribute you use for authenticating users, as well
 as the `eloquent` attribute for locating the LDAP users local model.

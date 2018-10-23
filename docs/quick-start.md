@@ -64,9 +64,9 @@ This guide was created with the help of [@st-claude](https://github.com/st-claud
 
 9. Now run `php artisan vendor:publish` in your root project directory to publish Adldap2's configuration files.
 
-    *  Two files will be published inside your `config` folder, `adldap.php` and `adldap_auth.php`.
+    *  Two files will be published inside your `config` folder, `ldap.php` and `ldap_auth.php`.
 
-10. Modify the `config/adldap.php` and `config/adldap_auth.php` files for your LDAP server configuration.
+10. Modify the `config/ldap.php` and `config/ldap_auth.php` files for your LDAP server configuration.
 
 11. Run the command `php artisan make:auth` to scaffold login controllers and routes.
 

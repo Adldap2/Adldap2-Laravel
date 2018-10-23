@@ -43,7 +43,7 @@ class OnlyManagersAndAccounting extends Rule
 
 ## Implementing the Rule
 
-To implement your new rule, you just need to insert it into your `config/adldap_auth.php` file:
+To implement your new rule, you just need to insert it into your `config/ldap_auth.php` file:
 
 ```php
 'rules' => [

@@ -78,23 +78,23 @@ Once finished, insert the service provider in your `config/app.php` file:
 Adldap\Laravel\AdldapServiceProvider::class,
 ```
 
-Then insert the facade:
+Then insert the facade (if you're going to use it):
 
 ```php
 'Adldap' => Adldap\Laravel\Facades\Adldap::class
 ```
 
-Publish the configuration file by running:
+Finally, publish the `ldap.php` configuration file by running:
 
 ```bash
-php artisan vendor:publish --tag="adldap"
+php artisan vendor:publish --provider="Adldap\Laravel\AdldapServiceProvider"
 ```
 
 Now you're all set!
 
 ## Usage
 
-First, configure your LDAP connection in the `config/adldap.php` file.
+First, configure your LDAP connection in the `config/ldap.php` file.
 
 Then, you can perform methods on your default connection through the `Adldap` facade like so:
 

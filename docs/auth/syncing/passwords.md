@@ -2,7 +2,7 @@
 
 The password sync option allows you to automatically synchronize
 users LDAP passwords to your local database. These passwords are
-hashed natively by laravel.
+hashed natively by Laravel.
 
 Enabling this option would also allow users to login to their
 accounts using the password last used when an LDAP connection

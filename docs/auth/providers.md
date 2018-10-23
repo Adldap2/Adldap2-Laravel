@@ -11,7 +11,7 @@ There are two built in providers. Please view their documentation to see which o
 
 The `DatabaseUserProvider` allows you to synchronize LDAP users to your applications database.
 
-To use it, insert it in your `config/adldap_auth.php` in the `provider` option:
+To use it, insert it in your `config/ldap_auth.php` in the `provider` option:
 
 ```php
 'provider' => Adldap\Laravel\Auth\DatabaseUserProvider::class
@@ -66,7 +66,7 @@ You will receive exceptions otherwise.
 
 ---
 
-To use it, insert it in your `config/adldap_auth.php` in the `provider` option:
+To use it, insert it in your `config/ldap_auth.php` in the `provider` option:
 
 ```php
 'provider' => Adldap\Laravel\Auth\NoDatabaseUserProvider::class

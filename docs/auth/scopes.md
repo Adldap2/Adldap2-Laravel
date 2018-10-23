@@ -46,7 +46,7 @@ class AccountingScope implements ScopeInterface
 
 ## Implementing a Scope
 
-Now that we've created our scope (`app/Scopes/AccountingScope.php`), we can insert it into our `config/adldap_auth.php` file:
+Now that we've created our scope (`app/Scopes/AccountingScope.php`), we can insert it into our `config/ldap_auth.php` file:
 
 ```php
 'scopes' => [

@@ -10,7 +10,7 @@ Adldap2-Laravel comes with a command that allows you to import users from your L
 To import all users from your LDAP connection simply run `php artisan adldap:import`.
 
 > **Note**: The import command will utilize all scopes and sync all attributes you
-> have configured in your `config/adldap_auth.php` configuration file.
+> have configured in your `config/ldap_auth.php` configuration file.
 
 Example:
 
@@ -63,7 +63,7 @@ Found user 'John Doe'.
 
 ### Filter
 
-The `--filter` (or `-f`) option allows you to enter in a raw filter in combination with your scopes inside your `config/adldap_auth.php` file:
+The `--filter` (or `-f`) option allows you to enter in a raw filter in combination with your scopes inside your `config/ldap_auth.php` file:
 
 ```bash
 php artisan adldap:import --filter "(cn=John Doe)"
