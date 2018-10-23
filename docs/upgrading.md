@@ -2,7 +2,46 @@
 
 ## Upgrading from v4.* to v5.*
 
+**Estimated Upgrade Time: 30 minutes**
 
+Functionally, you shouldn't need to change the way you use Adldap2-Laravel. There have been no major API changes that will impact your current usage.
+
+However, there have been API changes to the core [Adldap2](https://github.com/Adldap2/Adldap2/releases/tag/v9.0.0) package. It is heavily recommended to read the release notes to see if you may be impacted.
+
+### Requirements
+
+Adldap2-Laravel's PHP requirements has been changed. It now requires a minimum of PHP 7.1.
+
+However, Adldap2's Laravel requirements **have not** changed. You can still use all versions of Laravel 5.
+
+### Configuration
+
+Both Adldap2's configuration files have been renamed to `ldap.php` and `ldap_auth.php` for simplicity.
+
+Simply rename `adldap.php` to `ldap.php` and `adldap_auth.php` to `ldap_auth.php`.
+
+If you'd prefer to re-publish them from scratch, here's a quick guide:
+
+1. Delete your `config/adldap.php` file
+2. Run `php artisan vendor:publish --provider="Adldap\Laravel\AdldapServiceProvider"`
+
+If you're using the Adladp2 authentication driver, repeat the same steps for its configuration:
+
+1. Delete your `config/adldap_auth.php` file
+2. Run `php artisan vendor:publish --provider="Adldap\Laravel\AdldapAuthServiceProvider"`
+
+### Authentication Driver
+
+The authentication driver name has been *renamed* to **ldap** instead of **adldap**. This is for the sake of simplicity.
+
+Open your `auth.php` file and rename your authentication driver to `ldap`:
+
+```php
+'users' => [
+    'driver' => 'ldap', // Renamed from 'adldap'
+    'model' => App\User::class,
+],
+```
 
 ## Upgrading From 3.* to 4.*
 
