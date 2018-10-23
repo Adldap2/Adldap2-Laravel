@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Facades;
 
+use Adldap\AdldapInterface;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -16,6 +17,6 @@ class Adldap extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'adldap';
+        return AdldapInterface::class;
     }
 }
