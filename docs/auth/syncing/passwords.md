@@ -15,5 +15,5 @@ to this account upon loss of LDAP connectivity.
 This feature is disabled by default.
 
 ```php
-'password_sync' => env('ADLDAP_PASSWORD_SYNC', false),
+'password_sync' => env('LDAP_PASSWORD_SYNC', false),
 ```
