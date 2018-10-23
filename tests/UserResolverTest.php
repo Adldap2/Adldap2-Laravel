@@ -58,7 +58,7 @@ class UserResolverTest extends TestCase
     /** @test */
     public function scopes_are_applied_when_query_is_called()
     {
-        config(['adldap_auth.scopes' => [UpnScope::class]]);
+        config(['ldap_auth.scopes' => [UpnScope::class]]);
 
         $schema = m::mock(SchemaInterface::class);
 
@@ -86,7 +86,7 @@ class UserResolverTest extends TestCase
     /** @test */
     public function connection_is_set_upon_creation()
     {
-        Config::shouldReceive('get')->once()->with('adldap_auth.connection', 'default')->andReturn('other-test');
+        Config::shouldReceive('get')->once()->with('ldap_auth.connection', 'default')->andReturn('other-test');
 
         $ad = m::mock(AdldapInterface::class);
 
@@ -116,9 +116,9 @@ class UserResolverTest extends TestCase
 
         Auth::shouldReceive('guard')->once()->andReturnSelf()->shouldReceive('getProvider')->once()->andReturn($authProvider);
 
-        Config::shouldReceive('get')->with('adldap_auth.connection', 'default')->andReturn('default')
-            ->shouldReceive('get')->with('adldap_auth.usernames.ldap.discover', 'userprincipalname')->andReturn('userprincipalname')
-            ->shouldReceive('get')->with('adldap_auth.scopes', [])->andReturn([]);
+        Config::shouldReceive('get')->with('ldap_auth.connection', 'default')->andReturn('default')
+            ->shouldReceive('get')->with('ldap_auth.usernames.ldap.discover', 'userprincipalname')->andReturn('userprincipalname')
+            ->shouldReceive('get')->with('ldap_auth.scopes', [])->andReturn([]);
 
         $resolver = new UserResolver($ad);
 

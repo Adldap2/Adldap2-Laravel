@@ -16,22 +16,22 @@ class NoDatabaseTestCase extends TestCase
     protected function getEnvironmentSetup($app)
     {
         // Adldap connection setup.
-        $app['config']->set('adldap.connections.default.auto_connect', false);
-        $app['config']->set('adldap.connections.default.connection', Ldap::class);
-        $app['config']->set('adldap.connections.default.settings', [
+        $app['config']->set('ldap.connections.default.auto_connect', false);
+        $app['config']->set('ldap.connections.default.connection', Ldap::class);
+        $app['config']->set('ldap.connections.default.settings', [
             'username' => 'admin',
             'password' => 'password',
             'schema' => ActiveDirectory::class,
         ]);
 
         // Adldap auth setup.
-        $app['config']->set('adldap_auth.provider', NoDatabaseUserProvider::class);
+        $app['config']->set('ldap_auth.provider', NoDatabaseUserProvider::class);
 
         // Laravel auth setup.
-        $app['config']->set('auth.guards.web.provider', 'adldap');
+        $app['config']->set('auth.guards.web.provider', 'ldap');
         $app['config']->set('auth.providers', [
-            'adldap' => [
-                'driver' => 'adldap',
+            'ldap' => [
+                'driver' => 'ldap',
             ],
         ]);
     }

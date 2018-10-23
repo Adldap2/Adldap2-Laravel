@@ -21,9 +21,9 @@ class DatabaseProviderTest extends DatabaseTestCase
      */
     public function configuration_not_found_exception_when_config_is_null()
     {
-        config(['adldap' => null]);
+        config(['ldap' => null]);
 
-        App::make('adldap');
+        App::make(AdldapInterface::class);
     }
 
     /** @test */
@@ -78,7 +78,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function config_scopes_are_applied()
     {
-        config(['adldap_auth.scopes' => [JohnDoeScope::class]]);
+        config(['ldap_auth.scopes' => [JohnDoeScope::class]]);
 
         $expectedFilter = '(&(objectclass=\75\73\65\72)(objectcategory=\70\65\72\73\6f\6e)(!(objectclass=\63\6f\6e\74\61\63\74))(cn=\4a\6f\68\6e\20\44\6f\65))';
 
@@ -88,9 +88,9 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function attribute_handlers_are_used()
     {
-        $default = config('adldap_auth.sync_attributes');
+        $default = config('ldap_auth.sync_attributes');
 
-        config(['adldap_auth.sync_attributes' => array_merge($default, [LdapAttributeHandler::class])]);
+        config(['ldap_auth.sync_attributes' => array_merge($default, [LdapAttributeHandler::class])]);
 
         $this->auth_passes();
 
@@ -104,7 +104,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     {
         // Inserting an invalid attribute handler that
         // does not contain a `handle` method.
-        config(['adldap_auth.sync_attributes' => [\stdClass::class]]);
+        config(['ldap_auth.sync_attributes' => [\stdClass::class]]);
 
         $user = $this->makeLdapUser([
             'cn'    => 'John Doe',
@@ -119,7 +119,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function auth_attempts_fallback_using_config_option()
     {
-        config(['adldap_auth.login_fallback' => true]);
+        config(['ldap_auth.login_fallback' => true]);
 
         EloquentUser::create([
             'email'    => 'jdoe@email.com',
@@ -141,7 +141,7 @@ class DatabaseProviderTest extends DatabaseTestCase
             array_replace($credentials, ['password' => 'Invalid'])
         ));
 
-        config(['adldap_auth.login_fallback' => false]);
+        config(['ldap_auth.login_fallback' => false]);
 
         $this->assertFalse(Auth::attempt($credentials));
     }
@@ -149,7 +149,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function auth_attempts_using_fallback_does_not_require_connection()
     {
-        config(['adldap_auth.login_fallback' => true]);
+        config(['ldap_auth.login_fallback' => true]);
 
         EloquentUser::create([
             'email'    => 'jdoe@email.com',
@@ -173,7 +173,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function passwords_are_synced_when_enabled()
     {
-        config(['adldap_auth.passwords.sync' => true]);
+        config(['ldap_auth.passwords.sync' => true]);
 
         $credentials = [
             'email' => 'jdoe@email.com',
@@ -191,7 +191,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function passwords_are_not_synced_when_sync_is_disabled()
     {
-        config(['adldap_auth.passwords.sync' => false]);
+        config(['ldap_auth.passwords.sync' => false]);
 
         $credentials = [
             'email' => 'jdoe@email.com',
@@ -209,7 +209,7 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function passwords_are_not_updated_when_sync_is_disabled()
     {
-        config(['adldap_auth.passwords.sync' => false]);
+        config(['ldap_auth.passwords.sync' => false]);
 
         $credentials = [
             'email' => 'jdoe@email.com',
@@ -229,8 +229,8 @@ class DatabaseProviderTest extends DatabaseTestCase
     public function trashed_rule_prevents_deleted_users_from_logging_in()
     {
         config([
-            'adldap_auth.login_fallback' => false,
-            'adldap_auth.rules' => [\Adldap\Laravel\Validation\Rules\DenyTrashed::class],
+            'ldap_auth.login_fallback' => false,
+            'ldap_auth.rules' => [\Adldap\Laravel\Validation\Rules\DenyTrashed::class],
         ]);
 
         $credentials = [
@@ -255,8 +255,8 @@ class DatabaseProviderTest extends DatabaseTestCase
     public function only_imported_users_are_allowed_to_authenticate_when_rule_is_applied()
     {
         config([
-            'adldap_auth.login_fallback' => false,
-            'adldap_auth.rules' => [\Adldap\Laravel\Validation\Rules\OnlyImported::class],
+            'ldap_auth.login_fallback' => false,
+            'ldap_auth.rules' => [\Adldap\Laravel\Validation\Rules\OnlyImported::class],
         ]);
 
         $credentials = [

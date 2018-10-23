@@ -35,9 +35,9 @@ class LogAuthenticationTest extends TestCase
 
         Log::shouldReceive('info')->once()->with($logged);
 
-        Config::shouldReceive('get')->with('adldap_auth.connection')->andReturn('default')
-            ->shouldReceive('get')->with('adldap.connections.default.settings.account_prefix')->andReturn($prefix)
-            ->shouldReceive('get')->with('adldap.connections.default.settings.account_suffix')->andReturn($suffix);
+        Config::shouldReceive('get')->with('ldap_auth.connection')->andReturn('default')
+            ->shouldReceive('get')->with('ldap.connections.default.settings.account_prefix')->andReturn($prefix)
+            ->shouldReceive('get')->with('ldap.connections.default.settings.account_suffix')->andReturn($suffix);
 
         $l->handle($e);
     }
