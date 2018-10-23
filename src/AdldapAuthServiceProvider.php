@@ -3,7 +3,6 @@
 namespace Adldap\Laravel;
 
 use Adldap\AdldapInterface;
-use InvalidArgumentException;
 use Adldap\Laravel\Resolvers\UserResolver;
 use Adldap\Laravel\Resolvers\ResolverInterface;
 use Adldap\Laravel\Commands\Console\Import;
@@ -27,19 +26,18 @@ class AdldapAuthServiceProvider extends ServiceProvider
         $config = __DIR__.'/Config/auth.php';
 
         $this->publishes([
-            $config => config_path('adldap_auth.php'),
-        ], 'adldap');
+            $config => config_path('ldap_auth.php'),
+        ]);
 
-        $this->mergeConfigFrom($config, 'adldap_auth');
 
         $auth = Auth::getFacadeRoot();
 
         if (method_exists($auth, 'provider')) {
-            $auth->provider('adldap', function ($app, array $config) {
+            $auth->provider('ldap', function ($app, array $config) {
                 return $this->makeUserProvider($app['hash'], $config);
             });
         } else {
-            $auth->extend('adldap', function ($app) {
+            $auth->extend('ldap', function ($app) {
                 return $this->makeUserProvider($app['hash'], $app['config']['auth']);
             });
         }
@@ -54,42 +52,13 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerBindings();
-
-        $this->registerListeners();
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return ['auth'];
-    }
-
-    /**
-     * Registers the application bindings.
-     *
-     * @return void
-     */
-    protected function registerBindings()
-    {
+        // Bind the user resolver instance into the IoC.
         $this->app->bind(ResolverInterface::class, function () {
             $ad = $this->app->make(AdldapInterface::class);
 
             return new UserResolver($ad);
         });
-    }
 
-    /**
-     * Registers the event listeners.
-     *
-     * @return void
-     */
-    protected function registerListeners()
-    {
         // Here we will register the event listener that will bind the users LDAP
         // model to their Eloquent model upon authentication (if configured).
         // This allows us to utilize their LDAP model right
@@ -111,13 +80,13 @@ class AdldapAuthServiceProvider extends ServiceProvider
      * @param Hasher $hasher
      * @param array  $config
      *
-     * @throws InvalidArgumentException
+     * @throws \RuntimeException
      * 
      * @return \Illuminate\Contracts\Auth\UserProvider
      */
     protected function makeUserProvider(Hasher $hasher, array $config)
     {
-        $provider = Config::get('adldap_auth.provider', DatabaseUserProvider::class);
+        $provider = Config::get('ldap_auth.provider', DatabaseUserProvider::class);
 
         // The DatabaseUserProvider has some extra dependencies needed,
         // so we will validate that we have them before
@@ -126,7 +95,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
             $model = array_get($config, 'model');
 
             if (!$model) {
-                throw new InvalidArgumentException(
+                throw new \RuntimeException(
                     "No model is configured. You must configure a model to use with the {$provider}."
                 );
             }
@@ -144,7 +113,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     protected function isLogging()
     {
-        return Config::get('adldap_auth.logging.enabled', false);
+        return Config::get('ldap_auth.logging.enabled', false);
     }
 
     /**
@@ -154,6 +123,6 @@ class AdldapAuthServiceProvider extends ServiceProvider
      */
     protected function getLoggingEvents()
     {
-        return Config::get('adldap_auth.logging.events', []);
+        return Config::get('ldap_auth.logging.events', []);
     }
 }
