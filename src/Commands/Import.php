@@ -111,7 +111,7 @@ class Import
      */
     protected function sync(Model $model)
     {
-        $toSync = Config::get('adldap_auth.sync_attributes', [
+        $toSync = Config::get('ldap_auth.sync_attributes', [
             'email' => 'userprincipalname',
             'name' => 'cn',
         ]);

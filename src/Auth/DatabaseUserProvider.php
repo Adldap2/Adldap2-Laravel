@@ -210,6 +210,6 @@ class DatabaseUserProvider extends Provider
      */
     protected function isFallingBack() : bool
     {
-        return Config::get('adldap_auth.login_fallback', false);
+        return Config::get('ldap_auth.login_fallback', false);
     }
 }

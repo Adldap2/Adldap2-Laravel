@@ -131,7 +131,7 @@ class UserResolver implements ResolverInterface
     {
         $query = $this->getLdapAuthProvider()->search()->users();
 
-        $scopes = Config::get('adldap_auth.scopes', []);
+        $scopes = Config::get('ldap_auth.scopes', []);
 
         if (is_array($scopes)) {
             foreach ($scopes as $scope) {
@@ -155,7 +155,7 @@ class UserResolver implements ResolverInterface
      */
     public function getLdapDiscoveryAttribute() : string
     {
-        return Config::get('adldap_auth.usernames.ldap.discover', 'userprincipalname');
+        return Config::get('ldap_auth.usernames.ldap.discover', 'userprincipalname');
     }
 
     /**
@@ -163,7 +163,7 @@ class UserResolver implements ResolverInterface
      */
     public function getLdapAuthAttribute() : string
     {
-        return Config::get('adldap_auth.usernames.ldap.authenticate', 'distinguishedname');
+        return Config::get('ldap_auth.usernames.ldap.authenticate', 'distinguishedname');
     }
 
     /**
@@ -171,7 +171,7 @@ class UserResolver implements ResolverInterface
      */
     public function getEloquentUsernameAttribute() : string
     {
-        return Config::get('adldap_auth.usernames.eloquent', 'email');
+        return Config::get('ldap_auth.usernames.eloquent', 'email');
     }
 
     /**
@@ -215,6 +215,6 @@ class UserResolver implements ResolverInterface
      */
     protected function getLdapAuthConnectionName()
     {
-        return Config::get('adldap_auth.connection', 'default');
+        return Config::get('ldap_auth.connection', 'default');
     }
 }

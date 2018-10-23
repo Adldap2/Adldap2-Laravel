@@ -50,6 +50,6 @@ trait ValidatesUsers
      */
     protected function getRules()
     {
-        return Config::get('adldap_auth.rules', []);
+        return Config::get('ldap_auth.rules', []);
     }
 }

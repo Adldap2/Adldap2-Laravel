@@ -49,8 +49,8 @@ class LogAuthentication
      */
     protected function getConfigSettingsPath()
     {
-        $connection = Config::get('adldap_auth.connection');
+        $connection = Config::get('ldap_auth.connection');
 
-        return "adldap.connections.$connection.settings";
+        return "ldap.connections.$connection.settings";
     }
 }

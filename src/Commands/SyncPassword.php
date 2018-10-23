@@ -139,7 +139,7 @@ class SyncPassword
      */
     protected function syncing() : bool
     {
-        return Config::get('adldap_auth.passwords.sync', false);
+        return Config::get('ldap_auth.passwords.sync', false);
     }
 
     /**
@@ -149,6 +149,6 @@ class SyncPassword
      */
     protected function column()
     {
-        return Config::get('adldap_auth.passwords.column', 'password');
+        return Config::get('ldap_auth.passwords.column', 'password');
     }
 }

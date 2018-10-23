@@ -197,7 +197,7 @@ class WindowsAuthenticate
      */
     protected function key()
     {
-        return Config::get('adldap_auth.usernames.windows.key', 'AUTH_USER');
+        return Config::get('ldap_auth.usernames.windows.key', 'AUTH_USER');
     }
 
     /**
@@ -207,6 +207,6 @@ class WindowsAuthenticate
      */
     protected function discover()
     {
-        return Config::get('adldap_auth.usernames.windows.discover', 'samaccountname');
+        return Config::get('ldap_auth.usernames.windows.discover', 'samaccountname');
     }
 }
