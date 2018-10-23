@@ -14,6 +14,14 @@ use Illuminate\Support\ServiceProvider;
 class AdldapServiceProvider extends ServiceProvider
 {
     /**
+     * We'll defer loading this service provider so our LDAP connection
+     * isn't instantiated unless requested to speed up our application.
+     *
+     * @var bool
+     */
+    protected $defer = true;
+
+    /**
      * Run service provider boot operations.
      *
      * @return void
@@ -27,10 +35,8 @@ class AdldapServiceProvider extends ServiceProvider
         $config = __DIR__.'/Config/config.php';
 
         $this->publishes([
-            $config => config_path('adldap.php'),
-        ], 'adldap');
-
-        $this->mergeConfigFrom($config, 'adldap');
+            $config => config_path('ldap.php'),
+        ]);
     }
 
     /**
@@ -40,9 +46,10 @@ class AdldapServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Bind the Adldap instance to the IoC
-        $this->app->singleton('adldap', function (Container $app) {
-            $config = $app->make('config')->get('adldap');
+        // Bind the Adldap contract to the Adldap object
+        // in the IoC for dependency injection.
+        $this->app->singleton(AdldapInterface::class, function (Container $app) {
+            $config = $app->make('config')->get('ldap');
 
             // Verify configuration exists.
             if (is_null($config)) {
@@ -53,10 +60,6 @@ class AdldapServiceProvider extends ServiceProvider
 
             return $this->addProviders($this->newAdldap(), $config['connections']);
         });
-
-        // Bind the Adldap contract to the Adldap object
-        // in the IoC for dependency injection.
-        $this->app->singleton(AdldapInterface::class, 'adldap');
     }
 
     /**
@@ -66,7 +69,9 @@ class AdldapServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['adldap'];
+        return [
+            AdldapInterface::class,
+        ];
     }
 
     /**
