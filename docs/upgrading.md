@@ -25,10 +25,18 @@ If you'd prefer to re-publish them from scratch, here's a quick guide:
 1. Delete your `config/adldap.php` file
 2. Run `php artisan vendor:publish --provider="Adldap\Laravel\AdldapServiceProvider"`
 
-If you're using the Adladp2 authentication driver, repeat the same steps for its configuration:
+If you're using the Adldap2 authentication driver, repeat the same steps for its configuration:
 
 1. Delete your `config/adldap_auth.php` file
 2. Run `php artisan vendor:publish --provider="Adldap\Laravel\AdldapAuthServiceProvider"`
+
+#### Prefix and Suffix Changes
+
+The configuration options `admin_account_prefix` and `admin_account_suffix` have been removed. Simply
+apply a prefix and suffix to the username of the administrator account in your configuration.
+
+The `account_prefix` and `account_suffix` options now only apply to user accounts that are
+authenticated, not your configured administrator account.
 
 ### Authentication Driver
 
