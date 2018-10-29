@@ -53,7 +53,7 @@ class AdldapServiceProvider extends ServiceProvider
 
             // Verify configuration exists.
             if (is_null($config)) {
-                $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish --tag="adldap"`.';
+                $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish`.';
 
                 throw new \RuntimeException($message);
             }
