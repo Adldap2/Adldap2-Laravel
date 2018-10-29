@@ -4,9 +4,10 @@
 
 **Estimated Upgrade Time: 30 minutes**
 
-Functionally, you shouldn't need to change the way you use Adldap2-Laravel. There have been no major API changes that will impact your current usage.
+Functionally, you should not need to change the way you use Adldap2-Laravel. There have been no major API changes that will impact your current usage.
 
-However, there have been API changes to the core [Adldap2](https://github.com/Adldap2/Adldap2/releases/tag/v9.0.0) package. It is heavily recommended to read the release notes to see if you may be impacted.
+However, there have been API changes to the core [Adldap2](https://github.com/Adldap2/Adldap2/releases/tag/v9.0.0) package.
+It is heavily recommended to read the release notes to see if you may be impacted.
 
 ### Requirements
 
