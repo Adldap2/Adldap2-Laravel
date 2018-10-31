@@ -1,4 +1,6 @@
-# Syncing Attributes
+# Syncing 
+
+## Attributes
 
 Inside your `config/ldap_auth.php` file there is a configuration option named `sync_attributes`. This
 is an array of attributes where the key is the eloquent `User` model attribute, and the
@@ -23,7 +25,7 @@ Feel free to add more attributes here, however be sure that your `users` databas
 the key you've entered, otherwise you will receive a SQL exception upon authentication, due
 to the column not existing on your users datable table.
 
-## Attribute Handlers
+### Attribute Handlers
 
 If you're looking to synchronize an attribute from an Adldap2 model that contains an array or an
 object, or sync attributes yourself, you can use an attribute handler class
@@ -65,4 +67,24 @@ class LdapAttributeHandler
         $eloquentUser->name = $ldapUser->getCommonName();
     }
 }
+```
+
+## Passwords
+
+The password sync option allows you to automatically synchronize
+users LDAP passwords to your local database. These passwords are
+hashed natively by Laravel.
+
+Enabling this option would also allow users to login to their
+accounts using the password last used when an LDAP connection
+was present.
+
+If this option is disabled, the local user account is applied
+a random 16 character hashed password, and will lose access
+to this account upon loss of LDAP connectivity.
+
+This feature is disabled by default.
+
+```php
+'password_sync' => env('LDAP_PASSWORD_SYNC', false),
 ```
