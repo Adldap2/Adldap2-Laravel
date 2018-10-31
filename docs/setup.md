@@ -16,13 +16,9 @@ Usually this is set to your domain name. For example:
 
 ```php
 'connections' => [
-
     'corp.acme.org' => [
-    
         '...',
-    
     ],
-
 ],
 ```
 
