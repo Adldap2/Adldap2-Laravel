@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-    Easy configuration, access, management and authentication to LDAP servers utilizing the root
+    Easy configuration, access, management and authentication to LDAP servers utilizing the core
     <a href="http://www.github.com/Adldap2/Adldap2">Adldap2</a> repository.
 </p>
 
