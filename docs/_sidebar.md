@@ -11,6 +11,7 @@
   * [Introduction & Quick Start](auth/introduction.md)
   * [Installation](auth/installation.md)
   * [Setup](auth/setup.md)
+  * [Middleware (Single Sign On)](auth/middleware.md)
   * [Events](auth/events.md)
   * [Model Binding](auth/model-binding.md)
   * [Importing](auth/importing.md)
