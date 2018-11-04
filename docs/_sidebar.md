@@ -22,4 +22,3 @@
   * [Events](docs/auth/events.md)
   * [Model Binding](docs/auth.model-binding.md)
   * [Importing](docs/auth/importing.md)
-  
