@@ -39,6 +39,8 @@ apply a prefix and suffix to the username of the administrator account in your c
 The `account_prefix` and `account_suffix` options now only apply to user accounts that are
 authenticated, not your configured administrator account.
 
+This means you will need to add your suffix or prefix onto your configured administrators username if you require it.
+
 ### Authentication Driver
 
 The authentication driver name has been *renamed* to **ldap** instead of **adldap**. This is for the sake of simplicity.
