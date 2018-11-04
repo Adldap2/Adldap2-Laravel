@@ -201,7 +201,7 @@ Once you've implemented the above rule, only LDAP users that are apart of the `A
 
 Scopes allow you to restrict which LDAP users are allowed to login to your application.
 
-If you're familiar with Laravel's [Query Scopes](https://laravel.com/docs/5.4/eloquent#query-scopes),
+If you're familiar with Laravel's [Query Scopes](https://laravel.com/docs/5.7/eloquent#query-scopes),
 then these will feel very similar.
 
 ### Creating a Scope
