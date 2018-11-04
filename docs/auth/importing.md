@@ -3,7 +3,7 @@
 Adldap2-Laravel comes with a command that allows you to import users from your LDAP server automatically.
 
 > **Note**: Make sure you're able to connect to your LDAP server and have configured
-> the `adldap` auth driver correctly before running the command.
+> the `ldap` auth driver correctly before running the command.
 
 ## Running the Command
 
