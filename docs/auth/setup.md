@@ -269,8 +269,6 @@ All other users will be denied authentication, even if their credentials are val
 > **Note**: If you're caching your configuration files, make sure you
 > run `php artisan config:clear` to be able to use your new scope.
 
-
-
 ## Usernames
 
 Inside your `config/ldap_auth.php` file there is a configuration option named `usernames`.
@@ -329,7 +327,7 @@ For example, if you'd like to login users by their `samaccountname`:
 ],
 ```
 
-## Logging In
+### Logging In
 
 Login a user regularly using `Auth::attempt($credentials);`.
 
