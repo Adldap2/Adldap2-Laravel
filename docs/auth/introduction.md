@@ -9,7 +9,7 @@ There are two primary ways of authenticating LDAP users:
     This allows you to attach data to users as you would in a traditional application.
 
     Calling `Auth::user()` returns your configured Eloquent model (ex. `App\User`) of the LDAP user.
-
+    
 - Authenticate without keeping a database record for users
 
     This allows you to have temporary users.

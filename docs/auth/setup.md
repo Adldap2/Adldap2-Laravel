@@ -325,7 +325,7 @@ Will try to locate a user in your LDAP directory with a `userprincipalname` equa
 
 > **Note**: It's **extremely** important to know that your configured `account_suffix` and `account_prefix` (located in your `config/ldap.php` file) will be appended or prepended *onto* this passed in username.
 
-You can ignore the `windows` configuration array, unless you're planning on using the included [middleware](middleware.md) for single sign on authentication.
+You can ignore the `windows` configuration array, unless you're planning on using the included [middleware](auth/middleware.md) for single sign on authentication.
 
 ### Eloquent
 
