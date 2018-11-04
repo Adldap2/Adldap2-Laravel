@@ -1,6 +1,6 @@
 * Getting Started
 
-  * [Introduction](/)
+  * [Introduction & Quick Start](/)
   * [Installation](installation.md)
   * [Setup](setup.md)
   * [Usage](usage.md)
@@ -8,18 +8,18 @@
 
 * Authentication Driver
 
-  * [Introduction](docs/auth/introduction.md)
-  * [Installation & Basic Setup](docs/auth/installation.md)
-  * [Quick Start - From Scratch](docs/auth/quick-start.md)
-  * Features
-    * [Providers](docs/auth/providers.md)
-    * [Scopes](docs/auth/scopes.md)
-    * [Rules](docs/auth/rules.md)
-    * [Events](docs/auth/events.md)
-    * Synchronizing
-        * [Attributes](docs/auth/syncing.md#attributes)
-        * [Passwords](docs/auth/syncing.md#passwords)
-    * [Model Binding](docs/auth/model-binding.md)
-    * [Login Fallback](docs/auth/fallback.md)
-    * [Single Sign On (SSO) Middleware](docs/auth/middleware.md)
-    * [Importing Users](docs/auth/importing.md)
+  * [Introduction & Quick Start](auth/introduction.md)
+  * [Installation](auth/installation.md)
+  * [Setup](auth/setup.md)
+    * [Connection](auth/setup.md#connection)
+    * [Provider](auth/setup.md#provider)
+    * [Rules](auth/setup.md#rules)
+    * [Scopes](auth/setup.md#scopes)
+    * [Usernames](auth/setup.md#usernames)
+    * [Passwords](auth/setup.md#passwords)
+    * [Login Fallback](auth/setup.md#login-fallback)
+    * [Synchronizing](auth/setup.md#synchronizing)
+  * [Events](docs/auth/events.md)
+  * [Model Binding](docs/auth.model-binding.md)
+  * [Importing](docs/auth/importing.md)
+  
