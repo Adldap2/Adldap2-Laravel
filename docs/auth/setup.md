@@ -358,6 +358,23 @@ public function login(Request $request)
 
 ## Passwords
 
+### Sync
+
+The password sync option allows you to automatically synchronize users LDAP passwords to your local database. These passwords are hashed natively by Laravel using the bcrypt() method.
+
+Enabling this option would also allow users to login to their accounts using the password last used when an LDAP connection was present.
+
+If this option is disabled, the local database account is applied a random 16 character hashed password upon first login, and will lose access to this account upon loss of LDAP connectivity.
+
+This option must be true or false and is only applicable
+to the `DatabaseUserProvider`.
+
+### Column
+
+The column option allows you to change the database column that contains the users password.
+
+Change this if your database column is different than `password` and you have enabled the above sync option.
+
 ## Login Fallback
 
 The login fallback option allows you to login as a local database user using the default Eloquent authentication
