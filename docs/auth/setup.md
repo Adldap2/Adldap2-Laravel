@@ -271,11 +271,7 @@ All other users will be denied authentication, even if their credentials are val
 
 ## Usernames
 
-Inside your `config/ldap_auth.php` file there is a configuration option named `usernames`.
-
-This array contains the `ldap` attributes you use for authenticating users, as well as the `eloquent` attribute for locating the LDAP users local model.
-
-You can ignore the `windows` configuration array, unless you're planning on using the included [middleware](middleware.md) for single sign on authentication.
+Inside your `config/ldap_auth.php` file there is a configuration option named `usernames`:
 
 ```php
 'usernames' => [
@@ -295,7 +291,51 @@ You can ignore the `windows` configuration array, unless you're planning on usin
 ],
 ```
 
-If you're using a `username` field instead of `email` in your application, you will need to change this configuration.
+Let's go through each option with their meaning.
+
+### LDAP
+
+The LDAP array contains two elements each with a key and value.
+
+The `discover` key contains the LDAP users attribute you would like your authenticating users to be located by.
+
+> **Note**: If you're using the `NoDatabaseUserProvider` it is extremely important to know that this value is used as the key to retrieve the inputted username from the `Auth::attempt()` credentials array.
+>
+> For example, if you're executing an `Auth::attempt(['username' => 'jdoe..'])` and you have a `discover` value set to `userprincipalname` then the Adldap2-Laravel auth driver will try to retrieve your users username from the given credentials array with the key `userprincipalname`. This would generate an exception since this key does not exist in the above credentials array.
+
+For example, executing the following:
+
+```php
+Auth::attempt(['email' => 'jdoe@corp.com', 'password' => 'password'])
+```
+
+Will perform an LDAP search for a user with the `userprincipalname` equal to `jdoe@corp.com`.
+
+If you change `Auth::attempt()` `email` key, you will need to change the `eloquent` key to match.
+
+The `authenticate` key contains the LDAP users attriubte you would like to perform LDAP authentication on.
+
+For example, executing the following:
+
+```php
+Auth::attempt(['email' => 'jdoe@corp.com', 'password' => 'password'])
+```
+
+Will try to locate a user in your LDAP directory with a `userprincipalname` equal to `jdoe@corp.com`. Then, when an LDAP record of this user is located, their `disintinguishedname` will be retrieved from this record, an be passed into an `Adldap\Auth\Guard::attempt()` (ex `Guard::attempt('cn=John Doe,ou=Users,dc=corp,dc=com', 'password')`).
+
+> **Note**: It's **extremely** important to know that your configured `account_suffix` and `account_prefix` (located in your `config/ldap.php` file) will be appended or prepended *onto* this passed in username.
+
+You can ignore the `windows` configuration array, unless you're planning on using the included [middleware](middleware.md) for single sign on authentication.
+
+### Eloquent
+
+The eloquent key contains a value that should match the username column you have set up in your `users` database table.
+
+For example, if you're using a `username` field instead of `email` in your application, you will need to change this option to `username`.
+
+> **Note**: If you're using the `DatabaseUserProvider` it is extremely important to know that this value is used as the key to retrieve the inputted username from the `Auth::attempt()` credentials array.
+>
+> For example, if you're executing an `Auth::attempt(['username' => 'jdoe..'])` and you have an `eloquent` value set to `email` then the Adldap2-Laravel auth driver will try to retrieve your users username from the given credentials array with the key `email`. This would generate an exception since this key does not exist in the above credentials array.
 
 > **Note**: Keep in mind you will also need to update your `database/migrations/2014_10_12_000000_create_users_table.php`
 > migration to use a username field instead of email, **as well as** your LoginController.
@@ -306,11 +346,8 @@ For example, if you'd like to login users by their `samaccountname`:
 'usernames' => [
 
     'ldap' => [
-        
         'discover' => 'samaccountname', // Changed from `userprincipalname`
-        
         'authenticate' => 'distinguishedname',
-    
     ],
     
     'eloquent' => 'username', // Changed from `email`
