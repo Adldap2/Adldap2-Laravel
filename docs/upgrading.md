@@ -41,6 +41,10 @@ authenticated, not your configured administrator account.
 
 This means you will need to add your suffix or prefix onto your configured administrators username if you require it.
 
+#### Connection Settings
+
+The configuration option named `connection_settings` inside each of your configured connections in the `adldap.php` (now `ldap.php`) configuration file has been renamed to `settings` for simplicity.
+
 ### Authentication Driver
 
 The authentication driver name has been *renamed* to **ldap** instead of **adldap**. This is for the sake of simplicity.
