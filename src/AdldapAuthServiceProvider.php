@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Authenticated;
 
 class AdldapAuthServiceProvider extends ServiceProvider
@@ -63,6 +64,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
         // model to their Eloquent model upon authentication (if configured).
         // This allows us to utilize their LDAP model right
         // after authentication has passed.
+        Event::listen(Login::class, Listeners\BindsLdapUserModel::class);
         Event::listen(Authenticated::class, Listeners\BindsLdapUserModel::class);
 
         if ($this->isLogging()) {

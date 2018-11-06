@@ -6,7 +6,6 @@ use Adldap\Laravel\Auth\Provider;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Traits\HasLdapUser;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class BindsLdapUserModel
@@ -14,13 +13,20 @@ class BindsLdapUserModel
     /**
      * Binds the LDAP user record to their model.
      *
-     * @param Authenticated $event
+     * @param mixed $event
      *
      * @return void
      */
-    public function handle(Authenticated $event)
+    public function handle($event)
     {
-        if ($this->isUsingAdldapProvider() && $this->canBind($event->user)) {
+        // Before we bind the users LDAP model, we will verify they are using the
+        // Adldap authentication provider, the required trait, and the
+        // users LDAP property has not already been set.
+        if (
+            $this->isUsingAdldapProvider()
+            && $this->canBind($event->user)
+            && is_null($event->user->ldap)
+        ) {
             $event->user->setLdapUser(
                 Resolver::byModel($event->user)
             );
