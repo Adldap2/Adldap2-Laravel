@@ -133,7 +133,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         ];
 
         Resolver::shouldReceive('byCredentials')->times(3)->andReturn(null)
-            ->shouldReceive('byModel')->once()->andReturn(null);
+            ->shouldReceive('byModel')->times(2)->andReturn(null);
 
         $this->assertTrue(Auth::attempt($credentials));
 
