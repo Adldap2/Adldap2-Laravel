@@ -56,7 +56,7 @@ however you will still need to publish the configuration file using the
 command below:
 
 ```bash
-php artisan vendor:publish --provdier="Adldap\Laravel\AdldapAuthServiceProvider"
+php artisan vendor:publish --provider="Adldap\Laravel\AdldapAuthServiceProvider"
 ```
 
 Then, open your `config/auth.php` configuration file and change the `driver`
