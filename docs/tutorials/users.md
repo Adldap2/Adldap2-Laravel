@@ -120,3 +120,48 @@ $jdoe->userAccountControl = $uac->getValue();
 
 $jdoe->save();
 ```
+
+You can also use 'setter' methods to perform the same task.
+
+```php
+$jdoe = Adldap::search()->users()->find('jdoe');
+
+$uac = new Adldap\Models\Attributes\AccountControl();
+
+$uac->accountIsNormal();
+
+$jdoe
+    ->setDepartment('Accounting');
+    ->setTelephoneNumber('555 555-5555')
+    ->setMobileNumber('555 555-5555')
+    ->setUserAccountControl($uac);
+
+$jdoe->save();
+```
+
+Using setter methods offer a little bit of benefit, for example you can see above that
+`$uac->getValue()` does not need to be called as the `setUserAccountControl()` method
+will automatically convert an `AccountControl` object to its integer value.
+
+Setter methods are also chainable (if you prefer that syntax).
+
+## Deleting Users
+
+As any other returned model in Adldap2, you can call the `delete()` method
+to delete a user from your directory:
+
+```php
+$user = Adldap::search()->find('jdoe');
+
+$user->delete();
+```
+
+Once you `delete()` a user (successfully), the `exists` property on their model is set to `false`:
+
+```php
+$user = Adldap::search()->find('jdoe');
+
+$user->delete();
+
+var_dump($user->exists); // Returns 'bool(false)'
+```
