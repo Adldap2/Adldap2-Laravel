@@ -448,7 +448,7 @@ LDAP users `userprincipalname` and common name (`cn`) attribute, **then saved**.
 
 Feel free to add more attributes here, however be sure that your `users` database table contains
 the key you've entered, otherwise you will receive a SQL exception upon authentication, due
-to the column not existing on your users datable table.
+to the column not existing on your users database table.
 
 ### Attribute Handlers
 
