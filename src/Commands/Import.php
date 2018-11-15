@@ -119,7 +119,7 @@ class Import
         foreach ($toSync as $modelField => $ldapField) {
             // If the field is a loaded class and contains a `handle()` method,
             // we need to construct the attribute handler.
-            if (class_exists($ldapField) && method_exists($ldapField, 'handle')) {
+            if (is_string($ldapField) && class_exists($ldapField) && method_exists($ldapField, 'handle')) {
                 // We will construct the attribute handler using Laravel's
                 // IoC to allow developers to utilize application
                 // dependencies in the constructor.
@@ -128,9 +128,10 @@ class Import
 
                 $handler->handle($this->user, $model);
             } else {
-                // We'll try to retrieve the value from the LDAP model. If nothing is returned
-                // we'll assume it's a raw value (such as a boolean, array, integer etc.).
-                $model->{$modelField} = $this->user->getFirstAttribute($ldapField) ?? $ldapField;
+                // We'll try to retrieve the value from the LDAP model. If the LDAP field is a string,
+                // we'll assume the developer wants the attribute, or a null value. Otherwise,
+                // the raw value of the LDAP field will be used.
+                $model->{$modelField} = is_string($ldapField) ? $this->user->getFirstAttribute($ldapField) : $ldapField;
             }
         }
     }

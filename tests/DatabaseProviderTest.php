@@ -117,6 +117,58 @@ class DatabaseProviderTest extends DatabaseTestCase
     }
 
     /** @test */
+    public function sync_attribute_as_string_will_return_null()
+    {
+        config([
+            'ldap_auth.sync_attributes' => [
+                'email' => 'userprincipalname',
+                'name' => 'cn',
+            ]
+        ]);
+
+        // LDAP user does not have common name.
+        $user = $this->makeLdapUser([
+            'userprincipalname'  => 'jdoe@email.com',
+        ]);
+
+        $importer = new Import($user, new EloquentUser());
+
+        $model = $importer->handle();
+
+        $this->assertInstanceOf(EloquentUser::class, $model);
+        $this->assertNull($model->name);
+    }
+
+    /** @test */
+    public function sync_attribute_as_int_boolean_or_array_will_be_used()
+    {
+        config([
+            'ldap_auth.sync_attributes' => [
+                'email' => 'userprincipalname',
+                'string' => 'not-an-LDAP-attribute',
+                'int' => 1,
+                'bool' => true,
+                'array' => ['one', 'two']
+            ]
+        ]);
+
+        // LDAP user does not have common name.
+        $user = $this->makeLdapUser([
+            'userprincipalname'  => 'jdoe@email.com',
+        ]);
+
+        $importer = new Import($user, new EloquentUser());
+
+        $model = $importer->handle();
+
+        $this->assertInstanceOf(EloquentUser::class, $model);
+        $this->assertNull($model->string);
+        $this->assertEquals($model->int, 1);
+        $this->assertEquals($model->bool, true);
+        $this->assertEquals($model->array, ['one', 'two']);
+    }
+
+    /** @test */
     public function auth_attempts_fallback_using_config_option()
     {
         config(['ldap_auth.login_fallback' => true]);
