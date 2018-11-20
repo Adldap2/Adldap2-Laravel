@@ -8,7 +8,7 @@
 
 ## Creating Users
 
-To begin, creating a user is actually quite simple, as it only requries a Common Name:
+To begin, creating a user is actually quite simple, as it only requires a Common Name:
 
 ```php
 $user = Adldap::make()->user([
@@ -31,7 +31,8 @@ $user = Adldap::make()->user([
 $user->save();
 ```
 
-If you don't provide a Distinguished Name to the user during creation, one will be set for you automatically by taking your configured `base_dn` and using the users Common Name you give them:
+If you don't provide a Distinguished Name to the user during creation, one will be set for you automatically
+by taking your configured `base_dn` and using the users Common Name you give them:
 
 ```php
 $user = Adldap::make()->user([

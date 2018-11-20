@@ -8,7 +8,14 @@ perform before trying to work it out on your own.
 
 ### Querying for your Base DN
 
+If you're not sure what your base distinguished name should be, you can use the query
+builder to locate it for you if you're making a successful connection to the server:
 
+```php
+$base = Adldap::search()->findBaseDn();
+
+echo $base; // Returns 'dc=corp,dc=acme,dc=org'
+```
 
 ### Querying for Enabled / Disabled Users
 
