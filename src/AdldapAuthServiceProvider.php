@@ -7,7 +7,6 @@ use Adldap\Laravel\Resolvers\UserResolver;
 use Illuminate\Contracts\Auth\UserProvider;
 use Adldap\Laravel\Resolvers\ResolverInterface;
 use Adldap\Laravel\Commands\Console\Import;
-use Illuminate\Contracts\Auth\UserProvider;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
