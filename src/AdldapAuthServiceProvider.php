@@ -6,6 +6,7 @@ use Adldap\AdldapInterface;
 use Adldap\Laravel\Resolvers\UserResolver;
 use Adldap\Laravel\Resolvers\ResolverInterface;
 use Adldap\Laravel\Commands\Console\Import;
+use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
@@ -90,10 +91,10 @@ class AdldapAuthServiceProvider extends ServiceProvider
     {
         $provider = Config::get('ldap_auth.provider', DatabaseUserProvider::class);
 
-        // The DatabaseUserProvider has some extra dependencies needed,
+        // The DatabaseUserProviderInterface has some extra dependencies needed,
         // so we will validate that we have them before
         // constructing a new instance.
-        if ($provider == DatabaseUserProvider::class) {
+        if (array_key_exists(DatabaseUserProviderInterface::class,class_implements($provider))) {
             $model = array_get($config, 'model');
 
             if (!$model) {
