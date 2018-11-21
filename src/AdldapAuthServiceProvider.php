@@ -99,7 +99,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
     {
         $provider = Config::get('ldap_auth.provider', DatabaseUserProvider::class);
 
-        // The Interface UserProvider has some extra dependencies needed,
+        // The DatabaseUserProviderInterface has some extra dependencies needed,
         // so we will validate that we have them before
         // constructing a new instance.
         if (array_key_exists(DatabaseUserProviderInterface::class,class_implements($provider))) {
