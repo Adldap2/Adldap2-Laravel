@@ -7,6 +7,10 @@ use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
+>>>>>>> parent of e6ce6d8... Update DatabaseUserProvider.php
 =======
 use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
 >>>>>>> parent of e6ce6d8... Update DatabaseUserProvider.php
