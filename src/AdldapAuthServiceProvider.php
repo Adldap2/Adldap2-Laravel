@@ -8,6 +8,10 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Adldap\Laravel\Resolvers\ResolverInterface;
 use Adldap\Laravel\Commands\Console\Import;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
+>>>>>>> parent of 124003d... Update AdldapAuthServiceProvider.php
 =======
 use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
 >>>>>>> parent of 124003d... Update AdldapAuthServiceProvider.php
