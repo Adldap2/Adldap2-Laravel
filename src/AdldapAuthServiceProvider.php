@@ -8,12 +8,16 @@ use Adldap\Laravel\Resolvers\ResolverInterface;
 use Adldap\Laravel\Commands\Console\Import;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
 >>>>>>> parent of 124003d... Update AdldapAuthServiceProvider.php
 =======
 use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
 >>>>>>> parent of 124003d... Update AdldapAuthServiceProvider.php
+=======
+use Illuminate\Contracts\Auth\UserProvider;
+>>>>>>> parent of 363431f... Update AdldapAuthServiceProvider.php
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
