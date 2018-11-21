@@ -30,7 +30,6 @@ class AdldapAuthServiceProvider extends ServiceProvider
             $config => config_path('ldap_auth.php'),
         ]);
 
-
         $auth = Auth::getFacadeRoot();
 
         if (method_exists($auth, 'provider')) {
