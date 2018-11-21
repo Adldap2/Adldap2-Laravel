@@ -6,6 +6,7 @@ use Adldap\Models\User;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
 use Adldap\Laravel\Events\Imported;
 use Adldap\Laravel\Events\AuthenticationRejected;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
@@ -19,7 +20,7 @@ use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class DatabaseUserProvider extends Provider
+class DatabaseUserProvider extends Provider implements DatabaseUserProviderInterface
 {
     /**
      * The hasher implementation.
