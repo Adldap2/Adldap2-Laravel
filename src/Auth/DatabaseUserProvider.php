@@ -18,8 +18,9 @@ use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
 
-class DatabaseUserProvider extends Provider
+class DatabaseUserProvider extends Provider implements DatabaseUserProviderInterface
 {
     /**
      * The hasher implementation.
