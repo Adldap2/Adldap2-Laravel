@@ -6,18 +6,7 @@ use Adldap\Models\User;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
->>>>>>> parent of e6ce6d8... Update DatabaseUserProvider.php
-=======
-use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
->>>>>>> parent of e6ce6d8... Update DatabaseUserProvider.php
-=======
-
->>>>>>> parent of 118a08a... Update DatabaseUserProvider.php
 use Adldap\Laravel\Events\Imported;
 use Adldap\Laravel\Events\AuthenticationRejected;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
