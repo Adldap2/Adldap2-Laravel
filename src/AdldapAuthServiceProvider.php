@@ -14,6 +14,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Authenticated;
+use Adldap\Laravel\Contracts\DatabaseUserProviderInterface;
 
 class AdldapAuthServiceProvider extends ServiceProvider
 {
@@ -93,7 +94,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
         // The DatabaseUserProvider has some extra dependencies needed,
         // so we will validate that we have them before
         // constructing a new instance.
-        if ($provider == DatabaseUserProvider::class) {
+        if (array_key_exists(DatabaseUserProviderInterface::class, class_implements($provider))) {
             $model = array_get($config, 'model');
 
             if (!$model) {
