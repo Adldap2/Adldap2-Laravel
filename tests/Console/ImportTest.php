@@ -133,7 +133,7 @@ class ImportTest extends DatabaseTestCase
         $model = TestUser::create([
             'email' => 'jdoe@email.com',
             'name' => 'John Doe',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'),
         ]);
 
         $this->assertFalse($model->trashed());
