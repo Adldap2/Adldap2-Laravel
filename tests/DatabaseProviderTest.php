@@ -176,7 +176,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         EloquentUser::create([
             'email'    => 'jdoe@email.com',
             'name'     => 'John Doe',
-            'password' => bcrypt('Password123'),
+            'password' => Hash::make('Password123'),
         ]);
 
         $credentials = [
@@ -206,7 +206,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         EloquentUser::create([
             'email'    => 'jdoe@email.com',
             'name'     => 'John Doe',
-            'password' => bcrypt('Password123'),
+            'password' => Hash::make('Password123'),
         ]);
 
         $credentials = [
