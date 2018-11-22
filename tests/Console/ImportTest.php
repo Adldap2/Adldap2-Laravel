@@ -4,6 +4,7 @@ namespace Adldap\Laravel\Tests\Console;
 
 use Mockery as m;
 use Adldap\Query\Builder;
+use Illuminate\Support\Facades\Hash;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Tests\Models\TestUser;
 use Adldap\Laravel\Tests\DatabaseTestCase;
@@ -93,7 +94,7 @@ class ImportTest extends DatabaseTestCase
         $model = TestUser::create([
             'email' => 'jdoe@email.com',
             'name' => 'John Doe',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'),
         ]);
 
         $model->delete();
