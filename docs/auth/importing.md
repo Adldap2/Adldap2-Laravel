@@ -49,6 +49,37 @@ After it has displayed all users, you will then be asked:
 Successfully imported / synchronized 2 user(s).
 ```
 
+## Scheduling the Command
+
+To run the import as a scheduled job, place the following in your `app/Console/Kernel.php` in the command scheduler:
+
+```php
+/**
+ * Define the application's command schedule.
+ *
+ * @param \Illuminate\Console\Scheduling\Schedule $schedule
+ *
+ * @return void
+ */
+protected function schedule(Schedule $schedule)
+{
+    // Import LDAP users hourly.
+    $schedule->command('adldap:import', [
+        '--no-interaction',
+        '--restore',
+        '--delete',
+        '--filter' => '(objectclass=user)',
+    ])->hourly();
+}
+```
+
+The above scheduled import command will:
+
+- Run without interaction and import new users as well as synchronize already imported users
+- Restore user models who have been re-activated in your LDAP directory (if you're using [SoftDeletes](https://laravel.com/docs/5.7/eloquent#soft-deleting))
+- Soft-Delete user models who have been deactived in your LDAP directory (if you're using [SoftDeletes](https://laravel.com/docs/5.7/eloquent#soft-deleting))
+- Only import users that have an `objectclass` equal to `user`
+
 ### Importing a Single User
 
 To import a single user, insert one of their attributes and Adldap2 will try to locate the user for you:
