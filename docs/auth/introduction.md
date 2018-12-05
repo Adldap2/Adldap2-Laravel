@@ -145,12 +145,9 @@ the process below for your Laravel version. Otherwise ignore this step.
 
 15. You should now be able to login to your Laravel application using LDAP authentication!
 
-    If you check out your database
-  in your `users` table, you'll see that your LDAP account was synchronized to a local user account.
-  
-  
-    This means that
-  you can attach data regularly to this user as you would with standard Laravel authentication.
+    If you check out your database in your `users` table, you'll see that your LDAP account was synchronized to a local user account.
+    
+    This means that you can attach data regularly to this user as you would with standard Laravel authentication.
 
     If you're having issues, and you're unable to authenticate LDAP users, please check your configuration settings inside the `ldap.php` and `ldap_auth.php` files as these directly impact your applications ability to  authenticate.
 
