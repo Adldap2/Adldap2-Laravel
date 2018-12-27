@@ -71,4 +71,18 @@ value inside the `users` authentication provider to `ldap`:
 ],
 ```
 
+> **Tip**: Now that you've enabled LDAP authentication, you may want to turn off some of
+> Laravel's authorization routes such as password resets, registration, and email
+> verification.
+>
+> You can do so in your `routes/web.php` file via:
+> 
+> ```php
+> Auth::routes([
+>    'reset' => false,
+>    'verify' => false,
+>    'register' => false,
+> ]);
+> ```
+
 Now that you've completed the basic installation, let's move along to the [setup guide](setup.md).
