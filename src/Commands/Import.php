@@ -119,7 +119,7 @@ class Import
         foreach ($toSync as $modelField => $ldapField) {
             // If the field is a loaded class and contains a `handle()` method,
             // we need to construct the attribute handler.
-            if (is_string($ldapField) && class_exists($ldapField) && method_exists($ldapField, 'handle')) {
+            if ($this->isHandler($ldapField)) {
                 // We will construct the attribute handler using Laravel's
                 // IoC to allow developers to utilize application
                 // dependencies in the constructor.
@@ -134,5 +134,19 @@ class Import
                 $model->{$modelField} = is_string($ldapField) ? $this->user->getFirstAttribute($ldapField) : $ldapField;
             }
         }
+    }
+
+    /**
+     * Determines if the given handler value is a class that contains the 'handle' method.
+     *
+     * @param mixed $handler
+     *
+     * @return bool
+     */
+    protected function isHandler($handler)
+    {
+        return is_string($handler) &&
+            class_exists($handler) &&
+            method_exists($handler, 'handle');
     }
 }
