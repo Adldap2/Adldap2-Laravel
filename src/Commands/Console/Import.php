@@ -3,6 +3,7 @@
 namespace Adldap\Laravel\Commands\Console;
 
 use Exception;
+use UnexpectedValueException;
 use Adldap\Models\User;
 use Adldap\Laravel\Events\Imported;
 use Adldap\Laravel\Facades\Resolver;
@@ -10,8 +11,8 @@ use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Commands\Import as ImportUser;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
 class Import extends Command
@@ -329,7 +330,34 @@ class Import extends Command
      */
     protected function model() : Model
     {
-        return Auth::getProvider()->createModel();
+        $model = Config::get('ldap_auth.model') ?? $this->determineModel();
+
+        return new $model;
+    }
+
+    /**
+     * Retrieves the model by checking the configured LDAP authentication providers.
+     *
+     * @return string
+     *
+     * @throws UnexpectedValueException
+     */
+    protected function determineModel()
+    {
+        // Retrieve all of the configured authentication providers that
+        // use the LDAP driver and have a configured model.
+        $providers = array_where(Config::get('auth.providers'), function ($value, $key) {
+            return $value['driver'] == 'ldap' && array_key_exists('model', $value);
+        });
+
+        // Pull the first driver and return a new model instance.
+        if ($ldap = reset($providers)) {
+            return $ldap['model'];
+        }
+
+        throw new UnexpectedValueException(
+            'Unable to retrieve LDAP authentication driver. Did you forget to configure it?'
+        );
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel;
 
+use RuntimeException;
 use Adldap\AdldapInterface;
 use Adldap\Laravel\Resolvers\UserResolver;
 use Adldap\Laravel\Resolvers\ResolverInterface;
@@ -81,7 +82,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
      * @param Hasher $hasher
      * @param array  $config
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * 
      * @return \Illuminate\Contracts\Auth\UserProvider
      */
@@ -90,12 +91,14 @@ class AdldapAuthServiceProvider extends ServiceProvider
         $provider = Config::get('ldap_auth.provider', DatabaseUserProvider::class);
 
         // The DatabaseUserProvider requires a model to be configured
-        // in the configuration. We'll validate this here.
+        // in the configuration. We will validate this here.
         if (is_a($provider, DatabaseUserProvider::class, $allowString = true)) {
-            $model = array_get($config, 'model');
+            // We will try to retrieve their model from the config file,
+            // otherwise we will try to use the providers config array.
+            $model = Config::get('ldap_auth.model') ?? array_get($config, 'model');
 
             if (!$model) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     "No model is configured. You must configure a model to use with the {$provider}."
                 );
             }
