@@ -95,7 +95,9 @@ class Import
 
         foreach ($this->credentials as $key => $value) {
             if (! Str::contains($key, 'password')) {
-                $query->where($key, $value);
+                // We need to lowercase all values so we locate the
+                // proper model. This avoids case sensitivity.
+                $query->where($key, strtolower($value));
             }
         }
 
