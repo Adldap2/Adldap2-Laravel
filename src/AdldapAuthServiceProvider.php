@@ -64,8 +64,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
         // model to their Eloquent model upon authentication (if configured).
         // This allows us to utilize their LDAP model right
         // after authentication has passed.
-        Event::listen(Login::class, Listeners\BindsLdapUserModel::class);
-        Event::listen(Authenticated::class, Listeners\BindsLdapUserModel::class);
+        Event::listen([Login::class, Authenticated::class], Listeners\BindsLdapUserModel::class);
 
         if ($this->isLogging()) {
             // If logging is enabled, we will set up our event listeners that
