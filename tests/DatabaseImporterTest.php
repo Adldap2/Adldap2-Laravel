@@ -29,7 +29,7 @@ class DatabaseImporterTest extends DatabaseTestCase
     {
         $user = $this->makeLdapUser([
             'cn' => 'John Doe',
-            'userprincipalname' => 'jdoe@email.com',
+            'userprincipalname' => 'jdoe@EMAIL.com',
         ]);
 
         $m1 = (new Import($user, new TestUser(), ['email' => 'jdoe@email.com']))->handle();
