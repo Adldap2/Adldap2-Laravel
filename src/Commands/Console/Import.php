@@ -3,6 +3,7 @@
 namespace Adldap\Laravel\Commands\Console;
 
 use Exception;
+use RuntimeException;
 use UnexpectedValueException;
 use Adldap\Models\User;
 use Adldap\Laravel\Events\Imported;
@@ -40,7 +41,7 @@ class Import extends Command
      *
      * @return void
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @throws \Adldap\Models\ModelNotFoundException
      */
     public function handle()
@@ -50,7 +51,7 @@ class Import extends Command
         $count = count($users);
 
         if ($count === 0) {
-            throw new \RuntimeException("There were no users found to import.");
+            throw new RuntimeException("There were no users found to import.");
         } else if ($count === 1) {
             $this->info("Found user '{$users[0]->getCommonName()}'.");
         } else {
@@ -92,12 +93,9 @@ class Import extends Command
 
         foreach ($users as $user) {
             try {
-                // Get the users credentials array.
-                $credentials = $this->getUserCredentials($user);
-
                 // Import the user and retrieve it's model.
                 $model = Bus::dispatch(
-                    new ImportUser($user, $this->model(), $credentials)
+                    new ImportUser($user, $this->model())
                 );
 
                 // Set the users password.
@@ -219,24 +217,6 @@ class Import extends Command
         return array_filter($users, function ($user) {
             return $user instanceof User;
         });
-    }
-
-    /**
-     * Returns the specified users credentials array.
-     *
-     * @param User $user
-     *
-     * @return array
-     */
-    protected function getUserCredentials(User $user) : array
-    {
-        $resolver = Resolver::getFacadeRoot();
-
-        $username = $user->getFirstAttribute($resolver->getLdapDiscoveryAttribute());
-
-        return [
-            $resolver->getEloquentUsernameAttribute() => $username,
-        ];
     }
 
     /**
