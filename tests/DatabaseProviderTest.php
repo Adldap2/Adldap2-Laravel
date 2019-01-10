@@ -48,7 +48,6 @@ class DatabaseProviderTest extends DatabaseTestCase
         Resolver::shouldReceive('byModel')->once()->andReturn($user)
             ->shouldReceive('byCredentials')->once()->andReturn($user)
             ->shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
-            ->shouldReceive('getLdapUserIdentifier')->andReturn($user->getConvertedGuid())
             ->shouldReceive('authenticate')->once()->andReturn(true);
 
         $this->assertTrue(Auth::attempt($credentials));
@@ -67,7 +66,6 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         Resolver::shouldReceive('byCredentials')->once()->andReturn($user)
             ->shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
-            ->shouldReceive('getLdapUserIdentifier')->andReturn($user->getConvertedGuid())
             ->shouldReceive('authenticate')->once()->andReturn(false);
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
@@ -120,8 +118,7 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $importer = new Import($user, new EloquentUser());
 
-        Resolver::shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
-                ->shouldReceive('getLdapUserIdentifier')->andReturn($user->getConvertedGuid());
+        Resolver::shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid');
 
         $this->assertInstanceOf(EloquentUser::class, $importer->handle());
     }
@@ -306,7 +303,6 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         Resolver::shouldReceive('byCredentials')->twice()->andReturn($user)
             ->shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
-            ->shouldReceive('getLdapUserIdentifier')->andReturn($user->getConvertedGuid())
             ->shouldReceive('byModel')->once()->andReturn($user)
             ->shouldReceive('authenticate')->twice()->andReturn(true);
 
@@ -334,7 +330,6 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         Resolver::shouldReceive('byCredentials')->once()->andReturn($user)
             ->shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
-            ->shouldReceive('getLdapUserIdentifier')->andReturn($user->getConvertedGuid())
             ->shouldReceive('authenticate')->once()->andReturn(true);
 
         $this->assertFalse(Auth::attempt($credentials));
