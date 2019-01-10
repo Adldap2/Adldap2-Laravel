@@ -122,9 +122,7 @@ class WindowsAuthenticate
      */
     protected function resolveUserByUsername($username)
     {
-        return Resolver::query()
-            ->where([$this->discover() => $username])
-            ->first();
+        return Resolver::query()->whereEquals($this->discover(), $username)->first();
     }
 
     /**
