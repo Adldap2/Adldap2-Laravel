@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Resolvers;
 
+use RuntimeException;
 use Adldap\Models\User;
 use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
@@ -70,13 +71,18 @@ class UserResolver implements ResolverInterface
         // Depending on the configured user provider, the
         // username field will differ for retrieving
         // users by their credentials.
-        if ($this->getAppAuthProvider() instanceof NoDatabaseUserProvider) {
-            $username = $credentials[$this->getLdapDiscoveryAttribute()];
-        } else {
-            $username = $credentials[$this->getDatabaseUsernameColumn()];
+        $attribute = $this->getAppAuthProvider() instanceof NoDatabaseUserProvider ?
+            $this->getLdapDiscoveryAttribute() :
+            $this->getDatabaseUsernameColumn();
+
+        if (!array_key_exists($attribute, $credentials)) {
+            throw new RuntimeException("The '$attribute' key is missing from the given credentials array.");
         }
 
-        return $this->query()->whereEquals($this->getLdapDiscoveryAttribute(), $username)->first();
+        return $this->query()->whereEquals(
+            $this->getLdapDiscoveryAttribute(),
+            $credentials[$attribute]
+        )->first();
     }
 
     /**
@@ -144,14 +150,6 @@ class UserResolver implements ResolverInterface
         }
 
         return $query;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLdapIdentifierAttribute() : string
-    {
-        return strtolower(Config::get('ldap_auth.identifiers.ldap.id', 'objectguid'));
     }
 
     /**
