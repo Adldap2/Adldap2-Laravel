@@ -108,7 +108,7 @@ class DatabaseUserProvider extends Provider
 
             // Import / locate the local user account.
             return Bus::dispatch(
-                new Import($user, $this->createModel(), $credentials)
+                new Import($user, $this->createModel())
             );
         }
 
