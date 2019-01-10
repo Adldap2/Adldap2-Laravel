@@ -103,7 +103,7 @@ return [
 
     ],
 
-    'usernames' => [
+    'identifiers' => [
 
         /*
         |--------------------------------------------------------------------------
@@ -133,6 +133,8 @@ return [
 
         'ldap' => [
 
+            'id' => 'objectguid',
+
             'discover' => 'userprincipalname',
 
             'authenticate' => 'distinguishedname',
@@ -153,7 +155,13 @@ return [
         |
         */
 
-        'eloquent' => 'email',
+        'database' => [
+
+            'id_column' => 'objectguid',
+
+            'username_column' => 'email',
+
+        ],
 
         /*
         |--------------------------------------------------------------------------
