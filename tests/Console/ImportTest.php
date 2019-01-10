@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Tests\Console;
 
+use Adldap\Models\User;
 use Mockery as m;
 use Adldap\Query\Builder;
 use Illuminate\Support\Facades\Hash;
@@ -21,8 +22,8 @@ class ImportTest extends DatabaseTestCase
         $b->shouldReceive('findOrFail')->once()->with('jdoe')->andReturn($u);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('mail')
-            ->shouldReceive('getEloquentUsernameAttribute')->once()->andReturn('email');
+            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getLdapUserIdentifier')->twice()->with($u)->andReturn($u->getConvertedGuid());
 
         $this->artisan('adldap:import', ['user' => 'jdoe', '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")
@@ -38,16 +39,18 @@ class ImportTest extends DatabaseTestCase
 
         $users = [
             $this->makeLdapUser([
-                'samaccountname' => ['johndoe'],
+                'objectguid'        => ['cc07cacc-5d9d-fa40-a9fb-3a4d50a172b0'],
+                'samaccountname'    => ['johndoe'],
                 'userprincipalname' => ['johndoe@email.com'],
-                'mail'           => ['johndoe@email.com'],
-                'cn'             => ['John Doe'],
+                'mail'              => ['johndoe@email.com'],
+                'cn'                => ['John Doe'],
             ]),
             $this->makeLdapUser([
-                'samaccountname' => ['janedoe'],
+                'objectguid'        => ['cc07cacc-5d9d-fa40-a9fb-3a4d50a172b1'],
+                'samaccountname'    => ['janedoe'],
                 'userprincipalname' => ['janedoe@email.com'],
-                'mail'           => ['janedoe@email.com'],
-                'cn'             => ['Jane Doe'],
+                'mail'              => ['janedoe@email.com'],
+                'cn'                => ['Jane Doe'],
             ])
         ];
 
@@ -55,8 +58,10 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getResults')->once()->andReturn($users);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getLdapDiscoveryAttribute')->twice()->andReturn('mail')
-            ->shouldReceive('getEloquentUsernameAttribute')->twice()->andReturn('email');
+            ->shouldReceive('getDatabaseIdentifierColumn')->times(4)->andReturn('objectguid')
+            ->shouldReceive('getLdapUserIdentifier')->times(4)->andReturnUsing(function (User $user) {
+                return $user->getConvertedGuid();
+            });
 
         $this->artisan('adldap:import', ['--no-interaction' => true])
             ->expectsOutput("Found 2 user(s).")
@@ -76,8 +81,8 @@ class ImportTest extends DatabaseTestCase
         $b->shouldReceive('findOrFail')->once()->with('jdoe')->andReturn($u);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('mail')
-            ->shouldReceive('getEloquentUsernameAttribute')->once()->andReturn('email');
+            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getLdapUserIdentifier')->twice()->andReturn($u->getConvertedGuid());
 
         $this->artisan('adldap:import', ['user' => 'jdoe'])
             ->expectsOutput("Found user 'John Doe'.")
@@ -91,9 +96,12 @@ class ImportTest extends DatabaseTestCase
 
     public function test_model_will_be_restored_when_ldap_account_is_active()
     {
+        $user = $this->makeLdapUser();
+
         $model = TestUser::create([
-            'email' => 'jdoe@email.com',
-            'name' => 'John Doe',
+            'objectguid' => $user->getConvertedGuid(),
+            'email' => $user->getUserPrincipalName(),
+            'name' => $user->getCommonName(),
             'password' => Hash::make('password'),
         ]);
 
@@ -101,13 +109,7 @@ class ImportTest extends DatabaseTestCase
 
         $this->assertTrue($model->trashed());
 
-        $user = $this->makeLdapUser();
-
-        $ac = new AccountControl();
-
-        $ac->accountIsNormal();
-
-        $user->setUserAccountControl($ac);
+        $user->setUserAccountControl((new AccountControl())->accountIsNormal());
 
         $this->assertTrue($user->isEnabled());
 
@@ -117,8 +119,8 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getResults')->once()->andReturn([$user]);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('mail')
-            ->shouldReceive('getEloquentUsernameAttribute')->once()->andReturn('email');
+            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getLdapUserIdentifier')->twice()->andReturn($user->getConvertedGuid());
 
         $this->artisan('adldap:import', ['--restore' => true, '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")
@@ -130,7 +132,14 @@ class ImportTest extends DatabaseTestCase
 
     public function test_model_will_be_soft_deleted_when_ldap_account_is_disabled()
     {
+        $user = $this->makeLdapUser();
+
+        $user->setUserAccountControl((new AccountControl())->accountIsDisabled());
+
+        $this->assertTrue($user->isDisabled());
+
         $model = TestUser::create([
+            'objectguid' => $user->getConvertedGuid(),
             'email' => 'jdoe@email.com',
             'name' => 'John Doe',
             'password' => Hash::make('password'),
@@ -138,24 +147,14 @@ class ImportTest extends DatabaseTestCase
 
         $this->assertFalse($model->trashed());
 
-        $user = $this->makeLdapUser();
-
-        $ac = new AccountControl();
-
-        $ac->accountIsDisabled();
-
-        $user->setUserAccountControl($ac);
-
-        $this->assertTrue($user->isDisabled());
-
         $b = m::mock(Builder::class);
 
         $b->shouldReceive('paginate')->once()->andReturn($b)
             ->shouldReceive('getResults')->once()->andReturn([$user]);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('mail')
-            ->shouldReceive('getEloquentUsernameAttribute')->once()->andReturn('email');
+            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getLdapUserIdentifier')->twice()->andReturn($user->getConvertedGuid());
 
         $this->artisan('adldap:import', ['--delete' => true, '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")

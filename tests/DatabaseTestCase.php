@@ -20,6 +20,7 @@ class DatabaseTestCase extends TestCase
             $table->increments('id');
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('objectguid')->unique()->nullable();
             $table->string('password', 60);
             $table->rememberToken();
             $table->timestamps();

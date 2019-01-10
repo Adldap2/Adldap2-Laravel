@@ -22,7 +22,7 @@ class UserResolverTest extends TestCase
 
         $resolver = new UserResolver($ldap);
 
-        $this->assertEquals('email', $resolver->getEloquentUsernameAttribute());
+        $this->assertEquals('email', $resolver->getDatabaseUsernameColumn());
     }
 
     /** @test */
@@ -98,7 +98,7 @@ class UserResolverTest extends TestCase
     {
         $query = m::mock(Builder::class);
 
-        $query->shouldReceive('whereEquals')->once()->with('userprincipalname', 'jdoe')->andReturnSelf()
+        $query->shouldReceive('where')->once()->with(['userprincipalname', 'jdoe'])->andReturnSelf()
             ->shouldReceive('first')->andReturnNull();
 
         $ldapProvider = m::mock(ProviderInterface::class);
@@ -117,11 +117,14 @@ class UserResolverTest extends TestCase
         Auth::shouldReceive('guard')->once()->andReturnSelf()->shouldReceive('getProvider')->once()->andReturn($authProvider);
 
         Config::shouldReceive('get')->with('ldap_auth.connection', 'default')->andReturn('default')
-            ->shouldReceive('get')->with('ldap_auth.usernames.ldap.discover', 'userprincipalname')->andReturn('userprincipalname')
+            ->shouldReceive('get')->with('ldap_auth.identifiers.ldap.discover', 'userprincipalname')->andReturn('userprincipalname')
             ->shouldReceive('get')->with('ldap_auth.scopes', [])->andReturn([]);
 
         $resolver = new UserResolver($ad);
 
-        $resolver->byCredentials(['userprincipalname' => 'jdoe', 'password' => 'Password1']);
+        $resolver->byCredentials([
+            'userprincipalname' => 'jdoe',
+            'password' => 'Password1'
+        ]);
     }
 }

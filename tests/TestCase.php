@@ -28,13 +28,21 @@ class TestCase extends BaseTestCase
         ];
     }
 
+    /**
+     * Returns a new LDAP user model.
+     *
+     * @param array $attributes
+     *
+     * @return \Adldap\Models\User
+     */
     protected function makeLdapUser(array $attributes = [])
     {
         return Adldap::getDefaultProvider()->make()->user($attributes ?: [
-            'samaccountname' => ['jdoe'],
+            'objectguid'        => ['cc07cacc-5d9d-fa40-a9fb-3a4d50a172b0'],
+            'samaccountname'    => ['jdoe'],
             'userprincipalname' => ['jdoe@email.com'],
-            'mail'           => ['jdoe@email.com'],
-            'cn'             => ['John Doe'],
+            'mail'              => ['jdoe@email.com'],
+            'cn'                => ['John Doe'],
         ]);
     }
 
