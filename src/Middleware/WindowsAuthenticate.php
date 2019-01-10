@@ -79,12 +79,10 @@ class WindowsAuthenticate
 
                 return $user;
             } elseif ($provider instanceof DatabaseUserProvider) {
-                $credentials = $this->makeCredentials($user);
-
                 // Here we'll import the LDAP user. If the user already exists in
                 // our local database, it will be returned from the importer.
                 $model = Bus::dispatch(
-                    new Import($user, $this->model(), $credentials)
+                    new Import($user, $this->model())
                 );
 
                 // We'll sync / set the users password after
@@ -127,22 +125,6 @@ class WindowsAuthenticate
         return Resolver::query()
             ->where([$this->discover() => $username])
             ->first();
-    }
-
-    /**
-     * Returns a credentials array to be used in the import command.
-     *
-     * @param User $user
-     *
-     * @return array
-     */
-    protected function makeCredentials(User $user)
-    {
-        $field = Resolver::getEloquentUsernameAttribute();
-
-        $username = $user->getFirstAttribute(Resolver::getLdapDiscoveryAttribute());
-
-        return [$field => $username];
     }
 
     /**
@@ -197,7 +179,7 @@ class WindowsAuthenticate
      */
     protected function key()
     {
-        return Config::get('ldap_auth.usernames.windows.key', 'AUTH_USER');
+        return Config::get('ldap_auth.identifiers.windows.key', 'AUTH_USER');
     }
 
     /**
@@ -207,6 +189,6 @@ class WindowsAuthenticate
      */
     protected function discover()
     {
-        return Config::get('ldap_auth.usernames.windows.discover', 'samaccountname');
+        return Config::get('ldap_auth.identifiers.windows.discover', 'samaccountname');
     }
 }
