@@ -133,31 +133,41 @@ return [
 
         'ldap' => [
 
-            'id' => 'objectguid',
-
             'discover' => 'userprincipalname',
 
             'authenticate' => 'distinguishedname',
 
         ],
 
-        /*
-        |--------------------------------------------------------------------------
-        | Eloquent
-        |--------------------------------------------------------------------------
-        |
-        | The value you enter is the database column name used for locating
-        | the local database record of the authenticating user.
-        |
-        | If you're using a `username` column instead, change this to `username`.
-        |
-        | This option is only applicable to the DatabaseUserProvider.
-        |
-        */
-
         'database' => [
 
+            /*
+            |--------------------------------------------------------------------------
+            | ID Column
+            |--------------------------------------------------------------------------
+            |
+            | The value of this option is the database column that will contain the LDAP users identifier.
+            | This column does not need to be added to the sync attributes below.
+            | It is synchronized automatically.
+            |
+            | This option is only applicable to the DatabaseUserProvider.
+            |
+            */
+
             'id_column' => 'objectguid',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Username Column
+            |--------------------------------------------------------------------------
+            |
+            | The value of this option is the database column that contains your users login username.
+            |
+            | This column must be added to your sync attributes below to be properly synchronized.
+            |
+            | This option is only applicable to the DatabaseUserProvider.
+            |
+            */
 
             'username_column' => 'email',
 

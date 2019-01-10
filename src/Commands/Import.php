@@ -83,7 +83,7 @@ class Import
         return $query->where(
             Resolver::getDatabaseIdentifierColumn(),
             '=',
-            Resolver::getLdapUserIdentifier($this->user)
+            $this->user->getConvertedGuid()
         )->first();
     }
 
@@ -98,8 +98,7 @@ class Import
     {
         // Set the users identifier automatically.
         $model->setAttribute(
-            Resolver::getDatabaseIdentifierColumn(),
-            Resolver::getLdapUserIdentifier($this->user)
+            Resolver::getDatabaseIdentifierColumn(), $this->user->getConvertedGuid()
         );
 
         foreach ($this->getLdapSyncAttributes() as $modelField => $ldapField) {

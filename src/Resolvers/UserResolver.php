@@ -149,23 +149,6 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getLdapUserIdentifier(User $user): string
-    {
-        $id = $this->getLdapIdentifierAttribute();
-
-        switch ($id) {
-            case 'objectguid':
-                return $user->getConvertedGuid();
-            case 'objectsid':
-                return $user->getConvertedSid();
-            default:
-                return $user->getFirstAttribute($id);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getLdapIdentifierAttribute() : string
     {
         return strtolower(Config::get('ldap_auth.identifiers.ldap.id', 'objectguid'));

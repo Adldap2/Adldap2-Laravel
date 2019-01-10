@@ -70,22 +70,6 @@ interface ResolverInterface
     public function query() : Builder;
 
     /**
-     * Returns the LDAP users identifier.
-     *
-     * @param User $user
-     *
-     * @return string
-     */
-    public function getLdapUserIdentifier(User $user) : string;
-
-    /**
-     * Retrieves the configured LDAP identifier attribute.
-     *
-     * @return string
-     */
-    public function getLdapIdentifierAttribute() : string;
-
-    /**
      * Retrieves the configured LDAP users username attribute.
      *
      * @return string
