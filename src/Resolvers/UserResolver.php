@@ -73,12 +73,10 @@ class UserResolver implements ResolverInterface
         if ($this->getAppAuthProvider() instanceof NoDatabaseUserProvider) {
             $username = $credentials[$this->getLdapDiscoveryAttribute()];
         } else {
-            $username = $credentials[$this->getEloquentUsernameAttribute()];
+            $username = $credentials[$this->getDatabaseUsernameColumn()];
         }
 
-        $field = $this->getLdapDiscoveryAttribute();
-
-        return $this->query()->whereEquals($field, $username)->first();
+        return $this->query()->whereEquals($this->getLdapDiscoveryAttribute(), $username)->first();
     }
 
     /**
@@ -86,11 +84,9 @@ class UserResolver implements ResolverInterface
      */
     public function byModel(Authenticatable $model)
     {
-        $field = $this->getLdapDiscoveryAttribute();
+        $identifier = $this->getDatabaseIdentifierColumn();
 
-        $username = $model->{$this->getEloquentUsernameAttribute()};
-
-        return $this->query()->whereEquals($field, $username)->first();
+        return $this->query()->whereEquals($identifier, $model->{$identifier})->first();
     }
 
     /**
@@ -153,9 +149,34 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
+    public function getLdapUserIdentifier(User $user): string
+    {
+        $id = $this->getLdapIdentifierAttribute();
+
+        switch ($id) {
+            case 'objectguid':
+                return $user->getConvertedGuid();
+            case 'objectsid':
+                return $user->getConvertedSid();
+            default:
+                return $user->getFirstAttribute($id);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLdapIdentifierAttribute() : string
+    {
+        return strtolower(Config::get('ldap_auth.identifiers.ldap.id', 'objectguid'));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getLdapDiscoveryAttribute() : string
     {
-        return Config::get('ldap_auth.usernames.ldap.discover', 'userprincipalname');
+        return Config::get('ldap_auth.identifiers.ldap.discover', 'userprincipalname');
     }
 
     /**
@@ -163,15 +184,23 @@ class UserResolver implements ResolverInterface
      */
     public function getLdapAuthAttribute() : string
     {
-        return Config::get('ldap_auth.usernames.ldap.authenticate', 'distinguishedname');
+        return Config::get('ldap_auth.identifiers.ldap.authenticate', 'distinguishedname');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEloquentUsernameAttribute() : string
+    public function getDatabaseUsernameColumn() : string
     {
-        return Config::get('ldap_auth.usernames.eloquent', 'email');
+        return Config::get('ldap_auth.identifiers.database.username_column', 'email');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDatabaseIdentifierColumn() : string
+    {
+        return Config::get('ldap_auth.identifiers.database.id_column', 'objectguid');
     }
 
     /**
