@@ -3,10 +3,10 @@
 namespace Adldap\Laravel\Commands;
 
 use Adldap\Models\User;
+use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Events\Importing;
 use Adldap\Laravel\Events\Synchronized;
 use Adldap\Laravel\Events\Synchronizing;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
@@ -28,24 +28,15 @@ class Import
     protected $model;
 
     /**
-     * The LDAP users credentials.
-     *
-     * @var array
-     */
-    protected $credentials;
-
-    /**
      * Constructor.
      *
      * @param User  $user
      * @param Model $model
-     * @param array $credentials
      */
-    public function __construct(User $user, Model $model, array $credentials = [])
+    public function __construct(User $user, Model $model)
     {
-        $this->user = $this->transformUsername($user);
+        $this->user = $user;
         $this->model = $model;
-        $this->credentials = $credentials;
     }
 
     /**
@@ -58,7 +49,7 @@ class Import
         // Here we'll try to locate our local user model from
         // the LDAP users model. If one isn't located,
         // we'll create a new one for them.
-        $model = $this->findByCredentials() ?: $this->model->newInstance();
+        $model = $this->findById() ?: $this->model->newInstance();
 
         if (! $model->exists) {
             Event::fire(new Importing($this->user, $model));
@@ -78,12 +69,8 @@ class Import
      *
      * @return Model|null
      */
-    protected function findByCredentials()
+    protected function findById()
     {
-        if (empty($this->credentials)) {
-            return;
-        }
-
         $query = $this->model->newQuery();
 
         if ($query->getMacro('withTrashed')) {
@@ -93,15 +80,11 @@ class Import
             $query->withTrashed();
         }
 
-        foreach ($this->credentials as $key => $value) {
-            if (! Str::contains($key, 'password')) {
-                // We need to lowercase all values so we locate the
-                // proper model. This avoids case sensitivity.
-                $query->where($key, strtolower($value));
-            }
-        }
-
-        return $query->first();
+        return $query->where(
+            Resolver::getDatabaseIdentifierColumn(),
+            '=',
+            Resolver::getLdapUserIdentifier($this->user)
+        )->first();
     }
 
     /**
@@ -113,6 +96,12 @@ class Import
      */
     protected function sync(Model $model)
     {
+        // Set the users identifier automatically.
+        $model->setAttribute(
+            Resolver::getDatabaseIdentifierColumn(),
+            Resolver::getLdapUserIdentifier($this->user)
+        );
+
         foreach ($this->getLdapSyncAttributes() as $modelField => $ldapField) {
             // If the field is a loaded class and contains a `handle()` method,
             // we need to construct the attribute handler.
@@ -131,24 +120,6 @@ class Import
                 $model->{$modelField} = is_string($ldapField) ? $this->user->getFirstAttribute($ldapField) : $ldapField;
             }
         }
-    }
-
-    /**
-     * Transforms the username of the given user to avoid case sensitivity issues.
-     *
-     * We want to transform the username on the user model so it persists through attribute handlers.
-     *
-     * @param User $user
-     *
-     * @return User
-     */
-    protected function transformUsername(User $user)
-    {
-        $attribute = $this->getLdapDiscoveryUsername();
-
-        $user->setFirstAttribute($attribute, strtolower($user->getFirstAttribute($attribute)));
-
-        return $user;
     }
 
     /**
@@ -174,15 +145,5 @@ class Import
             'email' => 'userprincipalname',
             'name' => 'cn',
         ]);
-    }
-
-    /**
-     * Returns the configured LDAP discovery username attribute.
-     *
-     * @return string
-     */
-    protected function getLdapDiscoveryUsername()
-    {
-        return Config::get('ldap_auth.usernames.ldap.discover', 'userprincipalname');
     }
 }
