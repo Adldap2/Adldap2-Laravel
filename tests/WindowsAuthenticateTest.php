@@ -28,7 +28,7 @@ class WindowsAuthenticateTest extends DatabaseTestCase
         $query = m::mock(Builder::class);
 
         $query
-            ->shouldReceive('where')->once()->withArgs([['samaccountname' => 'jdoe']])->andReturn($query)
+            ->shouldReceive('whereEquals')->once()->withArgs(['samaccountname', 'jdoe'])->andReturn($query)
             ->shouldReceive('first')->once()->andReturn($user);
 
         Resolver::shouldReceive('query')->once()->andReturn($query)
@@ -58,7 +58,7 @@ class WindowsAuthenticateTest extends DatabaseTestCase
         $query = m::mock(Builder::class);
 
         $query
-            ->shouldReceive('where')->once()->withArgs([['samaccountname' => 'jdoe']])->andReturn($query)
+            ->shouldReceive('whereEquals')->once()->withArgs(['samaccountname', 'jdoe'])->andReturn($query)
             ->shouldReceive('first')->once()->andReturn(null);
 
         Resolver::shouldReceive('query')->once()->andReturn($query);

@@ -98,7 +98,7 @@ class UserResolverTest extends TestCase
     {
         $query = m::mock(Builder::class);
 
-        $query->shouldReceive('where')->once()->with(['userprincipalname', 'jdoe'])->andReturnSelf()
+        $query->shouldReceive('whereEquals')->once()->with('userprincipalname', 'jdoe')->andReturnSelf()
             ->shouldReceive('first')->andReturnNull();
 
         $ldapProvider = m::mock(ProviderInterface::class);
