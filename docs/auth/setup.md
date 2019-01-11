@@ -413,11 +413,11 @@ Change this if your database column is different than `password` and you have en
 ## Login Fallback
 
 The login fallback option allows you to login as a local database user using the default Eloquent authentication
-driver if LDAP authentication fails. This option would be handy in environments where:
+driver if LDAP authentication fails. This option is handy in environments where:
 
-- You may have some active directory users and other users registering through
+- You may have some directory users and other users registering through
   the website itself (user does not exist in your LDAP directory).
-- Local development where your LDAP server may be unavailable
+- Your LDAP server goes down and may be unavailable
 
 To enable it, simply set the option to true in your `config/ldap_auth.php` configuration file:
 
@@ -437,6 +437,7 @@ value is the active directory users attribute:
     'email' => 'userprincipalname',
 
     'name' => 'cn',
+    
 ],
 ```
 
