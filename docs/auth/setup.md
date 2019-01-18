@@ -497,7 +497,7 @@ class LdapAttributeHandler
 
 ## Logging
 
-The `logging` array contains a list of the events to be logged when certain [events](events.md) occur using Adldap2-Laravel.
+The `logging` array contains a list of the events to be logged when certain [events](auth/events.md) occur using Adldap2-Laravel.
 
 Each element in the array consists of the key (the occurring event) and the value (the listener that performs the logging of said event).
 
