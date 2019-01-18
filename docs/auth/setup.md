@@ -93,7 +93,7 @@ Inside your `config/auth.php` file, you can remove the `model` key in your provi
 ```php
 'providers' => [
     'users' => [
-        'driver' => 'adldap',
+        'driver' => 'ldap',
     ],
 ],
 ```
