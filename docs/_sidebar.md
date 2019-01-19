@@ -15,3 +15,4 @@
   * [Events](auth/events.md)
   * [Model Binding](auth/model-binding.md)
   * [Importing](auth/importing.md)
+  * [Testing](auth/testing.md)
