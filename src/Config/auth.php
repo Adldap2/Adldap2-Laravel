@@ -9,7 +9,7 @@ return [
     |
     | The LDAP connection to use for laravel authentication.
     |
-    | You must specify connections in your `config/adldap.php` configuration file.
+    | You must specify connections in your `config/ldap.php` configuration file.
     |
     | This must be a string.
     |
