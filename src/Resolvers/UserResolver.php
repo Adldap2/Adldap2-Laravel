@@ -90,7 +90,7 @@ class UserResolver implements ResolverInterface
      */
     public function byModel(Authenticatable $model)
     {
-        $identifier = $this->getDatabaseIdentifierColumn();
+        $identifier = $this->getDatabaseIdColumn();
 
         return $this->query()->whereEquals($identifier, $model->{$identifier})->first();
     }
@@ -179,7 +179,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getDatabaseIdentifierColumn() : string
+    public function getDatabaseIdColumn() : string
     {
         return Config::get('ldap_auth.identifiers.database.id_column', 'objectguid');
     }

@@ -95,5 +95,5 @@ interface ResolverInterface
      *
      * @return string
      */
-    public function getDatabaseIdentifierColumn() : string;
+    public function getDatabaseIdColumn() : string;
 }
