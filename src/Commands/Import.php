@@ -49,7 +49,7 @@ class Import
         // Here we'll try to locate our local user model from
         // the LDAP users model. If one isn't located,
         // we'll create a new one for them.
-        $model = $this->findById() ?: $this->model->newInstance();
+        $model = $this->findUser() ?: $this->model->newInstance();
 
         if (! $model->exists) {
             Event::fire(new Importing($this->user, $model));
@@ -69,7 +69,7 @@ class Import
      *
      * @return Model|null
      */
-    protected function findById()
+    protected function findUser()
     {
         $query = $this->model->newQuery();
 
@@ -81,9 +81,13 @@ class Import
         }
 
         return $query->where(
-            Resolver::getDatabaseIdentifierColumn(),
+            Resolver::getDatabaseIdColumn(),
             '=',
             $this->user->getConvertedGuid()
+        )->orWhere(
+            Resolver::getDatabaseUsernameColumn(),
+            '=',
+            $this->user->getFirstAttribute(Resolver::getLdapDiscoveryAttribute())
         )->first();
     }
 
@@ -98,7 +102,7 @@ class Import
     {
         // Set the users identifier automatically.
         $model->setAttribute(
-            Resolver::getDatabaseIdentifierColumn(), $this->user->getConvertedGuid()
+            Resolver::getDatabaseIdColumn(), $this->user->getConvertedGuid()
         );
 
         foreach ($this->getLdapSyncAttributes() as $modelField => $ldapField) {
