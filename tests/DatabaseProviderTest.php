@@ -47,7 +47,9 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         Resolver::shouldReceive('byModel')->once()->andReturn($user)
             ->shouldReceive('byCredentials')->once()->andReturn($user)
-            ->shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseIdColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->andReturn('userprincipalname')
             ->shouldReceive('authenticate')->once()->andReturn(true);
 
         $this->assertTrue(Auth::attempt($credentials));
@@ -65,7 +67,9 @@ class DatabaseProviderTest extends DatabaseTestCase
         ]);
 
         Resolver::shouldReceive('byCredentials')->once()->andReturn($user)
-            ->shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseIdColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->andReturn('userprincipalname')
             ->shouldReceive('authenticate')->once()->andReturn(false);
 
         $this->assertFalse(Auth::attempt(['email' => 'jdoe@email.com', 'password' => '12345']));
@@ -118,7 +122,9 @@ class DatabaseProviderTest extends DatabaseTestCase
 
         $importer = new Import($user, new EloquentUser());
 
-        Resolver::shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid');
+        Resolver::shouldReceive('getDatabaseIdColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->once()->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname');
 
         $this->assertInstanceOf(EloquentUser::class, $importer->handle());
     }
@@ -268,6 +274,39 @@ class DatabaseProviderTest extends DatabaseTestCase
     }
 
     /** @test */
+    public function users_without_a_guid_are_synchronized_properly()
+    {
+        EloquentUser::create([
+            'email'    => 'jdoe@email.com',
+            'name'     => 'John Doe',
+            'password' => Hash::make('Password123'),
+        ]);
+
+        $credentials = [
+            'email'    => 'jdoe@email.com',
+            'password' => 'Password123',
+        ];
+
+        $ldapUser = $this->makeLdapUser();
+
+        Resolver::shouldReceive('byCredentials')->once()->andReturn($ldapUser)
+            ->shouldReceive('getDatabaseIdColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->andReturn('userprincipalname')
+            ->shouldReceive('byModel')->once()->andReturn($ldapUser)
+            ->shouldReceive('authenticate')->once()->andReturn(true);
+
+        $this->assertTrue(Auth::attempt($credentials));
+
+        $user = Auth::user();
+
+        $this->assertInstanceOf('Adldap\Laravel\Tests\Models\TestUser', $user);
+        $this->assertEquals($user->objectguid, $ldapUser->getConvertedGuid());
+        $this->assertEquals('jdoe@email.com', $user->email);
+        $this->assertEquals(1, EloquentUser::count());
+    }
+
+    /** @test */
     public function passwords_are_not_updated_when_sync_is_disabled()
     {
         config(['ldap_auth.passwords.sync' => false]);
@@ -302,7 +341,9 @@ class DatabaseProviderTest extends DatabaseTestCase
         $user = $this->makeLdapUser();
 
         Resolver::shouldReceive('byCredentials')->twice()->andReturn($user)
-            ->shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseIdColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->andReturn('userprincipalname')
             ->shouldReceive('byModel')->once()->andReturn($user)
             ->shouldReceive('authenticate')->twice()->andReturn(true);
 
@@ -329,7 +370,9 @@ class DatabaseProviderTest extends DatabaseTestCase
         $user = $this->makeLdapUser();
 
         Resolver::shouldReceive('byCredentials')->once()->andReturn($user)
-            ->shouldReceive('getDatabaseIdentifierColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseIdColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->andReturn('userprincipalname')
             ->shouldReceive('authenticate')->once()->andReturn(true);
 
         $this->assertFalse(Auth::attempt($credentials));

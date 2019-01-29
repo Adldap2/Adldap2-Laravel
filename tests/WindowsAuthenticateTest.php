@@ -32,7 +32,9 @@ class WindowsAuthenticateTest extends DatabaseTestCase
             ->shouldReceive('first')->once()->andReturn($user);
 
         Resolver::shouldReceive('query')->once()->andReturn($query)
-            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getDatabaseIdColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->once()->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname')
             ->shouldReceive('byModel')->once()->andReturn(($user));
 
         $middleware->handle($request, function () {});

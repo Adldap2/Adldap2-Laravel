@@ -22,7 +22,9 @@ class ImportTest extends DatabaseTestCase
         $b->shouldReceive('findOrFail')->once()->with('jdoe')->andReturn($u);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid');
+            ->shouldReceive('getDatabaseIdColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->once()->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname');
 
         $this->artisan('adldap:import', ['user' => 'jdoe', '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")
@@ -57,7 +59,9 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getResults')->once()->andReturn($users);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getDatabaseIdentifierColumn')->times(4)->andReturn('objectguid');
+            ->shouldReceive('getDatabaseIdColumn')->times(4)->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->twice()->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->twice()->andReturn('userprincipalname');
 
         $this->artisan('adldap:import', ['--no-interaction' => true])
             ->expectsOutput("Found 2 user(s).")
@@ -77,7 +81,9 @@ class ImportTest extends DatabaseTestCase
         $b->shouldReceive('findOrFail')->once()->with('jdoe')->andReturn($u);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid');
+            ->shouldReceive('getDatabaseIdColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->once()->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname');
 
         $this->artisan('adldap:import', ['user' => 'jdoe'])
             ->expectsOutput("Found user 'John Doe'.")
@@ -114,7 +120,9 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getResults')->once()->andReturn([$user]);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid');
+            ->shouldReceive('getDatabaseIdColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->once()->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname');
 
         $this->artisan('adldap:import', ['--restore' => true, '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")
@@ -147,7 +155,9 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getResults')->once()->andReturn([$user]);
 
         Resolver::shouldReceive('query')->once()->andReturn($b)
-            ->shouldReceive('getDatabaseIdentifierColumn')->twice()->andReturn('objectguid');
+            ->shouldReceive('getDatabaseIdColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->once()->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname');
 
         $this->artisan('adldap:import', ['--delete' => true, '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")
