@@ -5,7 +5,7 @@ php:
   - 7.2
   - 7.3
 
-before_install: echo "extension=ldap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+before_install: echo "extension=ldap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 before_script:
   - travis_retry composer self-update
