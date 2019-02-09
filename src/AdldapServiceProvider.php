@@ -8,7 +8,7 @@ use Adldap\Auth\BindException;
 use Adldap\Connections\Provider;
 use Adldap\Connections\ConnectionInterface;
 use Illuminate\Container\Container;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 class AdldapServiceProvider extends ServiceProvider
@@ -28,6 +28,10 @@ class AdldapServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (Config::get('ldap.logging')) {
+            Adldap::setLogger(logger());
+        }
+
         if ($this->isLumen()) {
             return;
         }
@@ -104,7 +108,7 @@ class AdldapServiceProvider extends ServiceProvider
                     // We'll catch and log bind exceptions so
                     // any connection issues fail gracefully
                     // in our application.
-                    Log::error($e);
+                    logger()->error($e);
                 }
             }
 
