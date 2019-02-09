@@ -97,8 +97,9 @@ Schema::create('users', function (Blueprint $table) {
 });
 ```
 
-Otherwise if you're upgrading from v5, make another migration and add the column to
-your `users` table (ex. `php artisan migration:make add_objectguid_column`):
+Otherwise if you're upgrading from v5, make another migration and add the column to your `users` table.
+
+Ex. `php artisan migration:make add_objectguid_column`
 
 ```php
 Schema::table('users', function (Blueprint $table) {
