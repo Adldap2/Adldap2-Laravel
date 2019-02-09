@@ -1,6 +1,138 @@
 # Upgrade Guide
 
-## Upgrading from v4.* to v5.*
+## Upgrading from 5.* to 6.*
+
+**Estimated Upgrade Time: 1 hour**
+
+### Configuration
+
+It is recommended to re-publish both of your `ldap.php` and `ldap_auth.php` files to ensure you have all of the updated configuration keys.
+
+#### Quick Changes View
+
+Here's a quick overview of the configuration changes made in their respective files:
+
+```php
+// ldap.php
+
+// v5.0
+// Non-existent
+
+// v6.0
+'logging' => env('LDAP_LOGGING', true),
+```
+
+```php
+// ldap_auth.php
+
+// v5.0
+'usernames' => [
+
+    'ldap' => [
+        'discover' => 'userprincipalname',
+        'authenticate' => 'distinguishedname',
+    ],
+    
+    'eloquent' => 'email',
+    
+    'windows' => [
+        'discover' => 'samaccountname',
+        'key' => 'AUTH_USER',  
+    ],
+
+],
+
+// v6.0
+'identifiers' => [
+
+    'ldap' => [
+        'locate_users_by' => 'userprincipalname',
+        'bind_users_by' => 'distinguishedname',
+    ],
+
+    'database' => [
+        'guid_column' => 'objectguid',
+        'username_column' => 'email',
+    ],
+
+    'windows' => [
+        'locate_users_by' => 'samaccountname',
+        'server_key' => 'AUTH_USER',
+    ],
+    
+]
+```
+
+#### Authentication
+
+##### Object GUID Database Column
+
+When using the `DatabaseUserProvider`, you must now create a database column to
+store users `objectguid`. This allows usernames to change in your directory
+and synchronize properly in your database. This also allows you to use
+multiple LDAP directories / domains in your application.
+
+This column is configurable via the `guid_column` located in the `database` configuration array:
+
+```php
+    'database' => [
+
+        'guid_column' => 'objectguid',
+
+        //
+```
+
+If you're starting from scratch, simply add the `objectguid` column (or whichever column you've configured) to your `users` migration file:
+
+```php
+Schema::create('users', function (Blueprint $table) {
+    $table->increments('id');
+    $table->string('objectguid')->nullable(); // Added here.
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->timestamp('email_verified_at')->nullable();
+    $table->string('password');
+    $table->rememberToken();
+    $table->timestamps();
+});
+```
+
+Otherwise if you're upgrading from v5, make another migration and add the column to
+your `users` table (ex. `php artisan migration:make add_objectguid_column`):
+
+```php
+Schema::table('users', function (Blueprint $table) {
+    $table->string('objectguid')->nullable()->after('id');
+});
+```
+
+You can learn more about this configuration option [here](auth/setup.md#guid-column).
+
+##### Username Database Column
+
+The `database.username_column` option was renamed from `eloquent` to more directly indicate what it is used for.
+
+Set this option to your users database username column so users are correctly located from your database.
+
+##### LDAP Discover and Authenticate
+
+The `ldap.discover` and `ldap.authenticate` options have been renamed to `ldap.locate_users_by` and `ldap.bind_user_by` respectively.
+
+They were renamed to more directly indicate what they are used for.
+
+##### Windows Discover and Key
+
+The `windows.discover` and `windows.key` options were renamed to `windows.locate_users_by` and `windows.server_key` to follow suit with the above change and to directly indicate what it is used for.
+
+#### LDAP
+
+##### Logging
+
+The `logging` option has been added to automatically enable LDAP operation logging that was added in [Adldap2 v10.0](https://adldap2.github.io/Adldap2/#/logging).
+
+Simply set this to `false` if you would not like operation logging enabled. Any connections you specify in your `connections` configuration will be logged.
+
+## Upgrading from 4.* to 5.*
 
 **Estimated Upgrade Time: 30 minutes**
 

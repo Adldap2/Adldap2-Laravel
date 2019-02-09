@@ -3,7 +3,7 @@
 SSO authentication allows you to authenticate your domain users automatically in your application by
 the pre-populated `$_SERVER['AUTH_USER']` (or `$_SERVER['REMOTE_USER']`) that is filled when
 users visit your site when SSO is enabled on your server. This is
-configurable in your `ldap_auth.php`configuration file in the `usernames` array.
+configurable in your `ldap_auth.php`configuration file in the `identifiers` array.
 
 > **Requirements**: This feature assumes that you have enabled `Windows Authentication` in IIS, or have enabled it
 > in some other means with Apache. Adldap2 does not set this up for you. To enable Windows Authentication, visit:
@@ -40,8 +40,8 @@ You can configure the attributes users are logged in by in your configuration:
     //..//
 
     'windows' => [
-        'discover' => 'samaccountname',
-        'key' => 'AUTH_USER',
+        'locate_users_by' => 'samaccountname',
+        'server_key' => 'AUTH_USER',
     ],
 ],
 ```
