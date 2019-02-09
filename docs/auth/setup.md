@@ -366,20 +366,22 @@ Schema::create('users', function (Blueprint $table) {
 If you have user records already inside your database with a `null` `objectguid` value, then **it will be set automatically** if a user authenticates with the same username that is contained in your configured in your `username_column` option.
 
 For example, lets say we have a user in our database with the following information:
-
+```
 +----+------------+---------------+
 | id | objectguid | email         |
 +----+------------+---------------+
 | 1  | NULL       | jdoe@acme.org |
 +----+------------+---------------+
+```
 
 When a user successfully authenticates with the username of `jdoe@acme.org`, then his `objectguid` column will automatically be set:
-
+```
 +----+--------------------------------------+---------------+
 | id | objectguid                           | email         |
 +----+--------------------------------------+---------------+
 | 1  | cc07cacc-5d9d-fa40-a9fb-3a4d50a172b0 | jdoe@acme.org |
 +----+--------------------------------------+---------------+
+```
 
 The next time this user authenticates, the `objectguid` will queried for **first**, then `email`.
 This is done using a simple `or where` statement, so two queries are not executed for one login.
