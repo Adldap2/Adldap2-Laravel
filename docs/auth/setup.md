@@ -396,8 +396,8 @@ For example, if you're using a `username` field instead of `email` in your appli
 >
 > For example, if you're executing an `Auth::attempt(['username' => 'jdoe..'])` and you have an `username_column` value set to `email` then the Adldap2-Laravel auth driver will try to retrieve your users username from the given credentials array with the key `email`. This would generate an exception since this key does not exist in the above credentials array.
 
-> **Note**: Keep in mind you will also need to update your `database/migrations/2014_10_12_000000_create_users_table.php`
-> migration to use a username field instead of email, **as well as** your LoginController.
+> **Note**: Keep in mind you will also need to update your `create_users_table` migration to
+> use a username field instead of email, **as well as** your LoginController.
 
 For example, if you'd like to login users by their `samaccountname`:
 
