@@ -181,7 +181,7 @@ class UserResolver implements ResolverInterface
      */
     public function getDatabaseIdColumn() : string
     {
-        return Config::get('ldap_auth.identifiers.database.id_column', 'objectguid');
+        return Config::get('ldap_auth.identifiers.database.guid_column', 'objectguid');
     }
 
     /**
