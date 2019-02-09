@@ -117,7 +117,7 @@ class UserResolverTest extends TestCase
         Auth::shouldReceive('guard')->once()->andReturnSelf()->shouldReceive('getProvider')->once()->andReturn($authProvider);
 
         Config::shouldReceive('get')->with('ldap_auth.connection', 'default')->andReturn('default')
-            ->shouldReceive('get')->with('ldap_auth.identifiers.ldap.discover', 'userprincipalname')->andReturn('userprincipalname')
+            ->shouldReceive('get')->with('ldap_auth.identifiers.ldap.locate_users_by', 'userprincipalname')->andReturn('userprincipalname')
             ->shouldReceive('get')->with('ldap_auth.scopes', [])->andReturn([]);
 
         $resolver = new UserResolver($ad);

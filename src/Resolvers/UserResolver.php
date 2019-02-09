@@ -157,7 +157,7 @@ class UserResolver implements ResolverInterface
      */
     public function getLdapDiscoveryAttribute() : string
     {
-        return Config::get('ldap_auth.identifiers.ldap.discover', 'userprincipalname');
+        return Config::get('ldap_auth.identifiers.ldap.locate_users_by', 'userprincipalname');
     }
 
     /**
@@ -165,7 +165,7 @@ class UserResolver implements ResolverInterface
      */
     public function getLdapAuthAttribute() : string
     {
-        return Config::get('ldap_auth.identifiers.ldap.authenticate', 'distinguishedname');
+        return Config::get('ldap_auth.identifiers.ldap.bind_users_by', 'distinguishedname');
     }
 
     /**

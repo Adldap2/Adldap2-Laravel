@@ -133,9 +133,9 @@ return [
 
         'ldap' => [
 
-            'discover' => 'userprincipalname',
+            'locate_users_by' => 'userprincipalname',
 
-            'authenticate' => 'distinguishedname',
+            'bind_users_by' => 'distinguishedname',
 
         ],
 
@@ -201,9 +201,9 @@ return [
 
         'windows' => [
 
-            'discover' => 'samaccountname',
+            'locate_users_by' => 'samaccountname',
 
-            'key' => 'AUTH_USER',
+            'server_key' => 'AUTH_USER',
 
         ],
 
@@ -318,7 +318,7 @@ return [
 
     'logging' => [
 
-        'enabled' => true,
+        'enabled' => env('LDAP_LOGGING', true),
 
         'events' => [
 
