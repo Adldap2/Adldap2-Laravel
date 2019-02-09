@@ -338,7 +338,9 @@ You can ignore the `windows` configuration array, unless you're planning on usin
 
 The GUID column is a new configuration option added in v6.0 that allows to set the database column that will store users Object GUID (Globally Unique Identifier). The addition of this database column allows you to make username changes in your LDAP directory, and have them properly synchronize in your Laravel application. This is usually the scenario when someone changes their marital status, or changes their name.
 
-If you're upgrading from a previous Adldap2-Laravel version, simply create a new migration (ex. `php artisan make:migration add_objectguid_column`) and add the `nullable` column to your `users` database table:
+If you're upgrading from a previous Adldap2-Laravel version, simply create a new migration and add the `nullable` column to your `users` database table.
+
+Ex. `php artisan make:migration add_objectguid_column`
 
 ```php
 Schema::table('users', function (Blueprint $table) {
