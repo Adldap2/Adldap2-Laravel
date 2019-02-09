@@ -7,7 +7,7 @@ return [
     | Connection
     |--------------------------------------------------------------------------
     |
-    | The LDAP connection to use for laravel authentication.
+    | The LDAP connection to use for Laravel authentication.
     |
     | You must specify connections in your `config/ldap.php` configuration file.
     |
