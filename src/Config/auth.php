@@ -110,24 +110,26 @@ return [
         | LDAP
         |--------------------------------------------------------------------------
         |
-        | Discover:
+        | Locate Users By:
         |
-        |   The discover value is the users attribute you would
-        |   like to locate LDAP users by in your directory.
+        |   This value is the users attribute you would like to locate LDAP
+        |   users by in your directory.
         |
         |   For example, using the default configuration below, if you're
         |   authenticating users with an email address, your LDAP server
         |   will be queried for a user with the a `userprincipalname`
         |   equal to the entered email address.
         |
-        | Authenticate:
+        | Bind Users By:
         |
-        |   The authenticate value is the users attribute you would
+        |   This value is the users attribute you would
         |   like to use to bind to your LDAP server.
         |
-        |   For example, when a user is located by the above 'discover'
-        |   attribute, the users attribute you specify below will
-        |   be used as the username to bind to your LDAP server.
+        |   For example, when a user is located by the above attribute,
+        |   the users attribute you specify below will be used as
+        |   the 'username' to bind to your LDAP server.
+        |
+        |   This is usually their distinguished name.
         |
         */
 
@@ -143,12 +145,12 @@ return [
 
             /*
             |--------------------------------------------------------------------------
-            | ID Column
+            | GUID Column
             |--------------------------------------------------------------------------
             |
-            | The value of this option is the database column that will contain the LDAP users identifier.
-            | This column does not need to be added to the sync attributes below.
-            | It is synchronized automatically.
+            | The value of this option is the database column that will contain the
+            | LDAP users global identifier. This column does not need to be added
+            | to the sync attributes below. It is synchronized automatically.
             |
             | This option is only applicable to the DatabaseUserProvider.
             |
@@ -161,9 +163,11 @@ return [
             | Username Column
             |--------------------------------------------------------------------------
             |
-            | The value of this option is the database column that contains your users login username.
+            | The value of this option is the database column that contains your
+            | users login username.
             |
-            | This column must be added to your sync attributes below to be properly synchronized.
+            | This column must be added to your sync attributes below to be
+            | properly synchronized.
             |
             | This option is only applicable to the DatabaseUserProvider.
             |
@@ -178,10 +182,10 @@ return [
         | Windows Authentication Middleware (SSO)
         |--------------------------------------------------------------------------
         |
-        | Discover:
+        | Local Users By:
         |
-        |   The 'discover' value is the users attribute you would
-        |   like to locate LDAP users by in your directory.
+        |   This value is the users attribute you would like to locate LDAP
+        |   users by in your directory.
         |
         |   For example, if 'samaccountname' is the value, then your LDAP server is
         |   queried for a user with the 'samaccountname' equal to the value of
@@ -190,9 +194,9 @@ return [
         |   If a user is found, they are imported (if using the DatabaseUserProvider)
         |   into your local database, then logged in.
         |
-        | Key:
+        | Server Key:
         |
-        |    The 'key' value represents the 'key' of the $_SERVER
+        |    This value represents the 'key' of the $_SERVER
         |    array to pull the users account name from.
         |
         |    For example, $_SERVER['AUTH_USER'].
