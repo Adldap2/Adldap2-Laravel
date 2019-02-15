@@ -97,11 +97,6 @@ class DatabaseUserProvider extends Provider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        // Set the LDAP connection if present.
-        if (array_key_exists('connection', $credentials)) {
-            Resolver::setConnection($credentials['connection']);
-        }
-
         // Retrieve the LDAP user who is authenticating.
         $user = Resolver::byCredentials($credentials);
 
