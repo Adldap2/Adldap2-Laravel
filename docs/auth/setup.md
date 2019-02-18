@@ -481,6 +481,12 @@ driver if LDAP authentication fails. This option is handy in environments where:
   the website itself (user does not exist in your LDAP directory).
 - Your LDAP server goes down and may be unavailable
 
+> **Note**: If you would like users to be able to login if your LDAP server is unavailable, you must
+> also enable the above [Password Sync](#sync) option. Otherwise, users will fail authentication
+> because their password has not been synchronized, and therefore will be incorrect.
+>
+> Users must have logged in once prior to your LDAP server going down, as their account will not yet exist in the database.
+
 To enable it, simply set the option to true in your `config/ldap_auth.php` configuration file:
 
 ```php
@@ -495,11 +501,8 @@ value is the active directory users attribute:
 
 ```php
 'sync_attributes' => [
-
     'email' => 'userprincipalname',
-
     'name' => 'cn',
-    
 ],
 ```
 
