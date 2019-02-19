@@ -15,9 +15,12 @@ use Tests\TestCase;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Facades\Resolver;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class AuthTest extends TestCase
 {
+    use WithFaker;
+
     /**
      * Returns a new LDAP user model.
      *
@@ -42,7 +45,7 @@ class AuthTest extends TestCase
         $credentials = ['email' => 'jdoe@email.com', 'password' => '12345'];
 
         $user = $this->makeLdapUser([
-            'objectguid'            => ['cc07cacc-5d9d-fa40-a9fb-3a4d50a172b0'],
+            'objectguid'            => [$this->faker->uuid],
             'cn'                    => ['John Doe'],
             'userprincipalname'     => ['jdoe@email.com'],
         ]);
