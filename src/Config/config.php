@@ -191,10 +191,15 @@ return [
                 | does not need to be a domain administrator unless you
                 | require changing and resetting user passwords.
                 |
+                | If you do not have a user account available, you may bind to your server
+                | using the credentials of the user who is attempting to authenticate.
+                |
                 */
 
                 'username' => env('LDAP_USERNAME'),
                 'password' => env('LDAP_PASSWORD'),
+
+                'bind_as_user' =>  env('LDAP_BIND_AS_USER', false),
 
                 /*
                 |--------------------------------------------------------------------------

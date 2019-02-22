@@ -46,6 +46,16 @@ class UserResolverTest extends TestCase
     }
 
     /** @test */
+    public function ldap_bind_as_user_default()
+    {
+        $ldap = m::mock(AdldapInterface::class);
+
+        $resolver = new UserResolver($ldap);
+
+        $this->assertFalse($resolver->getLdapBindAsUserOption());
+    }
+
+    /** @test */
     public function by_credentials_returns_null_on_empty_credentials()
     {
         $ldap = m::mock(AdldapInterface::class);

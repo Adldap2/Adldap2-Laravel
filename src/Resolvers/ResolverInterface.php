@@ -96,4 +96,11 @@ interface ResolverInterface
      * @return string
      */
     public function getDatabaseIdColumn() : string;
+
+    /**
+     * Retrieves the configured bind as user option.
+     *
+     * @return string
+     */
+    public function getLdapBindAsUserOption() : bool;
 }

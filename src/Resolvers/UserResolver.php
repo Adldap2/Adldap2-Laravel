@@ -115,7 +115,7 @@ class UserResolver implements ResolverInterface
 
         Event::fire(new Authenticating($user, $username));
 
-        if ($this->getLdapAuthProvider()->auth()->attempt($username, $password)) {
+        if ($this->getLdapAuthProvider()->auth()->attempt($username, $password, $this->getLdapBindAsUserOption())) {
             Event::fire(new Authenticated($user));
 
             return true;
@@ -182,6 +182,14 @@ class UserResolver implements ResolverInterface
     public function getDatabaseIdColumn() : string
     {
         return Config::get('ldap_auth.identifiers.database.guid_column', 'objectguid');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLdapBindAsUserOption() : bool
+    {
+        return Config::get("ldap.connections.{$this->connection}.settings.bind_as_user", false);
     }
 
     /**
