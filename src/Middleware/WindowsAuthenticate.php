@@ -105,12 +105,12 @@ class WindowsAuthenticate
      *
      * @param User       $user
      * @param mixed|null $model
-     * 
+     *
      * @return void
      */
     protected function fireAuthenticatedEvent(User $user, $model = null)
     {
-        Event::fire(new AuthenticatedWithWindows($user, $model));
+        Event::dispatch(new AuthenticatedWithWindows($user, $model));
     }
 
     /**

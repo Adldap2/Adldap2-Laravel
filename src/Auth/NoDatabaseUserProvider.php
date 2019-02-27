@@ -46,7 +46,7 @@ class NoDatabaseUserProvider extends Provider
     public function retrieveByCredentials(array $credentials)
     {
         if ($user = Resolver::byCredentials($credentials)) {
-            Event::fire(new DiscoveredWithCredentials($user));
+            Event::dispatch(new DiscoveredWithCredentials($user));
 
             return $user;
         }
@@ -58,15 +58,15 @@ class NoDatabaseUserProvider extends Provider
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
         if (Resolver::authenticate($user, $credentials)) {
-            Event::fire(new AuthenticatedWithCredentials($user));
+            Event::dispatch(new AuthenticatedWithCredentials($user));
 
             if ($this->passesValidation($user)) {
-                Event::fire(new AuthenticationSuccessful($user));
+                Event::dispatch(new AuthenticationSuccessful($user));
 
                 return true;
             }
 
-            Event::fire(new AuthenticationRejected($user));
+            Event::dispatch(new AuthenticationRejected($user));
         }
 
         return false;

@@ -234,7 +234,7 @@ class Import extends Command
         if ($model->save() && $model->wasRecentlyCreated) {
             $imported = true;
 
-            Event::fire(new Imported($user, $model));
+            Event::dispatch(new Imported($user, $model));
 
             // Log the successful import.
             if ($this->isLogging()) {

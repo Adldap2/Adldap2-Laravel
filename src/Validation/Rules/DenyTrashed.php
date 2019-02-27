@@ -13,7 +13,7 @@ class DenyTrashed extends Rule
     public function isValid()
     {
         if ($this->isTrashed()) {
-            Event::fire(
+            Event::dispatch(
                 new AuthenticatedModelTrashed($this->user, $this->model)
             );
 

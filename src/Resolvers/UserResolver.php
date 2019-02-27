@@ -113,15 +113,15 @@ class UserResolver implements ResolverInterface
 
         $password = $this->getPasswordFromCredentials($credentials);
 
-        Event::fire(new Authenticating($user, $username));
+        Event::dispatch(new Authenticating($user, $username));
 
         if ($this->getLdapAuthProvider()->auth()->attempt($username, $password)) {
-            Event::fire(new Authenticated($user));
+            Event::dispatch(new Authenticated($user));
 
             return true;
         }
 
-        Event::fire(new AuthenticationFailed($user));
+        Event::dispatch(new AuthenticationFailed($user));
 
         return false;
     }

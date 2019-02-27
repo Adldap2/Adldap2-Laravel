@@ -52,14 +52,14 @@ class Import
         $model = $this->findUser() ?: $this->model->newInstance();
 
         if (! $model->exists) {
-            Event::fire(new Importing($this->user, $model));
+            Event::dispatch(new Importing($this->user, $model));
         }
 
-        Event::fire(new Synchronizing($this->user, $model));
+        Event::dispatch(new Synchronizing($this->user, $model));
 
         $this->sync($model);
 
-        Event::fire(new Synchronized($this->user, $model));
+        Event::dispatch(new Synchronized($this->user, $model));
 
         return $model;
     }
