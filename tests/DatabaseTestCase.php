@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
 
 class DatabaseTestCase extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
