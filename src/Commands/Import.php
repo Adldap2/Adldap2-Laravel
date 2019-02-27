@@ -7,7 +7,6 @@ use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Events\Importing;
 use Adldap\Laravel\Events\Synchronized;
 use Adldap\Laravel\Events\Synchronizing;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
@@ -52,14 +51,14 @@ class Import
         $model = $this->findUser() ?: $this->model->newInstance();
 
         if (! $model->exists) {
-            Event::dispatch(new Importing($this->user, $model));
+            event(new Importing($this->user, $model));
         }
 
-        Event::dispatch(new Synchronizing($this->user, $model));
+        event(new Synchronizing($this->user, $model));
 
         $this->sync($model);
 
-        Event::dispatch(new Synchronized($this->user, $model));
+        event(new Synchronized($this->user, $model));
 
         return $model;
     }
