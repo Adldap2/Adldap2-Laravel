@@ -2,7 +2,6 @@
 
 namespace Adldap\Laravel\Validation\Rules;
 
-use Illuminate\Support\Facades\Event;
 use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 
 class DenyTrashed extends Rule
@@ -13,7 +12,7 @@ class DenyTrashed extends Rule
     public function isValid()
     {
         if ($this->isTrashed()) {
-            Event::fire(
+            event(
                 new AuthenticatedModelTrashed($this->user, $this->model)
             );
 

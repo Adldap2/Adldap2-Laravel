@@ -12,7 +12,6 @@ use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Commands\Import as ImportUser;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
@@ -234,7 +233,7 @@ class Import extends Command
         if ($model->save() && $model->wasRecentlyCreated) {
             $imported = true;
 
-            Event::fire(new Imported($user, $model));
+            event(new Imported($user, $model));
 
             // Log the successful import.
             if ($this->isLogging()) {
