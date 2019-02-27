@@ -12,7 +12,6 @@ use Adldap\Laravel\Events\AuthenticationSuccessful;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
@@ -104,7 +103,7 @@ class DatabaseUserProvider extends Provider
             // Set the currently authenticating LDAP user.
             $this->user = $user;
 
-            Event::fire(new DiscoveredWithCredentials($user));
+            event(new DiscoveredWithCredentials($user));
 
             // Import / locate the local user account.
             return Bus::dispatch(
@@ -126,7 +125,7 @@ class DatabaseUserProvider extends Provider
             // If an LDAP user was discovered, we can go
             // ahead and try to authenticate them.
             if (Resolver::authenticate($this->user, $credentials)) {
-                Event::fire(new AuthenticatedWithCredentials($this->user, $model));
+                event(new AuthenticatedWithCredentials($this->user, $model));
 
                 // Here we will perform authorization on the LDAP user. If all
                 // validation rules pass, we will allow the authentication
@@ -142,15 +141,15 @@ class DatabaseUserProvider extends Provider
                     if ($model->wasRecentlyCreated) {
                         // If the model was recently created, they
                         // have been imported successfully.
-                        Event::fire(new Imported($this->user, $model));
+                        event(new Imported($this->user, $model));
                     }
 
-                    Event::fire(new AuthenticationSuccessful($this->user, $model));
+                    event(new AuthenticationSuccessful($this->user, $model));
 
                     return true;
                 }
 
-                Event::fire(new AuthenticationRejected($this->user, $model));
+                event(new AuthenticationRejected($this->user, $model));
             }
 
             // LDAP Authentication failed.

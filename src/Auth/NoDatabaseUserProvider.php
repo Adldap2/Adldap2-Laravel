@@ -7,7 +7,6 @@ use Adldap\Laravel\Events\AuthenticationRejected;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class NoDatabaseUserProvider extends Provider
@@ -46,7 +45,7 @@ class NoDatabaseUserProvider extends Provider
     public function retrieveByCredentials(array $credentials)
     {
         if ($user = Resolver::byCredentials($credentials)) {
-            Event::fire(new DiscoveredWithCredentials($user));
+            event(new DiscoveredWithCredentials($user));
 
             return $user;
         }
@@ -58,15 +57,15 @@ class NoDatabaseUserProvider extends Provider
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
         if (Resolver::authenticate($user, $credentials)) {
-            Event::fire(new AuthenticatedWithCredentials($user));
+            event(new AuthenticatedWithCredentials($user));
 
             if ($this->passesValidation($user)) {
-                Event::fire(new AuthenticationSuccessful($user));
+                event(new AuthenticationSuccessful($user));
 
                 return true;
             }
 
-            Event::fire(new AuthenticationRejected($user));
+            event(new AuthenticationRejected($user));
         }
 
         return false;

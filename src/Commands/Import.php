@@ -7,7 +7,6 @@ use Adldap\Laravel\Events\Importing;
 use Adldap\Laravel\Events\Synchronized;
 use Adldap\Laravel\Events\Synchronizing;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
@@ -61,14 +60,14 @@ class Import
         $model = $this->findByCredentials() ?: $this->model->newInstance();
 
         if (! $model->exists) {
-            Event::fire(new Importing($this->user, $model));
+            event(new Importing($this->user, $model));
         }
 
-        Event::fire(new Synchronizing($this->user, $model));
+        event(new Synchronizing($this->user, $model));
 
         $this->sync($model);
 
-        Event::fire(new Synchronized($this->user, $model));
+        event(new Synchronized($this->user, $model));
 
         return $model;
     }
