@@ -16,7 +16,7 @@ There are two primary ways of authenticating LDAP users:
 
     Calling `Auth::user()` returns the actual LDAP users model (ex. `Adldap\Models\User`).
 
-We'll get into each of these methods and how to implement them, but first, lets go through the [installation guide](installation.md).
+We'll get into each of these methods and how to implement them, but first, lets go through the [installation guide](auth/installation.md).
 
 ## Quick Start - From Scratch
 
