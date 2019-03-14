@@ -12,6 +12,7 @@ use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Commands\Import as ImportUser;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +25,7 @@ class Import extends Command
      */
     protected $signature = 'adldap:import {user? : The specific user to import.}
             {--f|filter= : The raw LDAP filter for limiting users imported.}
+            {--m|model= : The model to use for importing users.}
             {--d|delete : Soft-delete the users model if their LDAP account is disabled.}
             {--r|restore : Restores soft-deleted models if their LDAP account is enabled.}
             {--no-log : Disables logging successful and unsuccessful imports.}';
@@ -233,7 +235,7 @@ class Import extends Command
         if ($model->save() && $model->wasRecentlyCreated) {
             $imported = true;
 
-            event(new Imported($user, $model));
+            Event::dispatch(new Imported($user, $model));
 
             // Log the successful import.
             if ($this->isLogging()) {
@@ -303,13 +305,13 @@ class Import extends Command
     }
 
     /**
-     * Create a new instance of the configured authentication model.
+     * Create a new instance of the eloquent model to use.
      *
      * @return Model
      */
     protected function model() : Model
     {
-        $model = Config::get('ldap_auth.model') ?? $this->determineModel();
+        $model = $this->option('model') ?? Config::get('ldap_auth.model', $this->determineModel());
 
         return new $model;
     }
