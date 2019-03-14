@@ -2,9 +2,9 @@
 
 namespace Adldap\Laravel\Listeners;
 
-use Adldap\Laravel\Auth\Provider;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Traits\HasLdapUser;
+use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -13,7 +13,7 @@ class BindsLdapUserModel
     /**
      * Binds the LDAP user record to their model.
      *
-     * @param mixed $event
+     * @param \Illuminate\Auth\Events\Login|\Illuminate\Auth\Events\Authenticated $event
      *
      * @return void
      */
@@ -23,7 +23,7 @@ class BindsLdapUserModel
         // Adldap authentication provider, the required trait, and the
         // users LDAP property has not already been set.
         if (
-            $this->isUsingAdldapProvider()
+            $this->isUsingAdldapProvider($event->guard)
             && $this->canBind($event->user)
             && is_null($event->user->ldap)
         ) {
@@ -36,11 +36,13 @@ class BindsLdapUserModel
     /**
      * Determines if the Auth Provider is an instance of the Adldap Provider.
      *
+     * @param string $guard
+     *
      * @return bool
      */
-    protected function isUsingAdldapProvider() : bool
+    protected function isUsingAdldapProvider($guard) : bool
     {
-        return Auth::getProvider() instanceof Provider;
+        return Auth::guard($guard)->getProvider() instanceof DatabaseUserProvider;
     }
 
     /**
