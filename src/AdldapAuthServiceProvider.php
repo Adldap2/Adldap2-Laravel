@@ -31,18 +31,12 @@ class AdldapAuthServiceProvider extends ServiceProvider
             $config => config_path('ldap_auth.php'),
         ]);
 
-        $auth = Auth::getFacadeRoot();
+        // Register the lDAP auth provider.
+        Auth::provider('ldap', function ($app, array $config) {
+            return $this->makeUserProvider($app['hash'], $config);
+        });
 
-        if (method_exists($auth, 'provider')) {
-            $auth->provider('ldap', function ($app, array $config) {
-                return $this->makeUserProvider($app['hash'], $config);
-            });
-        } else {
-            $auth->extend('ldap', function ($app) {
-                return $this->makeUserProvider($app['hash'], $app['config']['auth']);
-            });
-        }
-
+        // Register the import command.
         $this->commands(Import::class);
     }
 
