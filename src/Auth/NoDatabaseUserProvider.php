@@ -3,14 +3,18 @@
 namespace Adldap\Laravel\Auth;
 
 use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Traits\ValidatesUsers;
 use Adldap\Laravel\Events\AuthenticationRejected;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
+use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class NoDatabaseUserProvider extends Provider
+class NoDatabaseUserProvider implements UserProvider
 {
+    use ValidatesUsers;
+
     /**
      *  {@inheritdoc}
      */
