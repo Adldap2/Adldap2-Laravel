@@ -12,9 +12,12 @@ use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class DatabaseProviderTest extends DatabaseTestCase
 {
+    use WithFaker;
+
     /**
      * @test
      * @expectedException \RuntimeException
@@ -40,7 +43,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         $credentials = $credentials ?: ['email' => 'jdoe@email.com', 'password' => '12345'];
 
         $user = $this->makeLdapUser([
-            'objectguid'            => ['cc07cacc-5d9d-fa40-a9fb-3a4d50a172b0'],
+            'objectguid'            => [$this->faker->uuid],
             'cn'                    => ['John Doe'],
             'userprincipalname'     => ['jdoe@email.com'],
         ]);
