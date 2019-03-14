@@ -13,6 +13,7 @@ use Adldap\Laravel\Events\AuthenticatedWithWindows;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 
 class WindowsAuthenticate
@@ -109,7 +110,7 @@ class WindowsAuthenticate
      */
     protected function fireAuthenticatedEvent(User $user, $model = null)
     {
-        event(new AuthenticatedWithWindows($user, $model));
+        Event::dispatch(new AuthenticatedWithWindows($user, $model));
     }
 
     /**

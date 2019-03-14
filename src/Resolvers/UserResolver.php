@@ -12,6 +12,7 @@ use Adldap\Laravel\Events\Authenticating;
 use Adldap\Laravel\Events\AuthenticationFailed;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -112,15 +113,15 @@ class UserResolver implements ResolverInterface
 
         $password = $this->getPasswordFromCredentials($credentials);
 
-        event(new Authenticating($user, $username));
+        Event::dispatch(new Authenticating($user, $username));
 
         if ($this->getLdapAuthProvider()->auth()->attempt($username, $password)) {
-            event(new Authenticated($user));
+            Event::dispatch(new Authenticated($user));
 
             return true;
         }
 
-        event(new AuthenticationFailed($user));
+        Event::dispatch(new AuthenticationFailed($user));
 
         return false;
     }
