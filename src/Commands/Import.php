@@ -79,6 +79,8 @@ class Import
             $query->withTrashed();
         }
 
+        // We'll try to locate the user by their object guid,
+        // otherwise we'll locate them by their username.
         return $query->where(
             Resolver::getDatabaseIdColumn(),
             '=',
@@ -99,7 +101,7 @@ class Import
      */
     protected function sync(Model $model)
     {
-        // Set the users identifier automatically.
+        // Set the users LDAP identifier.
         $model->setAttribute(
             Resolver::getDatabaseIdColumn(), $this->user->getConvertedGuid()
         );
