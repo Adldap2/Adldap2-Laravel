@@ -6,6 +6,7 @@ use Adldap\Models\User;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Traits\ValidatesUsers;
 use Adldap\Laravel\Events\Imported;
 use Adldap\Laravel\Events\AuthenticationRejected;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
@@ -14,32 +15,11 @@ use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\EloquentUserProvider;
-use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class DatabaseUserProvider extends Provider
+class DatabaseUserProvider extends EloquentUserProvider
 {
-    /**
-     * The hasher implementation.
-     *
-     * @var \Illuminate\Contracts\Hashing\Hasher
-     */
-    protected $hasher;
-
-    /**
-     * The Eloquent user model.
-     *
-     * @var string
-     */
-    protected $model;
-
-    /**
-     * The fallback user provider.
-     *
-     * @var UserProvider
-     */
-    protected $fallback;
+    use ValidatesUsers;
 
     /**
      * The currently authenticated LDAP user.
@@ -47,49 +27,6 @@ class DatabaseUserProvider extends Provider
      * @var User|null
      */
     protected $user;
-
-    /**
-     * Constructor.
-     *
-     * @param Hasher $hasher
-     * @param string $model
-     */
-    public function __construct(Hasher $hasher, $model)
-    {
-        $this->model = $model;
-        $this->hasher = $hasher;
-
-        $this->setFallback(new EloquentUserProvider($hasher, $model));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function retrieveById($identifier)
-    {
-        return $this->fallback->retrieveById($identifier);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function retrieveByToken($identifier, $token)
-    {
-        return $this->fallback->retrieveByToken($identifier, $token);
-    }
-
-    /**
-     * Update the "remember me" token for the given user in storage.
-     *
-     * @param Authenticatable $user
-     * @param string          $token
-     *
-     * @return void
-     */
-    public function updateRememberToken(Authenticatable $user, $token)
-    {
-        $this->fallback->updateRememberToken($user, $token);
-    }
 
     /**
      * {@inheritdoc}
@@ -112,7 +49,7 @@ class DatabaseUserProvider extends Provider
         }
 
         if ($this->isFallingBack()) {
-            return $this->fallback->retrieveByCredentials($credentials);
+            return parent::retrieveByCredentials($credentials);
         }
     }
 
@@ -159,47 +96,10 @@ class DatabaseUserProvider extends Provider
         if ($this->isFallingBack() && $model->exists) {
             // If the user exists in our local database already and fallback is
             // enabled, we'll perform standard eloquent authentication.
-            return $this->fallback->validateCredentials($model, $credentials);
+            return parent::validateCredentials($model, $credentials);
         }
 
         return false;
-    }
-
-    /**
-     * Set the fallback user provider.
-     *
-     * @param UserProvider $provider
-     *
-     * @return void
-     */
-    public function setFallback(UserProvider $provider)
-    {
-        $this->fallback = $provider;
-    }
-
-    /**
-     * Create a new instance of the model.
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function createModel()
-    {
-        $class = '\\'.ltrim($this->model, '\\');
-
-        return new $class;
-    }
-
-    /**
-     * Perform all missing method calls on the underlying EloquentUserProvider fallback.
-     *
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
-    public function __call($name, $arguments)
-    {
-        return call_user_func_array([$this->fallback, $name], $arguments);
     }
 
     /**
