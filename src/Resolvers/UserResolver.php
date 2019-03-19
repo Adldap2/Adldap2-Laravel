@@ -56,7 +56,7 @@ class UserResolver implements ResolverInterface
      */
     public function byId($identifier)
     {
-        return $this->query()->findByGuid($identifier);
+        return $this->query()->findByGuid($identifier) ?? null;
     }
 
     /**
@@ -90,9 +90,7 @@ class UserResolver implements ResolverInterface
      */
     public function byModel(Authenticatable $model)
     {
-        $identifier = $this->getDatabaseIdColumn();
-
-        return $this->query()->whereEquals($identifier, $model->{$identifier})->first();
+        return $this->byId($model->{$this->getDatabaseIdColumn()});
     }
 
     /**

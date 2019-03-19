@@ -19,17 +19,15 @@ class BindsLdapUserModel
      */
     public function handle($event)
     {
-        // Before we bind the users LDAP model, we will verify they are using the
-        // Adldap authentication provider, the required trait, and the
-        // users LDAP property has not already been set.
+        // Before we bind the users LDAP model, we will verify they are using the Adldap
+        // authentication provider, the required trait, the users LDAP property has
+        // not already been set, and we have located an LDAP user to bind.
         if (
             $this->isUsingAdldapProvider($event->guard)
             && $this->canBind($event->user)
-            && is_null($event->user->ldap)
+            && $user = Resolver::byModel($event->user)
         ) {
-            $event->user->setLdapUser(
-                Resolver::byModel($event->user)
-            );
+            $event->user->setLdapUser($user);
         }
     }
 
@@ -54,6 +52,6 @@ class BindsLdapUserModel
      */
     protected function canBind(Authenticatable $user) : bool
     {
-        return array_key_exists(HasLdapUser::class, class_uses_recursive($user));
+        return array_key_exists(HasLdapUser::class, class_uses_recursive($user)) && is_null($user->ldap);
     }
 }
