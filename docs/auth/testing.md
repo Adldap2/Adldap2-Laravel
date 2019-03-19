@@ -50,7 +50,10 @@ class AuthTest extends TestCase
             'userprincipalname'     => ['jdoe@email.com'],
         ]);
 
-        Resolver::shouldReceive('byCredentials')->once()->andReturn($user)
+        Resolver::shouldReceive('byCredentials')->once()->with($credentials)->andReturn($user)
+            ->shouldReceive('getDatabaseIdColumn')->twice()->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->once()->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname')
             ->shouldReceive('authenticate')->once()->andReturn(true);
 
         $this->post(route('login'), $credentials)->assertRedirect('/dashboard');
