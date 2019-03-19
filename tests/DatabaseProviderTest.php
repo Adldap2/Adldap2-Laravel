@@ -310,6 +310,47 @@ class DatabaseProviderTest extends DatabaseTestCase
     }
 
     /** @test */
+    public function users_without_a_guid_and_a_changed_username_have_new_record_created()
+    {
+        // Create an existing synchronized user.
+        EloquentUser::create([
+            'email'    => 'jdoe@email.com',
+            'name'     => 'John Doe',
+            'password' => Hash::make('Password123'),
+        ]);
+
+        $credentials = [
+            'email'    => 'johndoe@email.com',
+            'password' => 'Password123',
+        ];
+
+        // Generate an LDAP user with a changed UPN and Mail.
+        $ldapUser = $this->makeLdapUser([
+            'objectguid'        => ['cc07cacc-5d9d-fa40-a9fb-3a4d50a172b0'],
+            'samaccountname'    => ['jdoe'],
+            'userprincipalname' => ['johndoe@email.com'],
+            'mail'              => ['johndoe@email.com'],
+            'cn'                => ['John Doe'],
+        ]);
+
+        Resolver::shouldReceive('byCredentials')->once()->andReturn($ldapUser)
+            ->shouldReceive('getDatabaseIdColumn')->andReturn('objectguid')
+            ->shouldReceive('getDatabaseUsernameColumn')->andReturn('email')
+            ->shouldReceive('getLdapDiscoveryAttribute')->andReturn('userprincipalname')
+            ->shouldReceive('byModel')->once()->andReturn($ldapUser)
+            ->shouldReceive('authenticate')->once()->andReturn(true);
+
+        $this->assertTrue(Auth::attempt($credentials));
+
+        $user = Auth::user();
+
+        $this->assertInstanceOf('Adldap\Laravel\Tests\Models\TestUser', $user);
+        $this->assertEquals($user->objectguid, $ldapUser->getConvertedGuid());
+        $this->assertEquals('johndoe@email.com', $user->email);
+        $this->assertEquals(2, EloquentUser::count());
+    }
+
+    /** @test */
     public function passwords_are_not_updated_when_sync_is_disabled()
     {
         config(['ldap_auth.passwords.sync' => false]);
