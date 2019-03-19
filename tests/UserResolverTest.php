@@ -6,15 +6,19 @@ use Mockery as m;
 use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
 use Adldap\Schemas\SchemaInterface;
-use Adldap\Laravel\Scopes\UpnScope;
 use Adldap\Connections\ProviderInterface;
+use Adldap\Laravel\Scopes\UpnScope;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Adldap\Laravel\Tests\Models\TestUser;
 use Adldap\Laravel\Resolvers\UserResolver;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class UserResolverTest extends TestCase
 {
+    use WithFaker;
+
     /** @test */
     public function eloquent_username_default()
     {
@@ -126,5 +130,25 @@ class UserResolverTest extends TestCase
             'userprincipalname' => 'jdoe',
             'password' => 'Password1'
         ]);
+    }
+
+    /** @test */
+    public function by_model_retrieves_user_by_object_guid()
+    {
+        $model = new TestUser([
+            'objectguid' => $this->faker->uuid
+        ]);
+        
+        $user = $this->makeLdapUser();
+
+        $query = m::mock(Builder::class);
+
+        $query->shouldReceive('findByGuid')->once()->with($model->objectguid)->andReturn($user);
+        
+        $r = m::mock(UserResolver::class)->makePartial();
+
+        $r->shouldReceive('query')->andReturn($query);
+
+        $this->assertEquals($user, $r->byModel($model));
     }
 }
