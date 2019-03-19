@@ -95,7 +95,7 @@ If you're starting from scratch, simply add the `objectguid` column (or whicheve
 ```php
 Schema::create('users', function (Blueprint $table) {
     $table->increments('id');
-    $table->string('objectguid')->nullable(); // Added here.
+    $table->string('objectguid')->unique()->nullable(); // Added here.
     $table->string('name');
     $table->string('email')->unique();
     $table->timestamp('email_verified_at')->nullable();
@@ -111,7 +111,7 @@ Ex. `php artisan migration:make add_objectguid_column`
 
 ```php
 Schema::table('users', function (Blueprint $table) {
-    $table->string('objectguid')->nullable()->after('id');
+    $table->string('objectguid')->unique()->nullable()->after('id');
 });
 ```
 
