@@ -11,8 +11,6 @@ return [
     |
     | You must specify connections in your `config/ldap.php` configuration file.
     |
-    | This must be a string.
-    |
     */
 
     'connection' => env('LDAP_CONNECTION', 'default'),
@@ -231,8 +229,7 @@ return [
         | random 16 character hashed password upon first login, and will
         | lose access to this account upon loss of LDAP connectivity.
         |
-        | This option must be true or false and is only applicable
-        | to the DatabaseUserProvider.
+        | This option is only applicable to the DatabaseUserProvider.
         |
         */
 
@@ -266,8 +263,7 @@ return [
     |
     | Set this to true if you would like to enable it.
     |
-    | This option must be true or false and is only
-    | applicable to the DatabaseUserProvider.
+    | This option is only applicable to the DatabaseUserProvider.
     |
     */
 
@@ -287,8 +283,7 @@ return [
     |
     | You **must** include the users login attribute here.
     |
-    | This option must be an array and is only applicable
-    | to the DatabaseUserProvider.
+    | This option is only applicable to the DatabaseUserProvider.
     |
     */
 
