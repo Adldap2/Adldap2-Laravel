@@ -6,8 +6,6 @@ use Adldap\AdldapInterface;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class Adldap
- * @package Adldap\Laravel\Facades
  * @mixin \Adldap\Connections\Provider
  */
 class Adldap extends Facade
