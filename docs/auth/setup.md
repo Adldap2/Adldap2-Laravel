@@ -336,7 +336,13 @@ You can ignore the `windows` configuration array, unless you're planning on usin
 
 ### GUID Column
 
-The GUID column is a new configuration option added in v6.0 that allows to set the database column that will store users Object GUID (Globally Unique Identifier). The addition of this database column allows you to make username changes in your LDAP directory, and have them properly synchronize in your Laravel application. This is usually the scenario when someone changes their marital status, or changes their name.
+The GUID column is a new configuration option added in v6.0 that allows you to set the
+database column that will store users Object GUID (Globally Unique Identifier).
+
+The addition of this database column allows you to make username changes in your
+LDAP directory, and have them properly synchronize in your Laravel application.
+
+This is usually the scenario when someone changes their marital status, or changes their name.
 
 If you're upgrading from a previous Adldap2-Laravel version, simply create a new migration and add the `nullable` column to your `users` database table.
 
@@ -363,7 +369,9 @@ Schema::create('users', function (Blueprint $table) {
 });
 ```
 
-If you have user records already inside your database with a `null` `objectguid` value, then **it will be set automatically** if a user authenticates with the same username that is contained in your configured in your `username_column` option.
+If you have user records already inside your database with a `null` `objectguid` value, then
+**it will be set automatically** if a user authenticates with the same username that
+is contained in your configured in your `username_column` option.
 
 For example, lets say we have a user in our database with the following information:
 ```
@@ -385,6 +393,15 @@ When a user successfully authenticates with the username of `jdoe@acme.org`, the
 
 The next time this user authenticates, the `objectguid` will queried for **first**, then `email`.
 This is done using a simple `or where` statement, so two queries are not executed for one login.
+
+> **Note**: If the users identifier changes (their email / username) prior to their
+> `objectguid` from being synchronized to your local database and they login to 
+> your application, a new user record will be created.
+>
+> This is due to not being able to locate a local user record with the users new username.
+>
+> It is recommended to keep your application in sync via scheduling the `adldap:import`
+> command so that all users have a synchronized `objectguid`.
 
 ### Username Column
 
