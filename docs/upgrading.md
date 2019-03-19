@@ -6,7 +6,13 @@
 
 ### Configuration
 
-It is recommended to re-publish both of your `ldap.php` and `ldap_auth.php` files to ensure you have all of the updated configuration keys.
+It is recommended to re-publish both of your `ldap.php` and `ldap_auth.php`
+files to ensure you have all of the updated configuration keys.
+
+You can do so by deleting your `ldap.php` and `ldap_auth.php` files and then running:
+
+- `php artisan vendor:publish --provider=Adldap\Laravel\AdldapServiceProvider`
+- `php artisan vendor:publish --provider=Adldap\Laravel\AdldapAuthServiceProvider`
 
 #### Quick Changes View
 
