@@ -4,6 +4,12 @@
 
 **Estimated Upgrade Time: 1 hour**
 
+### Minimum Requirements
+
+Adldap2-Laravel now requires a minimum of Laravel 5.5, as all previous versions are now out of their respective support windows.
+
+If you require using an earlier version of Laravel, please use Adldap2-Laravel v5.0.
+
 ### Configuration
 
 It is recommended to re-publish both of your `ldap.php` and `ldap_auth.php`
@@ -95,7 +101,7 @@ If you're starting from scratch, simply add the `objectguid` column (or whicheve
 ```php
 Schema::create('users', function (Blueprint $table) {
     $table->increments('id');
-    $table->string('objectguid')->nullable(); // Added here.
+    $table->string('objectguid')->unique()->nullable(); // Added here.
     $table->string('name');
     $table->string('email')->unique();
     $table->timestamp('email_verified_at')->nullable();
@@ -111,7 +117,7 @@ Ex. `php artisan migration:make add_objectguid_column`
 
 ```php
 Schema::table('users', function (Blueprint $table) {
-    $table->string('objectguid')->nullable()->after('id');
+    $table->string('objectguid')->unique()->nullable()->after('id');
 });
 ```
 
