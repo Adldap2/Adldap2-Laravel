@@ -133,7 +133,25 @@ class UserResolverTest extends TestCase
     }
 
     /** @test */
-    public function by_model_retrieves_user_by_object_guid()
+    public function by_id_retrieves_user_by_object_guid()
+    {
+        $user = $this->makeLdapUser();
+
+        $guid = $this->faker->uuid;
+
+        $query = m::mock(Builder::class);
+
+        $query->shouldReceive('findByGuid')->once()->with($guid)->andReturn($user);
+
+        $r = m::mock(UserResolver::class)->makePartial();
+
+        $r->shouldReceive('query')->andReturn($query);
+
+        $this->assertEquals($user, $r->byId($guid));
+    }
+
+    /** @test */
+    public function by_model_retrieves_user_by_models_object_guid()
     {
         $model = new TestUser([
             'objectguid' => $this->faker->uuid
