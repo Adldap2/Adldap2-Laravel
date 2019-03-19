@@ -102,6 +102,15 @@ php artisan adldap:import --filter "(cn=John Doe)"
 Found user 'John Doe'.
 ```
 
+### Model
+
+The `--model` (or `-m`) option allows you to change the model to use for importing users.
+By default your configured model from your `ldap_auth.php` file will be used.
+
+```bash
+php artisan adldap:import --model "\App\Models\User"
+```
+
 ### No Logging
 
 The `--no-log` option allows you to disable logging during the command.
