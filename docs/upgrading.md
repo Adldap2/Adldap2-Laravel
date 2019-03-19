@@ -43,6 +43,8 @@ Here's a quick overview of the configuration changes made in their respective fi
 ],
 
 // v6.0
+'model' => App\User::class,
+
 'identifiers' => [
 
     'ldap' => [
