@@ -4,6 +4,12 @@
 
 **Estimated Upgrade Time: 1 hour**
 
+### Minimum Requirements
+
+Adldap2-Laravel now requires a minimum of Laravel 5.5, as all previous versions are now out of their respective support windows.
+
+If you require using an earlier version of Laravel, please use Adldap2-Laravel v5.0.
+
 ### Configuration
 
 It is recommended to re-publish both of your `ldap.php` and `ldap_auth.php`
