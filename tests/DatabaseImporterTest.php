@@ -24,17 +24,21 @@ class DatabaseImporterTest extends DatabaseTestCase
     /** @test */
     public function ldap_users_are_not_duplicated_with_alternate_casing()
     {
-        $user = $this->makeLdapUser();
+        $firstUser = $this->makeLdapUser();
 
-        $user->setUserPrincipalName('jdoe@EMAIL.com');
+        $firstUser->setUserPrincipalName('JDOE@EMAIL.com');
 
-        $m1 = (new Import($user, new TestUser()))->handle();
+        $m1 = (new Import($firstUser, new TestUser()))->handle();
 
         $m1->password = bcrypt(str_random(16));
 
         $m1->save();
 
-        $m2 = (new Import($user, new TestUser()))->handle();
+        $secondUser = $this->makeLdapUser();
+
+        $secondUser->setUserPrincipalName('jdoe@email.com');
+
+        $m2 = (new Import($secondUser, new TestUser()))->handle();
 
         $this->assertEquals($m1->id, $m2->id);
     }
