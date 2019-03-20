@@ -2,7 +2,7 @@
 
 Adldap2-Laravel requires the following:
 
-- Laravel 5.*
+- Laravel 5.5
 - PHP 7.1 or greater
 - PHP LDAP extension enabled
 - An LDAP Server
