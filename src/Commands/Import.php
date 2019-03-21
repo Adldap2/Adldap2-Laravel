@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Commands;
 
+use UnexpectedValueException;
 use Adldap\Models\User;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Events\Importing;
@@ -65,9 +66,11 @@ class Import
     }
 
     /**
-     * Retrieves an eloquent user by their credentials.
+     * Retrieves an eloquent user by their GUID or their username.
      *
      * @return Model|null
+     *
+     * @throws UnexpectedValueException
      */
     protected function findUser()
     {
@@ -85,11 +88,11 @@ class Import
         return $query->where(
             Resolver::getDatabaseIdColumn(),
             '=',
-            $this->user->getConvertedGuid()
+            $this->getObjectGuid()
         )->orWhere(
             Resolver::getDatabaseUsernameColumn(),
             '=',
-            $this->user->getFirstAttribute(Resolver::getLdapDiscoveryAttribute())
+            $this->getUsername()
         )->first();
     }
 
@@ -125,6 +128,48 @@ class Import
                 $model->{$modelField} = is_string($ldapField) ? $this->user->getFirstAttribute($ldapField) : $ldapField;
             }
         }
+    }
+
+    /**
+     * Returns the LDAP users configured username.
+     *
+     * @return string
+     */
+    protected function getUsername()
+    {
+        $attribute = Resolver::getLdapDiscoveryAttribute();
+
+        $username = $this->user->getFirstAttribute($attribute);
+
+        if (trim($username) == false) {
+            throw new UnexpectedValueException(
+                "Unable to locate a user without a {$attribute}"
+            );
+        }
+
+        return $username;
+    }
+
+    /**
+     * Returns the LDAP users object GUID.
+     *
+     * @return string
+     *
+     * @throws UnexpectedValueException
+     */
+    protected function getObjectGuid()
+    {
+        $guid = $this->user->getConvertedGuid();
+
+        if (trim($guid) == false) {
+            $attribute = $this->user->getSchema()->objectGuid();
+
+            throw new UnexpectedValueException(
+                "Unable to locate a user without a {$attribute}"
+            );
+        }
+
+        return $guid;
     }
 
     /**
