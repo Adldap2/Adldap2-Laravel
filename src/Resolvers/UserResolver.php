@@ -56,7 +56,9 @@ class UserResolver implements ResolverInterface
      */
     public function byId($identifier)
     {
-        return $this->query()->findByGuid($identifier) ?? null;
+        if ($user = $this->query()->findByGuid($identifier)) {
+            return $user;
+        }
     }
 
     /**
@@ -75,8 +77,10 @@ class UserResolver implements ResolverInterface
             $this->getLdapDiscoveryAttribute() :
             $this->getDatabaseUsernameColumn();
 
-        if (!array_key_exists($attribute, $credentials)) {
-            throw new RuntimeException("The '$attribute' key is missing from the given credentials array.");
+        if (! array_key_exists($attribute, $credentials)) {
+            throw new RuntimeException(
+                "The '$attribute' key is missing from the given credentials array."
+            );
         }
 
         return $this->query()->whereEquals(
