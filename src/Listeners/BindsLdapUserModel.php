@@ -19,26 +19,30 @@ class BindsLdapUserModel
      */
     public function handle($event)
     {
-        // Before we bind the users LDAP model, we will verify they are using the Adldap
-        // authentication provider, the required trait, the users LDAP property has
-        // not already been set, and we have located an LDAP user to bind.
-        if (
-            $this->isUsingAdldapProvider($event->guard)
-            && $this->canBind($event->user)
-            && $user = Resolver::byModel($event->user)
-        ) {
-            $event->user->setLdapUser($user);
+        $guard = null;
+
+        // We'll retrieve the auth guard if available.
+        if (property_exists($event, 'guard')) {
+            $guard = $event->guard;
+        }
+
+        // Before we bind the users LDAP model, we will verify they are using
+        // the Adldap authentication provider, and the required trait.
+        if ($this->isUsingAdldapProvider($guard) && $this->canBind($event->user)) {
+            $event->user->setLdapUser(
+                Resolver::byModel($event->user)
+            );
         }
     }
 
     /**
      * Determines if the Auth Provider is an instance of the Adldap Provider.
      *
-     * @param string $guard
+     * @param string|null $guard
      *
      * @return bool
      */
-    protected function isUsingAdldapProvider($guard) : bool
+    protected function isUsingAdldapProvider($guard = null) : bool
     {
         return Auth::guard($guard)->getProvider() instanceof DatabaseUserProvider;
     }
