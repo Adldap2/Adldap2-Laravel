@@ -90,7 +90,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
             // otherwise we will try to use the providers config array.
             $model = Config::get('ldap_auth.model') ?? array_get($config, 'model');
 
-            if (!$model) {
+            if (! $model) {
                 throw new RuntimeException(
                     "No model is configured. You must configure a model to use with the {$provider}."
                 );

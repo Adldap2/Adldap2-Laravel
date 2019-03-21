@@ -45,7 +45,7 @@ class WindowsAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$this->auth->check()) {
+        if (! $this->auth->check()) {
             // Retrieve the users account name from the request.
             if ($account = $this->account($request)) {
                 // Retrieve the users username from their account name.
