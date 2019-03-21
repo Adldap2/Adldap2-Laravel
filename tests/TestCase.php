@@ -96,6 +96,13 @@ class TestCase extends BaseTestCase
         ]);
     }
 
+    /**
+     * Returns a mock LDAP connection object.
+     *
+     * @param array $methods
+     *
+     * @return \PHPUnit\Framework\MockObject\MockObject
+     */
     protected function getMockConnection($methods = [])
     {
         $defaults = ['isBound', 'search', 'getEntries', 'bind', 'close'];
