@@ -107,7 +107,7 @@ class Import
     {
         // Set the users LDAP identifier.
         $model->setAttribute(
-            Resolver::getDatabaseIdColumn(), $this->user->getConvertedGuid()
+            Resolver::getDatabaseIdColumn(), $this->getObjectGuid()
         );
 
         foreach ($this->getLdapSyncAttributes() as $modelField => $ldapField) {
