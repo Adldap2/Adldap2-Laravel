@@ -134,6 +134,8 @@ class Import
      * Returns the LDAP users configured username.
      *
      * @return string
+     *
+     * @throws UnexpectedValueException
      */
     protected function getUsername()
     {
