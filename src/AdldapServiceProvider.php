@@ -36,11 +36,13 @@ class AdldapServiceProvider extends ServiceProvider
             return;
         }
 
-        $config = __DIR__.'/Config/config.php';
+        if ($this->app->runningInConsole()) {
+            $config = __DIR__ . '/Config/config.php';
 
-        $this->publishes([
-            $config => config_path('ldap.php'),
-        ]);
+            $this->publishes([
+                $config => config_path('ldap.php'),
+            ]);
+        }
     }
 
     /**
@@ -73,9 +75,7 @@ class AdldapServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [
-            AdldapInterface::class,
-        ];
+        return [AdldapInterface::class];
     }
 
     /**
