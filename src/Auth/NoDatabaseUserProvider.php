@@ -33,6 +33,8 @@ class NoDatabaseUserProvider implements UserProvider
      */
     public function retrieveByToken($identifier, $token)
     {
+        // We can't retrieve LDAP users via remember
+        // token, as we have nowhere to store them.
         return;
     }
 
@@ -41,7 +43,7 @@ class NoDatabaseUserProvider implements UserProvider
      */
     public function updateRememberToken(Authenticatable $user, $token)
     {
-        //
+        // LDAP users cannot contain remember tokens.
     }
 
     /**
