@@ -88,11 +88,11 @@ class Import
         return $query->where(
             Resolver::getDatabaseIdColumn(),
             '=',
-            $this->getObjectGuid()
+            $this->getUserObjectGuid()
         )->orWhere(
             Resolver::getDatabaseUsernameColumn(),
             '=',
-            $this->getUsername()
+            $this->getUserUsername()
         )->first();
     }
 
@@ -107,7 +107,7 @@ class Import
     {
         // Set the users LDAP identifier.
         $model->setAttribute(
-            Resolver::getDatabaseIdColumn(), $this->getObjectGuid()
+            Resolver::getDatabaseIdColumn(), $this->getUserObjectGuid()
         );
 
         foreach ($this->getLdapSyncAttributes() as $modelField => $ldapField) {
@@ -137,7 +137,7 @@ class Import
      *
      * @throws UnexpectedValueException
      */
-    protected function getUsername()
+    protected function getUserUsername()
     {
         $attribute = Resolver::getLdapDiscoveryAttribute();
 
@@ -159,7 +159,7 @@ class Import
      *
      * @throws UnexpectedValueException
      */
-    protected function getObjectGuid()
+    protected function getUserObjectGuid()
     {
         $guid = $this->user->getConvertedGuid();
 
