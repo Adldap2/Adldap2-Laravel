@@ -51,7 +51,8 @@ class AdldapAuthServiceProvider extends ServiceProvider
     {
         // Bind the user resolver instance into the IoC.
         $this->app->bind(ResolverInterface::class, function () {
-            return new UserResolver(
+            $resolverClass = Config::get('ldap_auth.resolver', UserResolver::class);
+            return new $resolverClass(
                 $this->app->make(AdldapInterface::class)
             );
         });

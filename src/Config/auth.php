@@ -37,6 +37,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Resolver
+    |--------------------------------------------------------------------------
+    |
+    | The User Resolver class can be configured in case additional processing is
+    | needed before received LDAP user data is passed on to the User Provider.
+    |
+    */
+
+    'resolver' => Adldap\Laravel\Resolvers\UserResolver::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Model
     |--------------------------------------------------------------------------
     |

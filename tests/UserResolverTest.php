@@ -2,6 +2,8 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Adldap\Laravel\Resolvers\ResolverInterface;
+use Adldap\Laravel\Tests\Models\TestUserResolver;
 use Mockery as m;
 use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
@@ -18,6 +20,23 @@ use Illuminate\Foundation\Testing\WithFaker;
 class UserResolverTest extends TestCase
 {
     use WithFaker;
+
+    /** @test */
+    public function resolver_class_is_configurable()
+    {
+        // default
+        $instance = $this->app->make(ResolverInterface::class);
+
+        $this->assertTrue($instance instanceof UserResolver);
+
+        // configured
+        $this->refreshApplication();
+        Config::set('ldap_auth.resolver', TestUserResolver::class);
+
+        $instance = $this->app->make(ResolverInterface::class);
+
+        $this->assertTrue($instance instanceof TestUserResolver);
+    }
 
     /** @test */
     public function eloquent_username_default()
