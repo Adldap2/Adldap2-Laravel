@@ -15,6 +15,13 @@ use Illuminate\Database\Eloquent\Model;
 class Import
 {
     /**
+     * The scope to utilize for locating the LDAP user to synchronize.
+     *
+     * @var string
+     */
+    public static $scope = UserImportScope::class;
+
+    /**
      * The LDAP user that is being imported.
      *
      * @var User
@@ -27,6 +34,16 @@ class Import
      * @var Model
      */
     protected $model;
+
+    /**
+     * Sets the scope to use for locating LDAP users.
+     *
+     * @param $scope
+     */
+    public static function useScope($scope)
+    {
+        static::$scope = $scope;
+    }
 
     /**
      * Constructor.
@@ -83,17 +100,15 @@ class Import
             $query->withTrashed();
         }
 
-        // We'll try to locate the user by their object guid,
-        // otherwise we'll locate them by their username.
-        return $query->where(
-            Resolver::getDatabaseIdColumn(),
-            '=',
-            $this->getUserObjectGuid()
-        )->orWhere(
-            Resolver::getDatabaseUsernameColumn(),
-            '=',
+        /** @var \Illuminate\Database\Eloquent\Scope $scope */
+        $scope = new static::$scope(
+            $this->getUserObjectGuid(),
             $this->getUserUsername()
-        )->first();
+        );
+
+        $scope->apply($query, $this->model);
+
+        return $query->first();
     }
 
     /**
