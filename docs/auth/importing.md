@@ -115,7 +115,6 @@ The custom scope:
 ```php
 namespace App\Scopes;
 
-use Illuminate\Support\Str;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\UserImportScope as BaseScope;
 
