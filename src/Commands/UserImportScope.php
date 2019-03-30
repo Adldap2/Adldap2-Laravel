@@ -45,6 +45,16 @@ class UserImportScope implements Scope
      */
     public function apply(Builder $query, Model $model)
     {
+        $this->user($query);
+    }
+
+    /**
+     * Applies the user scope to the given Eloquent query builder.
+     *
+     * @param Builder $query
+     */
+    protected function user(Builder $query)
+    {
         // We'll try to locate the user by their object guid,
         // otherwise we'll locate them by their username.
         $query
