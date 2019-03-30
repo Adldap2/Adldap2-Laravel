@@ -230,20 +230,18 @@ class Import extends Command
      */
     protected function save(User $user, Model $model) : bool
     {
-        $imported = false;
-
         if ($model->save() && $model->wasRecentlyCreated) {
-            $imported = true;
-
             Event::dispatch(new Imported($user, $model));
 
             // Log the successful import.
             if ($this->isLogging()) {
                 logger()->info("Imported user {$user->getCommonName()}");
             }
+
+            return true;
         }
 
-        return $imported;
+        return false;
     }
 
     /**
