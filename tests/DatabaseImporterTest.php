@@ -40,7 +40,7 @@ class DatabaseImporterTest extends DatabaseTestCase
 
         $m2 = (new Import($secondUser, new TestUser()))->handle();
 
-        $this->assertEquals($m1->id, $m2->id);
+        $this->assertTrue($m1->is($m2));
     }
 
     /**
