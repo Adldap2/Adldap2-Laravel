@@ -53,7 +53,7 @@ class UserImportScope implements Scope
     }
 
     /**
-     * Returns the users object guid.
+     * Returns the LDAP users object guid.
      *
      * @return string
      */
