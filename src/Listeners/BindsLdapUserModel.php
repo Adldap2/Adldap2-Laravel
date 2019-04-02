@@ -52,6 +52,6 @@ class BindsLdapUserModel
      */
     protected function canBind(Authenticatable $user) : bool
     {
-        return array_key_exists(HasLdapUser::class, class_uses_recursive($user));
+        return array_key_exists(HasLdapUser::class, class_uses_recursive(get_class($user)));
     }
 }
