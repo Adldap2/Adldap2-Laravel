@@ -29,9 +29,9 @@ class UserResolver implements ResolverInterface
     /**
      * The name of the LDAP connection to utilize.
      *
-     * @var string
+     * @var string|null
      */
-    protected $connection = 'default';
+    protected $connection;
 
     /**
      * {@inheritdoc}
@@ -39,8 +39,6 @@ class UserResolver implements ResolverInterface
     public function __construct(AdldapInterface $ldap)
     {
         $this->ldap = $ldap;
-
-        $this->setConnection($this->getLdapAuthConnectionName());
     }
 
     /**
@@ -207,7 +205,7 @@ class UserResolver implements ResolverInterface
      */
     protected function getLdapAuthProvider() : ProviderInterface
     {
-        return $this->ldap->getProvider($this->connection);
+        return $this->ldap->getProvider($this->connection ?? $this->getLdapAuthConnectionName());
     }
 
     /**
