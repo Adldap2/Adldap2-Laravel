@@ -90,11 +90,11 @@ class UserResolverTest extends TestCase
     /** @test */
     public function connection_is_set_when_retrieving_provider()
     {
-        Config::shouldReceive('get')->once()->with('ldap_auth.connection', 'default')->andReturn('other-test');
+        Config::shouldReceive('get')->once()->with('ldap_auth.connection', 'default')->andReturn('other-domain');
 
         $ad = m::mock(AdldapInterface::class);
 
-        $ad->shouldReceive('getProvider')->andReturn(m::mock(ProviderInterface::class));
+        $ad->shouldReceive('getProvider')->andReturn(m::mock(ProviderInterface::class))->with('other-domain');
 
         $r = m::mock(UserResolver::class, [$ad])->makePartial();
 
