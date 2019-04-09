@@ -36,10 +36,10 @@ class AdldapAuthServiceProvider extends ServiceProvider
             $this->publishes([
                 $config => config_path('ldap_auth.php'),
             ]);
-
-            // Register the import command.
-            $this->commands(Import::class);
         }
+
+        // Register the import command.
+        $this->commands(Import::class);
     }
 
     /**
