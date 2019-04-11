@@ -66,16 +66,22 @@ class UserResolverTest extends TestCase
 
         $schema = m::mock(SchemaInterface::class);
 
-        $schema->shouldReceive('userPrincipalName')->once()->withNoArgs()->andReturn('userprincipalname');
+        $schema
+            ->shouldReceive('userPrincipalName')->once()->withNoArgs()->andReturn('userprincipalname')
+            ->shouldReceive('objectGuid')->once()->withNoArgs()->andReturn('objectguid');
 
         $builder = m::mock(Builder::class);
 
-        $builder->shouldReceive('whereHas')->once()->withArgs(['userprincipalname'])
-            ->shouldReceive('getSchema')->once()->andReturn($schema);
+        $builder
+            ->shouldReceive('whereHas')->once()->withArgs(['userprincipalname'])->andReturnSelf()
+            ->shouldReceive('getSelects')->once()->andReturn(['*'])
+            ->shouldReceive('select')->with(['*', 'objectguid'])->andReturnSelf()
+            ->shouldReceive('getSchema')->twice()->andReturn($schema);
 
         $provider = m::mock(ProviderInterface::class);
 
-        $provider->shouldReceive('search')->once()->andReturn($provider)
+        $provider
+            ->shouldReceive('search')->once()->andReturn($provider)
             ->shouldReceive('users')->once()->andReturn($builder);
 
         $ad = m::mock(AdldapInterface::class);
@@ -104,14 +110,23 @@ class UserResolverTest extends TestCase
     /** @test */
     public function by_credentials_retrieves_alternate_username_attribute_depending_on_user_provider()
     {
+        $schema = m::mock(SchemaInterface::class);
+
+        $schema->shouldReceive('objectGuid')->once()->withNoArgs()->andReturn('objectguid');
+
         $query = m::mock(Builder::class);
 
-        $query->shouldReceive('whereEquals')->once()->with('userprincipalname', 'jdoe')->andReturnSelf()
+        $query
+            ->shouldReceive('whereEquals')->once()->with('userprincipalname', 'jdoe')->andReturnSelf()
+            ->shouldReceive('getSelects')->once()->andReturn(['*'])
+            ->shouldReceive('select')->with(['*', 'objectguid'])->andReturnSelf()
+            ->shouldReceive('getSchema')->once()->andReturn($schema)
             ->shouldReceive('first')->andReturnNull();
 
         $ldapProvider = m::mock(ProviderInterface::class);
 
-        $ldapProvider->shouldReceive('search')->once()->andReturnSelf()
+        $ldapProvider
+            ->shouldReceive('search')->once()->andReturnSelf()
             ->shouldReceive('users')->once()->andReturn($query);
 
         $ad = m::mock(AdldapInterface::class);
