@@ -33,7 +33,7 @@ Then insert the facade alias (if you're going to use it):
 Finally, publish the `ldap.php` configuration file by running:
 
 ```bash
-php artisan vendor:publish --provider="Adldap\Laravel\AdldapServiceProvider"
+php artisan vendor:publish --provider "Adldap\Laravel\AdldapServiceProvider"
 ```
 
 Now you're all set! You're ready to move onto [setup](setup.md).

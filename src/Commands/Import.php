@@ -48,8 +48,8 @@ class Import
     /**
      * Constructor.
      *
-     * @param User  $user
-     * @param Model $model
+     * @param User  $user  The LDAP user being imported.
+     * @param Model $model The users eloquent model.
      */
     public function __construct(User $user, Model $model)
     {

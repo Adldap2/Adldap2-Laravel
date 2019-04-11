@@ -13,7 +13,7 @@ Adldap\Laravel\AdldapAuthServiceProvider::class,
 Publish the auth configuration:
 
 ```bash
-php artisan vendor:publish --provider="Adldap\Laravel\AdldapAuthServiceProvider"
+php artisan vendor:publish --provider "Adldap\Laravel\AdldapAuthServiceProvider"
 ```
 
 Change the auth driver in `config/auth.php` to `ldap`:
