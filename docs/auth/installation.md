@@ -33,4 +33,4 @@ value inside the `users` authentication provider to `ldap`:
 > ]);
 > ```
 
-Now that you've completed the basic installation, let's move along to the [setup guide](setup.md).
+Now that you've completed the basic installation, let's move along to the [setup guide](auth/setup.md).
