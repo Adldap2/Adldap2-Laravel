@@ -133,6 +133,13 @@ class UserResolver implements ResolverInterface
     {
         $query = $this->getLdapAuthProvider()->search()->users();
 
+        // We will ensure our object GUID attribute is always selected
+        // along will all attributes. Otherwise, if the object GUID
+        // attribute is virtual, it may not be returned.
+        $selects = array_unique(array_merge(['*', $query->getSchema()->objectGuid()], $query->getSelects()));
+
+        $query->select($selects);
+
         $scopes = Config::get('ldap_auth.scopes', []);
 
         if (is_array($scopes)) {
