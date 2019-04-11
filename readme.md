@@ -1,7 +1,7 @@
 <h1 align="center">Adldap2 - Laravel</h1>
 
 <p align="center">
-    <a href="www.laravel.com"><img src="https://img.shields.io/badge/Built_for-Laravel-green.svg?style=flat-square"></a>
+    <a href="https://laravel.com"><img src="https://img.shields.io/badge/Built_for-Laravel-green.svg?style=flat-square"></a>
     <a href="https://travis-ci.org/Adldap2/Adldap2-Laravel"><img src="https://img.shields.io/travis/Adldap2/Adldap2-Laravel.svg?style=flat-square"></a>
     <a href="https://scrutinizer-ci.com/g/Adldap2/Adldap2-Laravel"><img src="https://img.shields.io/scrutinizer/g/Adldap2/Adldap2-laravel/master.svg?style=flat-square"></a>
     <a href="https://packagist.org/packages/adldap2/adldap2-laravel"><img src="https://img.shields.io/packagist/dt/adldap2/adldap2-laravel.svg?style=flat-square"></a>
