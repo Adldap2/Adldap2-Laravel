@@ -309,7 +309,7 @@ class Import extends Command
      */
     protected function model() : Model
     {
-        $model = $this->option('model') ?? Config::get('ldap_auth.model', $this->determineModel());
+        $model = $this->option('model') ?? Config::get('ldap_auth.model') ?: $this->determineModel();
 
         return new $model;
     }
