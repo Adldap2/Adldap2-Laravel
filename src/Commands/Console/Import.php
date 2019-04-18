@@ -19,6 +19,13 @@ use Illuminate\Database\Eloquent\Model;
 class Import extends Command
 {
     /**
+     * The user model to use for importing.
+     *
+     * @var string
+     */
+    protected $model;
+
+    /**
      * The signature of the console command.
      *
      * @var string
@@ -92,13 +99,11 @@ class Import extends Command
 
         $this->output->progressStart(count($users));
 
-        $model = $this->model();
-
         foreach ($users as $user) {
             try {
                 // Import the user and retrieve it's model.
                 $model = Bus::dispatch(
-                    new ImportUser($user, $model)
+                    new ImportUser($user, $this->model())
                 );
 
                 // Set the users password.
@@ -305,15 +310,17 @@ class Import extends Command
     }
 
     /**
-     * Create a new instance of the eloquent model to use.
+     * Set and create a new instance of the eloquent model to use.
      *
      * @return Model
      */
     protected function model() : Model
     {
-        $model = $this->option('model') ?? Config::get('ldap_auth.model') ?: $this->determineModel();
+        if (! $this->model) {
+            $this->model = $this->option('model') ?? Config::get('ldap_auth.model') ?: $this->determineModel();
+        }
 
-        return new $model;
+        return new $this->model;
     }
 
     /**
