@@ -92,11 +92,13 @@ class Import extends Command
 
         $this->output->progressStart(count($users));
 
+        $model = $this->model();
+
         foreach ($users as $user) {
             try {
                 // Import the user and retrieve it's model.
                 $model = Bus::dispatch(
-                    new ImportUser($user, $this->model())
+                    new ImportUser($user, $model)
                 );
 
                 // Set the users password.
