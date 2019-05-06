@@ -98,6 +98,11 @@ return [
         // Only allows users with a uid to authenticate.
         // Suitable when using OpenLDAP.
         // Adldap\Laravel\Scopes\UidScope::class,
+        
+        // Fetch the memberOf attibute.
+        // This is needed for groups to work properly on OpenLdap
+        // Suitable when using OpenLDAP.
+        //Adldap\Laravel\Scopes\MemberOfScope::class,
 
     ],
 
