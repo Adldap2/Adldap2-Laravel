@@ -7,6 +7,7 @@ use Adldap\AdldapInterface;
 use Adldap\Auth\BindException;
 use Adldap\Connections\Provider;
 use Adldap\Connections\ConnectionInterface;
+use Adldap\Connections\ConnectionException;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
@@ -95,25 +96,29 @@ class AdldapServiceProvider extends ServiceProvider
     {
         // Go through each connection and construct a Provider.
         foreach ($connections as $name => $config) {
-            // Create a new provider.
-            $provider = $this->newProvider(
-                $config['settings'],
-                new $config['connection']
-            );
+            try {
+                // Create a new provider.
+                $provider = $this->newProvider(
+                    $config['settings'],
+                    new $config['connection']
+                );
 
-            if ($this->shouldAutoConnect($config)) {
-                try {
-                    $provider->connect();
-                } catch (BindException $e) {
-                    // We'll catch and log bind exceptions so
-                    // any connection issues fail gracefully
-                    // in our application.
-                    logger()->error($e);
+                if ($this->shouldAutoConnect($config)) {
+                    try {
+                        $provider->connect();
+                    } catch (BindException $e) {
+                        // We will catch and log bind exceptions so
+                        // any connection issues fail gracefully
+                        // in our application.
+                        logger()->error($e);
+                    }
                 }
-            }
 
-            // Add the provider to the Adldap container.
-            $adldap->addProvider($provider, $name);
+                // Add the provider to the Adldap container.
+                $adldap->addProvider($provider, $name);
+            } catch (ConnectionException $e) {
+                logger()->error($e);
+            }
         }
 
         return $adldap;
@@ -132,8 +137,10 @@ class AdldapServiceProvider extends ServiceProvider
     /**
      * Returns a new Provider instance.
      *
-     * @param array                    $configuration
+     * @param array $configuration
      * @param ConnectionInterface|null $connection
+     *
+     * @throws ConnectionException If starting TLS fails.
      *
      * @return Provider
      */
