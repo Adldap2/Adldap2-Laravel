@@ -3,11 +3,10 @@
 namespace Adldap\Laravel;
 
 use Adldap\Adldap;
+use Adldap\AdldapException;
 use Adldap\AdldapInterface;
-use Adldap\Auth\BindException;
 use Adldap\Connections\Provider;
 use Adldap\Connections\ConnectionInterface;
-use Adldap\Connections\ConnectionException;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
@@ -15,8 +14,9 @@ use Illuminate\Support\ServiceProvider;
 class AdldapServiceProvider extends ServiceProvider
 {
     /**
-     * We'll defer loading this service provider so our LDAP connection
-     * isn't instantiated unless requested to speed up our application.
+     * We'll defer loading this service provider so our
+     * LDAP connection isn't instantiated unless
+     * requested to speed up our application.
      *
      * @var bool
      */
@@ -29,7 +29,7 @@ class AdldapServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (Config::get('ldap.logging')) {
+        if ($this->isLogging()) {
             Adldap::setLogger(logger());
         }
 
@@ -85,12 +85,12 @@ class AdldapServiceProvider extends ServiceProvider
      * If a provider is configured to auto connect,
      * this method will throw a BindException.
      *
-     * @param Adldap $adldap
+     * @param Adldap $ldap
      * @param array  $connections
      *
      * @return Adldap
      */
-    protected function addProviders(Adldap $adldap, array $connections = [])
+    protected function addProviders(AdldapInterface $ldap, array $connections = [])
     {
         // Go through each connection and construct a Provider.
         foreach ($connections as $name => $config) {
@@ -100,21 +100,24 @@ class AdldapServiceProvider extends ServiceProvider
                 new $config['connection']
             );
 
+            // If auto connect is enabled, an attempt will be made to bind to
+            // the LDAP server with the configured credentials. If this
+            // fails then the exception will be logged (if enabled).
             if ($this->shouldAutoConnect($config)) {
                 try {
                     $provider->connect();
-                } catch (BindException $e) {
-                    logger()->error($e);
-                } catch (ConnectionException $e) {
-                    logger()->error($e);
+                } catch (AdldapException $e) {
+                    if ($this->isLogging()) {
+                        logger()->error($e);
+                    }
                 }
             }
 
-            // Add the provider to the Adldap container.
-            $adldap->addProvider($provider, $name);
+            // Add the provider to the LDAP container.
+            $ldap->addProvider($provider, $name);
         }
 
-        return $adldap;
+        return $ldap;
     }
 
     /**
@@ -128,9 +131,9 @@ class AdldapServiceProvider extends ServiceProvider
     }
 
     /**
-     * Returns a new Provider instance.
+     * Returns a new LDAP Provider instance.
      *
-     * @param array $configuration
+     * @param array                    $configuration
      * @param ConnectionInterface|null $connection
      *
      * @return Provider
@@ -141,7 +144,7 @@ class AdldapServiceProvider extends ServiceProvider
     }
 
     /**
-     * Determine if the given settings is configured for auto-connecting.
+     * Determines if the given settings has auto connect enabled.
      *
      * @param array $settings
      *
@@ -154,7 +157,17 @@ class AdldapServiceProvider extends ServiceProvider
     }
 
     /**
-     * Determines if the current application is Lumen.
+     * Determines whether logging is enabled.
+     *
+     * @return bool
+     */
+    protected function isLogging()
+    {
+        return Config::get('ldap.logging', false);
+    }
+
+    /**
+     * Determines if the current application is a Lumen instance.
      *
      * @return bool
      */
