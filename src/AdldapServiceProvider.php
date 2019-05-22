@@ -88,37 +88,30 @@ class AdldapServiceProvider extends ServiceProvider
      * @param Adldap $adldap
      * @param array  $connections
      *
-     * @throws \Adldap\Auth\BindException
-     *
      * @return Adldap
      */
     protected function addProviders(Adldap $adldap, array $connections = [])
     {
         // Go through each connection and construct a Provider.
         foreach ($connections as $name => $config) {
-            try {
-                // Create a new provider.
-                $provider = $this->newProvider(
-                    $config['settings'],
-                    new $config['connection']
-                );
+            // Create a new provider.
+            $provider = $this->newProvider(
+                $config['settings'],
+                new $config['connection']
+            );
 
-                if ($this->shouldAutoConnect($config)) {
-                    try {
-                        $provider->connect();
-                    } catch (BindException $e) {
-                        // We will catch and log bind exceptions so
-                        // any connection issues fail gracefully
-                        // in our application.
-                        logger()->error($e);
-                    }
+            if ($this->shouldAutoConnect($config)) {
+                try {
+                    $provider->connect();
+                } catch (BindException $e) {
+                    logger()->error($e);
+                } catch (ConnectionException $e) {
+                    logger()->error($e);
                 }
-
-                // Add the provider to the Adldap container.
-                $adldap->addProvider($provider, $name);
-            } catch (ConnectionException $e) {
-                logger()->error($e);
             }
+
+            // Add the provider to the Adldap container.
+            $adldap->addProvider($provider, $name);
         }
 
         return $adldap;
@@ -139,8 +132,6 @@ class AdldapServiceProvider extends ServiceProvider
      *
      * @param array $configuration
      * @param ConnectionInterface|null $connection
-     *
-     * @throws ConnectionException If starting TLS fails.
      *
      * @return Provider
      */
