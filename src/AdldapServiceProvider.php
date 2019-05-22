@@ -94,10 +94,13 @@ class AdldapServiceProvider extends ServiceProvider
     {
         // Go through each connection and construct a Provider.
         foreach ($connections as $name => $config) {
+            // Create a new connection with its configured name.
+            $connection = new $config['connection']($name);
+
             // Create a new provider.
             $provider = $this->newProvider(
                 $config['settings'],
-                new $config['connection']
+                $connection
             );
 
             // If auto connect is enabled, an attempt will be made to bind to
