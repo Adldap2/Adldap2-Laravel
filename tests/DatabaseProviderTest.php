@@ -2,17 +2,17 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Adldap\Models\User;
 use Adldap\AdldapInterface;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Facades\Resolver;
-use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
-use Adldap\Laravel\Tests\Models\TestUser as EloquentUser;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
+use Adldap\Laravel\Tests\Models\TestUser as EloquentUser;
+use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
+use Adldap\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseProviderTest extends DatabaseTestCase
 {
@@ -138,8 +138,8 @@ class DatabaseProviderTest extends DatabaseTestCase
         config([
             'ldap_auth.sync_attributes' => [
                 'email' => 'userprincipalname',
-                'name' => 'cn',
-            ]
+                'name'  => 'cn',
+            ],
         ]);
 
         // LDAP user does not have common name.
@@ -161,12 +161,12 @@ class DatabaseProviderTest extends DatabaseTestCase
     {
         config([
             'ldap_auth.sync_attributes' => [
-                'email' => 'userprincipalname',
+                'email'  => 'userprincipalname',
                 'string' => 'not-an-LDAP-attribute',
-                'int' => 1,
-                'bool' => true,
-                'array' => ['one', 'two']
-            ]
+                'int'    => 1,
+                'bool'   => true,
+                'array'  => ['one', 'two'],
+            ],
         ]);
 
         // LDAP user does not have common name.
@@ -246,7 +246,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         config(['ldap_auth.passwords.sync' => true]);
 
         $credentials = [
-            'email' => 'jdoe@email.com',
+            'email'    => 'jdoe@email.com',
             'password' => '12345',
         ];
 
@@ -264,7 +264,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         config(['ldap_auth.passwords.sync' => false]);
 
         $credentials = [
-            'email' => 'jdoe@email.com',
+            'email'    => 'jdoe@email.com',
             'password' => '12345',
         ];
 
@@ -356,7 +356,7 @@ class DatabaseProviderTest extends DatabaseTestCase
         config(['ldap_auth.passwords.sync' => false]);
 
         $credentials = [
-            'email' => 'jdoe@email.com',
+            'email'    => 'jdoe@email.com',
             'password' => '12345',
         ];
 
@@ -374,11 +374,11 @@ class DatabaseProviderTest extends DatabaseTestCase
     {
         config([
             'ldap_auth.login_fallback' => false,
-            'ldap_auth.rules' => [\Adldap\Laravel\Validation\Rules\DenyTrashed::class],
+            'ldap_auth.rules'          => [\Adldap\Laravel\Validation\Rules\DenyTrashed::class],
         ]);
 
         $credentials = [
-            'email' => 'jdoe@email.com',
+            'email'    => 'jdoe@email.com',
             'password' => '12345',
         ];
 
@@ -403,11 +403,11 @@ class DatabaseProviderTest extends DatabaseTestCase
     {
         config([
             'ldap_auth.login_fallback' => false,
-            'ldap_auth.rules' => [\Adldap\Laravel\Validation\Rules\OnlyImported::class],
+            'ldap_auth.rules'          => [\Adldap\Laravel\Validation\Rules\OnlyImported::class],
         ]);
 
         $credentials = [
-            'email' => 'jdoe@email.com',
+            'email'    => 'jdoe@email.com',
             'password' => '12345',
         ];
 

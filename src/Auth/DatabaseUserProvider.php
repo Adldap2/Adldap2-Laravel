@@ -2,21 +2,21 @@
 
 namespace Adldap\Laravel\Auth;
 
-use Adldap\Models\User;
-use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
-use Adldap\Laravel\Traits\ValidatesUsers;
-use Adldap\Laravel\Events\Imported;
+use Adldap\Laravel\Events\AuthenticatedWithCredentials;
 use Adldap\Laravel\Events\AuthenticationRejected;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
 use Adldap\Laravel\Events\DiscoveredWithCredentials;
-use Adldap\Laravel\Events\AuthenticatedWithCredentials;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Config;
+use Adldap\Laravel\Events\Imported;
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Traits\ValidatesUsers;
+use Adldap\Models\User;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 
 class DatabaseUserProvider extends EloquentUserProvider
 {

@@ -2,10 +2,10 @@
 
 namespace Adldap\Laravel\Commands;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class SyncPassword
 {
@@ -86,7 +86,7 @@ class SyncPassword
         $current = $this->currentModelPassword();
 
         if ($current !== null && $this->canSync()) {
-            return ! Hash::check($password, $current);
+            return !Hash::check($password, $current);
         }
 
         return is_null($current);
@@ -99,7 +99,7 @@ class SyncPassword
      */
     protected function hasPasswordColumn() : bool
     {
-        return ! is_null($this->column());
+        return !is_null($this->column());
     }
 
     /**

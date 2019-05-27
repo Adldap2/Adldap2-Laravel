@@ -2,18 +2,18 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Mockery as m;
-use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
-use Adldap\Schemas\SchemaInterface;
 use Adldap\Connections\ProviderInterface;
-use Adldap\Laravel\Scopes\UpnScope;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
-use Adldap\Laravel\Tests\Models\TestUser;
 use Adldap\Laravel\Resolvers\UserResolver;
+use Adldap\Laravel\Scopes\UpnScope;
+use Adldap\Laravel\Tests\Models\TestUser;
+use Adldap\Query\Builder;
+use Adldap\Schemas\SchemaInterface;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Foundation\Testing\WithFaker;
+use Mockery as m;
 
 class UserResolverTest extends TestCase
 {
@@ -147,7 +147,7 @@ class UserResolverTest extends TestCase
 
         $resolver->byCredentials([
             'userprincipalname' => 'jdoe',
-            'password' => 'Password1'
+            'password'          => 'Password1',
         ]);
     }
 
@@ -173,15 +173,15 @@ class UserResolverTest extends TestCase
     public function by_model_retrieves_user_by_models_object_guid()
     {
         $model = new TestUser([
-            'objectguid' => $this->faker->uuid
+            'objectguid' => $this->faker->uuid,
         ]);
-        
+
         $user = $this->makeLdapUser();
 
         $query = m::mock(Builder::class);
 
         $query->shouldReceive('findByGuid')->once()->with($model->objectguid)->andReturn($user);
-        
+
         $r = m::mock(UserResolver::class)->makePartial();
 
         $r->shouldReceive('query')->andReturn($query);

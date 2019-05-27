@@ -2,15 +2,15 @@
 
 namespace Adldap\Laravel\Commands;
 
-use UnexpectedValueException;
-use Adldap\Models\User;
-use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Events\Importing;
 use Adldap\Laravel\Events\Synchronized;
 use Adldap\Laravel\Events\Synchronizing;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Config;
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
+use UnexpectedValueException;
 
 class Import
 {
@@ -69,7 +69,7 @@ class Import
         // we'll create a new one for them.
         $model = $this->findUser() ?: $this->model->newInstance();
 
-        if (! $model->exists) {
+        if (!$model->exists) {
             Event::dispatch(new Importing($this->user, $model));
         }
 
@@ -85,9 +85,9 @@ class Import
     /**
      * Retrieves an eloquent user by their GUID or their username.
      *
-     * @return Model|null
-     *
      * @throws UnexpectedValueException
+     *
+     * @return Model|null
      */
     protected function findUser()
     {
@@ -148,9 +148,9 @@ class Import
     /**
      * Returns the LDAP users configured username.
      *
-     * @return string
-     *
      * @throws UnexpectedValueException
+     *
+     * @return string
      */
     protected function getUserUsername()
     {
@@ -170,9 +170,9 @@ class Import
     /**
      * Returns the LDAP users object GUID.
      *
-     * @return string
-     *
      * @throws UnexpectedValueException
+     *
+     * @return string
      */
     protected function getUserObjectGuid()
     {
@@ -210,7 +210,7 @@ class Import
     {
         return Config::get('ldap_auth.sync_attributes', [
             'email' => 'userprincipalname',
-            'name' => 'cn',
+            'name'  => 'cn',
         ]);
     }
 }

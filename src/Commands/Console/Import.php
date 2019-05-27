@@ -2,19 +2,19 @@
 
 namespace Adldap\Laravel\Commands\Console;
 
-use Exception;
-use RuntimeException;
-use UnexpectedValueException;
-use Adldap\Models\User;
+use Adldap\Laravel\Commands\Import as ImportUser;
+use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Events\Imported;
 use Adldap\Laravel\Facades\Resolver;
-use Adldap\Laravel\Commands\SyncPassword;
-use Adldap\Laravel\Commands\Import as ImportUser;
+use Adldap\Models\User;
+use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
+use RuntimeException;
+use UnexpectedValueException;
 
 class Import extends Command
 {
@@ -47,10 +47,10 @@ class Import extends Command
     /**
      * Execute the console command.
      *
-     * @return void
-     *
      * @throws RuntimeException
      * @throws \Adldap\Models\ModelNotFoundException
+     *
+     * @return void
      */
     public function handle()
     {
@@ -59,8 +59,8 @@ class Import extends Command
         $count = count($users);
 
         if ($count === 0) {
-            throw new RuntimeException("There were no users found to import.");
-        } else if ($count === 1) {
+            throw new RuntimeException('There were no users found to import.');
+        } elseif ($count === 1) {
             $this->info("Found user '{$users[0]->getCommonName()}'.");
         } else {
             $this->info("Found {$count} user(s).");
@@ -74,14 +74,14 @@ class Import extends Command
         }
 
         if (
-            ! $this->input->isInteractive() ||
+            !$this->input->isInteractive() ||
             $this->confirm('Would you like these users to be imported / synchronized?', $default = true)
         ) {
             $imported = $this->import($users);
 
             $this->info("Successfully imported / synchronized {$imported} user(s).");
         } else {
-            $this->info("Okay, no users were imported / synchronized.");
+            $this->info('Okay, no users were imported / synchronized.');
         }
     }
 
@@ -151,9 +151,9 @@ class Import extends Command
 
         array_map(function (User $user) use (&$data) {
             $data[] = [
-                'name' => $user->getCommonName(),
+                'name'         => $user->getCommonName(),
                 'account_name' => $user->getAccountName(),
-                'upn' => $user->getUserPrincipalName(),
+                'upn'          => $user->getUserPrincipalName(),
             ];
         }, $users);
 
@@ -195,9 +195,9 @@ class Import extends Command
     /**
      * Retrieves users to be imported.
      *
-     * @return array
-     *
      * @throws \Adldap\Models\ModelNotFoundException
+     *
+     * @return array
      */
     public function getUsers() : array
     {
@@ -285,15 +285,15 @@ class Import extends Command
      * @param User  $user
      * @param Model $model
      *
-     * @return void
-     *
      * @throws Exception
+     *
+     * @return void
      */
     protected function delete(User $user, Model $model)
     {
         if (
             $this->isUsingSoftDeletes($model) &&
-            ! $model->trashed() &&
+            !$model->trashed() &&
             $user->isDisabled()
         ) {
             // If deleting is enabled, the model supports soft deletes, the model
@@ -316,19 +316,19 @@ class Import extends Command
      */
     protected function model() : Model
     {
-        if (! $this->model) {
+        if (!$this->model) {
             $this->model = $this->option('model') ?? Config::get('ldap_auth.model') ?: $this->determineModel();
         }
 
-        return new $this->model;
+        return new $this->model();
     }
 
     /**
      * Retrieves the model by checking the configured LDAP authentication providers.
      *
-     * @return string
-     *
      * @throws UnexpectedValueException
+     *
+     * @return string
      */
     protected function determineModel()
     {

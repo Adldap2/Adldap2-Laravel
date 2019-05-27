@@ -3,12 +3,12 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\Connections\Ldap;
-use Adldap\Schemas\ActiveDirectory;
+use Adldap\Laravel\AdldapAuthServiceProvider;
+use Adldap\Laravel\AdldapServiceProvider;
+use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Laravel\Tests\Models\TestUser;
-use Adldap\Laravel\AdldapServiceProvider;
-use Adldap\Laravel\AdldapAuthServiceProvider;
-use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Schemas\ActiveDirectory;
 use Illuminate\Support\Facades\Hash;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -54,14 +54,14 @@ class TestCase extends BaseTestCase
         $config->set('ldap.connections.default.settings', [
             'username' => 'admin@email.com',
             'password' => 'password',
-            'schema' => ActiveDirectory::class,
+            'schema'   => ActiveDirectory::class,
         ]);
 
         // Adldap auth setup.
         $config->set('ldap_auth.provider', DatabaseUserProvider::class);
         $config->set('ldap_auth.sync_attributes', [
             'email' => 'userprincipalname',
-            'name' => 'cn',
+            'name'  => 'cn',
         ]);
 
         // Laravel auth setup.

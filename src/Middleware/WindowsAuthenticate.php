@@ -2,19 +2,19 @@
 
 namespace Adldap\Laravel\Middleware;
 
-use Closure;
-use Adldap\Models\User;
-use Adldap\Laravel\Facades\Resolver;
-use Adldap\Laravel\Commands\Import;
-use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Adldap\Laravel\Commands\Import;
+use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Events\AuthenticatedWithWindows;
-use Illuminate\Http\Request;
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Models\User;
+use Closure;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 
 class WindowsAuthenticate
 {
@@ -45,7 +45,7 @@ class WindowsAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! $this->auth->check()) {
+        if (!$this->auth->check()) {
             // Retrieve the users account name from the request.
             if ($account = $this->account($request)) {
                 // Retrieve the users username from their account name.

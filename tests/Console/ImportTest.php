@@ -2,14 +2,14 @@
 
 namespace Adldap\Laravel\Tests\Console;
 
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Tests\DatabaseTestCase;
+use Adldap\Laravel\Tests\Models\TestUser;
+use Adldap\Models\Attributes\AccountControl;
 use Adldap\Models\User;
-use Mockery as m;
 use Adldap\Query\Builder;
 use Illuminate\Support\Facades\Hash;
-use Adldap\Laravel\Facades\Resolver;
-use Adldap\Laravel\Tests\Models\TestUser;
-use Adldap\Laravel\Tests\DatabaseTestCase;
-use Adldap\Models\Attributes\AccountControl;
+use Mockery as m;
 
 class ImportTest extends DatabaseTestCase
 {
@@ -28,7 +28,7 @@ class ImportTest extends DatabaseTestCase
 
         $this->artisan('adldap:import', ['user' => 'jdoe', '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")
-            ->expectsOutput("Successfully imported / synchronized 1 user(s).")
+            ->expectsOutput('Successfully imported / synchronized 1 user(s).')
             ->assertExitCode(0);
 
         $this->assertDatabaseHas('users', ['email' => 'jdoe@email.com']);
@@ -52,7 +52,7 @@ class ImportTest extends DatabaseTestCase
                 'userprincipalname' => ['janedoe@email.com'],
                 'mail'              => ['janedoe@email.com'],
                 'cn'                => ['Jane Doe'],
-            ])
+            ]),
         ];
 
         $b->shouldReceive('paginate')->once()->andReturn($b)
@@ -64,8 +64,8 @@ class ImportTest extends DatabaseTestCase
             ->shouldReceive('getLdapDiscoveryAttribute')->twice()->andReturn('userprincipalname');
 
         $this->artisan('adldap:import', ['--no-interaction' => true])
-            ->expectsOutput("Found 2 user(s).")
-            ->expectsOutput("Successfully imported / synchronized 2 user(s).")
+            ->expectsOutput('Found 2 user(s).')
+            ->expectsOutput('Successfully imported / synchronized 2 user(s).')
             ->assertExitCode(0);
 
         $this->assertDatabaseHas('users', ['email' => 'johndoe@email.com']);
@@ -89,7 +89,7 @@ class ImportTest extends DatabaseTestCase
             ->expectsOutput("Found user 'John Doe'.")
             ->expectsQuestion('Would you like to display the user(s) to be imported / synchronized?', 'no')
             ->expectsQuestion('Would you like these users to be imported / synchronized?', 'yes')
-            ->expectsOutput("Successfully imported / synchronized 1 user(s).")
+            ->expectsOutput('Successfully imported / synchronized 1 user(s).')
             ->assertExitCode(0);
 
         $this->assertDatabaseHas('users', ['email' => 'jdoe@email.com']);
@@ -101,9 +101,9 @@ class ImportTest extends DatabaseTestCase
 
         $model = TestUser::create([
             'objectguid' => $user->getConvertedGuid(),
-            'email' => $user->getUserPrincipalName(),
-            'name' => $user->getCommonName(),
-            'password' => Hash::make('password'),
+            'email'      => $user->getUserPrincipalName(),
+            'name'       => $user->getCommonName(),
+            'password'   => Hash::make('password'),
         ]);
 
         $model->delete();
@@ -126,7 +126,7 @@ class ImportTest extends DatabaseTestCase
 
         $this->artisan('adldap:import', ['--restore' => true, '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")
-            ->expectsOutput("Successfully imported / synchronized 1 user(s).")
+            ->expectsOutput('Successfully imported / synchronized 1 user(s).')
             ->assertExitCode(0);
 
         $this->assertFalse($model->fresh()->trashed());
@@ -142,9 +142,9 @@ class ImportTest extends DatabaseTestCase
 
         $model = TestUser::create([
             'objectguid' => $user->getConvertedGuid(),
-            'email' => 'jdoe@email.com',
-            'name' => 'John Doe',
-            'password' => Hash::make('password'),
+            'email'      => 'jdoe@email.com',
+            'name'       => 'John Doe',
+            'password'   => Hash::make('password'),
         ]);
 
         $this->assertFalse($model->trashed());
@@ -161,9 +161,9 @@ class ImportTest extends DatabaseTestCase
 
         $this->artisan('adldap:import', ['--delete' => true, '--no-interaction' => true])
             ->expectsOutput("Found user 'John Doe'.")
-            ->expectsOutput("Successfully imported / synchronized 1 user(s).")
+            ->expectsOutput('Successfully imported / synchronized 1 user(s).')
             ->assertExitCode(0);
-        
+
         $this->assertTrue($model->fresh()->trashed());
     }
 
