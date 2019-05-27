@@ -10,7 +10,6 @@ class TestUser extends Authenticatable
 {
     use SoftDeletes, HasLdapUser;
 
-
     protected $table = 'users';
 
     /**

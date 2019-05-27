@@ -2,10 +2,10 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Mockery as m;
-use Adldap\Query\Builder;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Middleware\WindowsAuthenticate;
+use Adldap\Query\Builder;
+use Mockery as m;
 
 class WindowsAuthenticateTest extends DatabaseTestCase
 {
@@ -37,7 +37,8 @@ class WindowsAuthenticateTest extends DatabaseTestCase
             ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname')
             ->shouldReceive('byModel')->once()->andReturn(($user));
 
-        $middleware->handle($request, function () {});
+        $middleware->handle($request, function () {
+        });
 
         $authenticated = auth()->user();
 
@@ -64,7 +65,8 @@ class WindowsAuthenticateTest extends DatabaseTestCase
 
         Resolver::shouldReceive('query')->once()->andReturn($query);
 
-        $middleware->handle($request, function () {});
+        $middleware->handle($request, function () {
+        });
 
         $this->assertNull(auth()->user());
     }

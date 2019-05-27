@@ -50,7 +50,7 @@ class DatabaseImporterTest extends DatabaseTestCase
     public function exception_is_thrown_when_guid_is_null()
     {
         $u = $this->makeLdapUser([
-            'objectguid' => null
+            'objectguid' => null,
         ]);
 
         (new Import($u, new TestUser()))->handle();
@@ -63,7 +63,7 @@ class DatabaseImporterTest extends DatabaseTestCase
     public function exception_is_thrown_when_guid_is_empty()
     {
         $u = $this->makeLdapUser([
-            'objectguid' => ' '
+            'objectguid' => ' ',
         ]);
 
         (new Import($u, new TestUser()))->handle();

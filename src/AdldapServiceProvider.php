@@ -5,8 +5,8 @@ namespace Adldap\Laravel;
 use Adldap\Adldap;
 use Adldap\AdldapException;
 use Adldap\AdldapInterface;
-use Adldap\Connections\Provider;
 use Adldap\Connections\ConnectionInterface;
+use Adldap\Connections\Provider;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
@@ -38,7 +38,7 @@ class AdldapServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $config = __DIR__ . '/Config/config.php';
+            $config = __DIR__.'/Config/config.php';
 
             $this->publishes([
                 $config => config_path('ldap.php'),
