@@ -2,10 +2,10 @@
 
 namespace Adldap\Laravel\Traits;
 
-use Adldap\Models\User;
 use Adldap\Laravel\Validation\Validator;
-use Illuminate\Support\Facades\Config;
+use Adldap\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 trait ValidatesUsers
 {

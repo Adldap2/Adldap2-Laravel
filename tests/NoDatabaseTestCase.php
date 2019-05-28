@@ -3,8 +3,8 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\Connections\Ldap;
-use Adldap\Schemas\ActiveDirectory;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Adldap\Schemas\ActiveDirectory;
 
 class NoDatabaseTestCase extends TestCase
 {
@@ -21,7 +21,7 @@ class NoDatabaseTestCase extends TestCase
         $app['config']->set('ldap.connections.default.settings', [
             'username' => 'admin',
             'password' => 'password',
-            'schema' => ActiveDirectory::class,
+            'schema'   => ActiveDirectory::class,
         ]);
 
         // Adldap auth setup.

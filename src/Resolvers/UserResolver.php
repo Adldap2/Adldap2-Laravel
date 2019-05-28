@@ -2,20 +2,20 @@
 
 namespace Adldap\Laravel\Resolvers;
 
-use RuntimeException;
-use Adldap\Models\User;
-use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
 use Adldap\Connections\ProviderInterface;
+use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Adldap\Laravel\Events\Authenticated;
 use Adldap\Laravel\Events\Authenticating;
 use Adldap\Laravel\Events\AuthenticationFailed;
-use Adldap\Laravel\Auth\NoDatabaseUserProvider;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Contracts\Auth\UserProvider;
+use Adldap\Models\User;
+use Adldap\Query\Builder;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
+use RuntimeException;
 
 class UserResolver implements ResolverInterface
 {
@@ -75,7 +75,7 @@ class UserResolver implements ResolverInterface
             $this->getLdapDiscoveryAttribute() :
             $this->getDatabaseUsernameColumn();
 
-        if (! array_key_exists($attribute, $credentials)) {
+        if (!array_key_exists($attribute, $credentials)) {
             throw new RuntimeException(
                 "The '$attribute' key is missing from the given credentials array."
             );

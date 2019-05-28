@@ -35,7 +35,7 @@ class Validator
     public function passes()
     {
         foreach ($this->rules as $rule) {
-            if (! $rule->isValid()) {
+            if (!$rule->isValid()) {
                 return false;
             }
         }
@@ -50,7 +50,7 @@ class Validator
      */
     public function fails()
     {
-        return ! $this->passes();
+        return !$this->passes();
     }
 
     /**

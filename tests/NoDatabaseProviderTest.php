@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Adldap\Models\User;
 use Adldap\Laravel\Facades\Resolver;
+use Adldap\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class NoDatabaseProviderTest extends NoDatabaseTestCase
@@ -12,7 +12,7 @@ class NoDatabaseProviderTest extends NoDatabaseTestCase
     public function only_ldap_is_used_when_authenticating()
     {
         $credentials = [
-            'email' => 'jdoe@email.com',
+            'email'    => 'jdoe@email.com',
             'password' => '12345',
         ];
 

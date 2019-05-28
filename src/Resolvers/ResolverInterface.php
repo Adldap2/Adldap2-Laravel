@@ -2,9 +2,9 @@
 
 namespace Adldap\Laravel\Resolvers;
 
+use Adldap\AdldapInterface;
 use Adldap\Models\User;
 use Adldap\Query\Builder;
-use Adldap\AdldapInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 interface ResolverInterface
@@ -58,7 +58,7 @@ interface ResolverInterface
      * @param User  $user        The LDAP users model
      * @param array $credentials The LDAP users credentials
      *
-     * @return boolean
+     * @return bool
      */
     public function authenticate(User $user, array $credentials = []);
 
