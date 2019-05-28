@@ -2,17 +2,17 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Adldap\Models\User;
 use Adldap\AdldapInterface;
 use Adldap\Laravel\Commands\Import;
-use Adldap\Laravel\Facades\Resolver;
-use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
-use Adldap\Laravel\Tests\Models\TestUser as EloquentUser;
-use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
-use Adldap\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\App;
+use Adldap\Laravel\Facades\Resolver;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Testing\WithFaker;
+use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
+use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
+use Adldap\Laravel\Tests\Models\TestUser as EloquentUser;
 
 class DatabaseProviderTest extends DatabaseTestCase
 {

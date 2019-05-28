@@ -2,10 +2,10 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Mockery as m;
+use Adldap\Query\Builder;
 use Adldap\Laravel\Facades\Resolver;
 use Adldap\Laravel\Middleware\WindowsAuthenticate;
-use Adldap\Query\Builder;
-use Mockery as m;
 
 class WindowsAuthenticateTest extends DatabaseTestCase
 {

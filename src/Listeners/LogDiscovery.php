@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Listeners;
 
-use Adldap\Laravel\Events\DiscoveredWithCredentials;
 use Illuminate\Support\Facades\Log;
+use Adldap\Laravel\Events\DiscoveredWithCredentials;
 
 class LogDiscovery
 {

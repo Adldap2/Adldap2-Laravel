@@ -2,19 +2,19 @@
 
 namespace Adldap\Laravel;
 
-use Adldap\AdldapInterface;
-use Adldap\Laravel\Auth\DatabaseUserProvider;
-use Adldap\Laravel\Commands\Console\Import;
-use Adldap\Laravel\Resolvers\ResolverInterface;
-use Adldap\Laravel\Resolvers\UserResolver;
-use Illuminate\Auth\Events\Authenticated;
-use Illuminate\Auth\Events\Login;
-use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\ServiceProvider;
 use RuntimeException;
+use Adldap\AdldapInterface;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Auth\Events\Authenticated;
+use Adldap\Laravel\Resolvers\UserResolver;
+use Adldap\Laravel\Commands\Console\Import;
+use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Resolvers\ResolverInterface;
 
 class AdldapAuthServiceProvider extends ServiceProvider
 {
@@ -92,7 +92,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
             // otherwise we will try to use the providers config array.
             $model = Config::get('ldap_auth.model') ?? array_get($config, 'model');
 
-            if (!$model) {
+            if (! $model) {
                 throw new RuntimeException(
                     "No model is configured. You must configure a model to use with the {$provider}."
                 );

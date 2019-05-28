@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Adldap\Laravel\Facades\Resolver;
 use Adldap\Models\User;
+use Adldap\Laravel\Facades\Resolver;
 use Illuminate\Support\Facades\Auth;
 
 class NoDatabaseProviderTest extends NoDatabaseTestCase

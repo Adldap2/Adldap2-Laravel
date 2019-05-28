@@ -2,9 +2,9 @@
 
 namespace Adldap\Laravel\Listeners;
 
-use Adldap\Laravel\Events\Authenticating;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
+use Adldap\Laravel\Events\Authenticating;
 
 class LogAuthentication
 {

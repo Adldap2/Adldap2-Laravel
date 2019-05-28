@@ -2,15 +2,15 @@
 
 namespace Adldap\Laravel\Commands;
 
-use Adldap\Laravel\Events\Importing;
-use Adldap\Laravel\Events\Synchronized;
-use Adldap\Laravel\Events\Synchronizing;
-use Adldap\Laravel\Facades\Resolver;
 use Adldap\Models\User;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Event;
 use UnexpectedValueException;
+use Adldap\Laravel\Events\Importing;
+use Adldap\Laravel\Facades\Resolver;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
+use Adldap\Laravel\Events\Synchronized;
+use Illuminate\Database\Eloquent\Model;
+use Adldap\Laravel\Events\Synchronizing;
 
 class Import
 {
@@ -69,7 +69,7 @@ class Import
         // we'll create a new one for them.
         $model = $this->findUser() ?: $this->model->newInstance();
 
-        if (!$model->exists) {
+        if (! $model->exists) {
             Event::dispatch(new Importing($this->user, $model));
         }
 
