@@ -2,19 +2,19 @@
 
 namespace Adldap\Laravel\Commands\Console;
 
-use Adldap\Laravel\Commands\Import as ImportUser;
-use Adldap\Laravel\Commands\SyncPassword;
-use Adldap\Laravel\Events\Imported;
-use Adldap\Laravel\Facades\Resolver;
-use Adldap\Models\User;
 use Exception;
-use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Event;
 use RuntimeException;
+use Adldap\Models\User;
 use UnexpectedValueException;
+use Illuminate\Console\Command;
+use Adldap\Laravel\Events\Imported;
+use Illuminate\Support\Facades\Bus;
+use Adldap\Laravel\Facades\Resolver;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
+use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Commands\Import as ImportUser;
 
 class Import extends Command
 {
@@ -74,7 +74,7 @@ class Import extends Command
         }
 
         if (
-            !$this->input->isInteractive() ||
+            ! $this->input->isInteractive() ||
             $this->confirm('Would you like these users to be imported / synchronized?', $default = true)
         ) {
             $imported = $this->import($users);
@@ -167,7 +167,7 @@ class Import extends Command
      */
     public function isLogging() : bool
     {
-        return !$this->option('no-log');
+        return ! $this->option('no-log');
     }
 
     /**
@@ -293,7 +293,7 @@ class Import extends Command
     {
         if (
             $this->isUsingSoftDeletes($model) &&
-            !$model->trashed() &&
+            ! $model->trashed() &&
             $user->isDisabled()
         ) {
             // If deleting is enabled, the model supports soft deletes, the model
@@ -316,7 +316,7 @@ class Import extends Command
      */
     protected function model() : Model
     {
-        if (!$this->model) {
+        if (! $this->model) {
             $this->model = $this->option('model') ?? Config::get('ldap_auth.model') ?: $this->determineModel();
         }
 

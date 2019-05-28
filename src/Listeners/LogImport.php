@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Listeners;
 
-use Adldap\Laravel\Events\Importing;
 use Illuminate\Support\Facades\Log;
+use Adldap\Laravel\Events\Importing;
 
 class LogImport
 {

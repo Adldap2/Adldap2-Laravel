@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Facades;
 
-use Adldap\Laravel\Resolvers\ResolverInterface;
 use Illuminate\Support\Facades\Facade;
+use Adldap\Laravel\Resolvers\ResolverInterface;
 
 /**
  * @method static void setConnection(string $connection)

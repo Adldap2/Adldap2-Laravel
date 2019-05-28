@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Validation\Rules;
 
-use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 use Illuminate\Support\Facades\Event;
+use Adldap\Laravel\Events\AuthenticatedModelTrashed;
 
 class DenyTrashed extends Rule
 {
