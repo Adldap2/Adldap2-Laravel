@@ -12,12 +12,14 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Traits\ValidatesUsers;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
-use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Adldap\Laravel\Events\AuthenticatedWithWindows;
 
 class WindowsAuthenticate
 {
+    use ValidatesUsers;
+
     /**
      * The authenticator implementation.
      *
@@ -72,30 +74,34 @@ class WindowsAuthenticate
     {
         // Find the user in LDAP.
         if ($user = $this->resolveUserByUsername($username)) {
-            $provider = $this->auth->getProvider();
+            $model = null;
 
-            if ($provider instanceof NoDatabaseUserProvider) {
-                $this->fireAuthenticatedEvent($user);
-
-                return $user;
-            } elseif ($provider instanceof DatabaseUserProvider) {
-                // Here we'll import the LDAP user. If the user already exists in
+            // If we are using the DatabaseUserProvider, we must locate or import
+            // the users model that is currently authenticated with SSO.
+            if ($this->auth->getProvider() instanceof DatabaseUserProvider) {
+                // Here we will import the LDAP user. If the user already exists in
                 // our local database, it will be returned from the importer.
                 $model = Bus::dispatch(
                     new Import($user, $this->model())
                 );
+            }
 
-                // We'll sync / set the users password after
-                // our model has been synchronized.
-                Bus::dispatch(new SyncPassword($model));
+            // Here we will validate that the authenticating user
+            // passes our LDAP authentication rules in place.
+            if ($this->passesValidation($user, $model)) {
+                if ($model) {
+                    // We will sync / set the users password after
+                    // our model has been synchronized.
+                    Bus::dispatch(new SyncPassword($model));
 
-                // We also want to save the returned model in case it doesn't
-                // exist yet, or there are changes to be synced.
-                $model->save();
+                    // We also want to save the model in case it doesn't
+                    // exist yet, or there are changes to be synced.
+                    $model->save();
+                }
 
                 $this->fireAuthenticatedEvent($user, $model);
 
-                return $model;
+                return $model ? $model : $user;
             }
         }
     }
