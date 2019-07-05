@@ -6,6 +6,7 @@ use RuntimeException;
 use Adldap\Models\User;
 use Adldap\Query\Builder;
 use Adldap\AdldapInterface;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
@@ -140,20 +141,8 @@ class UserResolver implements ResolverInterface
 
         $query->select($selects);
 
-        $scopes = Config::get('ldap_auth.scopes', []);
-
-        if (is_array($scopes)) {
-            foreach ($scopes as $scope) {
-                // Here we will use Laravel's IoC container to construct our scope.
-                // This allows us to utilize any Laravel dependencies in
-                // the scopes constructor that may be needed.
-
-                /** @var \Adldap\Laravel\Scopes\ScopeInterface $scope */
-                $scope = app($scope);
-
-                // With the scope constructed, we can apply it to our query.
-                $scope->apply($query);
-            }
+        foreach ($this->getQueryScopes() as $scope) {
+            app($scope)->apply($query);
         }
 
         return $query;
@@ -200,7 +189,7 @@ class UserResolver implements ResolverInterface
      */
     protected function getPasswordFromCredentials($credentials)
     {
-        return array_get($credentials, 'password');
+        return Arr::get($credentials, 'password');
     }
 
     /**
@@ -233,5 +222,15 @@ class UserResolver implements ResolverInterface
     protected function getLdapAuthConnectionName()
     {
         return Config::get('ldap_auth.connection', 'default');
+    }
+
+    /**
+     * Returns the configured query scopes.
+     *
+     * @return array
+     */
+    protected function getQueryScopes()
+    {
+        return Config::get('ldap_auth.scopes', []);
     }
 }

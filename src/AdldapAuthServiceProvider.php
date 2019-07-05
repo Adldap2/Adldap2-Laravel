@@ -5,6 +5,7 @@ namespace Adldap\Laravel;
 use RuntimeException;
 use Adldap\AdldapInterface;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
@@ -90,7 +91,7 @@ class AdldapAuthServiceProvider extends ServiceProvider
         if (is_a($provider, DatabaseUserProvider::class, $allowString = true)) {
             // We will try to retrieve their model from the config file,
             // otherwise we will try to use the providers config array.
-            $model = Config::get('ldap_auth.model') ?? array_get($config, 'model');
+            $model = Config::get('ldap_auth.model') ?? Arr::get($config, 'model');
 
             if (! $model) {
                 throw new RuntimeException(

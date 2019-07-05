@@ -3,6 +3,7 @@
 namespace Adldap\Laravel\Commands;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
@@ -109,7 +110,7 @@ class SyncPassword
      */
     protected function password()
     {
-        return array_get($this->credentials, 'password');
+        return Arr::get($this->credentials, 'password');
     }
 
     /**

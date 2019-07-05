@@ -6,6 +6,7 @@ use Exception;
 use RuntimeException;
 use Adldap\Models\User;
 use UnexpectedValueException;
+use Illuminate\Support\Arr;
 use Illuminate\Console\Command;
 use Adldap\Laravel\Events\Imported;
 use Illuminate\Support\Facades\Bus;
@@ -334,7 +335,7 @@ class Import extends Command
     {
         // Retrieve all of the configured authentication providers that
         // use the LDAP driver and have a configured model.
-        $providers = array_where(Config::get('auth.providers'), function ($value, $key) {
+        $providers = Arr::where(Config::get('auth.providers'), function ($value, $key) {
             return $value['driver'] == 'ldap' && array_key_exists('model', $value);
         });
 
