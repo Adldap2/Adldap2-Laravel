@@ -4,8 +4,8 @@ namespace Adldap\Laravel;
 
 use RuntimeException;
 use Adldap\AdldapInterface;
-use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Arr;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
