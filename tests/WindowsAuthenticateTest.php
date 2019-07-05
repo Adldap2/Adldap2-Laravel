@@ -37,7 +37,8 @@ class WindowsAuthenticateTest extends DatabaseTestCase
             ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname')
             ->shouldReceive('byModel')->once()->andReturn($user);
 
-        app(WindowsAuthenticate::class)->handle($request, function () {});
+        app(WindowsAuthenticate::class)->handle($request, function () {
+        });
 
         $authenticated = auth()->user();
 
@@ -62,7 +63,8 @@ class WindowsAuthenticateTest extends DatabaseTestCase
 
         Resolver::shouldReceive('query')->once()->andReturn($query);
 
-        app(WindowsAuthenticate::class)->handle($request, function () {});
+        app(WindowsAuthenticate::class)->handle($request, function () {
+        });
 
         $this->assertNull(auth()->user());
     }
@@ -105,7 +107,8 @@ class WindowsAuthenticateTest extends DatabaseTestCase
             ->shouldReceive('getDatabaseUsernameColumn')->once()->andReturn('email')
             ->shouldReceive('getLdapDiscoveryAttribute')->once()->andReturn('userprincipalname');
 
-        app(WindowsAuthenticate::class)->handle($request, function () {});
+        app(WindowsAuthenticate::class)->handle($request, function () {
+        });
 
         $this->assertNull(auth()->user());
     }

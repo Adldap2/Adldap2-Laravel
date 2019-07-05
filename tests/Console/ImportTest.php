@@ -3,7 +3,6 @@
 namespace Adldap\Laravel\Tests\Console;
 
 use Mockery as m;
-use Adldap\Models\User;
 use Adldap\Query\Builder;
 use Adldap\Laravel\Facades\Resolver;
 use Illuminate\Support\Facades\Hash;
