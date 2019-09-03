@@ -5,6 +5,7 @@ namespace Adldap\Laravel;
 use Adldap\Adldap;
 use Adldap\AdldapException;
 use Adldap\AdldapInterface;
+use Illuminate\Support\Str;
 use Adldap\Connections\Provider;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Config;
@@ -176,6 +177,6 @@ class AdldapServiceProvider extends ServiceProvider
      */
     protected function isLumen()
     {
-        return str_contains($this->app->version(), 'Lumen');
+        return Str::contains($this->app->version(), 'Lumen');
     }
 }

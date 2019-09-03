@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Tests;
 
+use Illuminate\Support\Str;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Tests\Models\TestUser;
 
@@ -30,7 +31,7 @@ class DatabaseImporterTest extends DatabaseTestCase
 
         $m1 = (new Import($firstUser, new TestUser()))->handle();
 
-        $m1->password = bcrypt(str_random(16));
+        $m1->password = bcrypt(Str::random(16));
 
         $m1->save();
 
