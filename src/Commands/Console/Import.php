@@ -3,7 +3,6 @@
 namespace Adldap\Laravel\Commands\Console;
 
 use Exception;
-use RuntimeException;
 use Adldap\Models\User;
 use Illuminate\Support\Arr;
 use UnexpectedValueException;
@@ -48,7 +47,6 @@ class Import extends Command
     /**
      * Execute the console command.
      *
-     * @throws RuntimeException
      * @throws \Adldap\Models\ModelNotFoundException
      *
      * @return void
