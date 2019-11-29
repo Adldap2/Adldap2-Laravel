@@ -2,19 +2,19 @@
 
 namespace Adldap\Laravel\Middleware;
 
-use Closure;
-use Adldap\Models\User;
-use Illuminate\Http\Request;
-use Adldap\Laravel\Commands\Import;
-use Illuminate\Support\Facades\Bus;
-use Adldap\Laravel\Facades\Resolver;
-use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Config;
-use Adldap\Laravel\Commands\SyncPassword;
-use Adldap\Laravel\Traits\ValidatesUsers;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Commands\Import;
+use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Events\AuthenticatedWithWindows;
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Traits\ValidatesUsers;
+use Adldap\Models\User;
+use Closure;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 
 class WindowsAuthenticate
 {

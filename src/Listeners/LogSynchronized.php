@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Listeners;
 
-use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\Synchronized;
+use Illuminate\Support\Facades\Log;
 
 class LogSynchronized
 {

@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Listeners;
 
-use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\AuthenticationSuccessful;
+use Illuminate\Support\Facades\Log;
 
 class LogAuthenticationSuccess
 {

@@ -2,21 +2,21 @@
 
 namespace Adldap\Laravel\Resolvers;
 
-use RuntimeException;
+use Adldap\AdldapInterface;
+use Adldap\Connections\ProviderInterface;
+use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use Adldap\Laravel\Events\Authenticated;
+use Adldap\Laravel\Events\Authenticating;
+use Adldap\Laravel\Events\AuthenticationFailed;
 use Adldap\Models\User;
 use Adldap\Query\Builder;
-use Adldap\AdldapInterface;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
-use Adldap\Laravel\Events\Authenticated;
-use Adldap\Connections\ProviderInterface;
-use Adldap\Laravel\Events\Authenticating;
-use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Adldap\Laravel\Auth\NoDatabaseUserProvider;
-use Adldap\Laravel\Events\AuthenticationFailed;
+use Illuminate\Support\Facades\Event;
+use RuntimeException;
 
 class UserResolver implements ResolverInterface
 {
