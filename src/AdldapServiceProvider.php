@@ -5,12 +5,12 @@ namespace Adldap\Laravel;
 use Adldap\Adldap;
 use Adldap\AdldapException;
 use Adldap\AdldapInterface;
-use Illuminate\Support\Str;
+use Adldap\Connections\ConnectionInterface;
 use Adldap\Connections\Provider;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
-use Adldap\Connections\ConnectionInterface;
+use Illuminate\Support\Str;
 
 class AdldapServiceProvider extends ServiceProvider
 {

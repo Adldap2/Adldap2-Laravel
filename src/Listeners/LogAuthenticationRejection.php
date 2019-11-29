@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Listeners;
 
-use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\AuthenticationRejected;
+use Illuminate\Support\Facades\Log;
 
 class LogAuthenticationRejection
 {

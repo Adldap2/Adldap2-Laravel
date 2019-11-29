@@ -2,9 +2,9 @@
 
 namespace Adldap\Laravel\Tests;
 
-use Illuminate\Support\Str;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Tests\Models\TestUser;
+use Illuminate\Support\Str;
 
 class DatabaseImporterTest extends DatabaseTestCase
 {

@@ -3,13 +3,13 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\Connections\Ldap;
+use Adldap\Laravel\AdldapAuthServiceProvider;
+use Adldap\Laravel\AdldapServiceProvider;
+use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Adldap\Laravel\Facades\Adldap;
+use Adldap\Laravel\Tests\Models\TestUser;
 use Adldap\Schemas\ActiveDirectory;
 use Illuminate\Support\Facades\Hash;
-use Adldap\Laravel\AdldapServiceProvider;
-use Adldap\Laravel\Tests\Models\TestUser;
-use Adldap\Laravel\AdldapAuthServiceProvider;
-use Adldap\Laravel\Auth\DatabaseUserProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase

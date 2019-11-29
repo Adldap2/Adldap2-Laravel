@@ -3,9 +3,9 @@
 namespace Adldap\Laravel\Commands;
 
 use Adldap\Laravel\Facades\Resolver;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use Illuminate\Database\Eloquent\Builder;
 
 class UserImportScope implements Scope
 {

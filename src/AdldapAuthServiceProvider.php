@@ -2,20 +2,20 @@
 
 namespace Adldap\Laravel;
 
-use RuntimeException;
 use Adldap\AdldapInterface;
-use Illuminate\Support\Arr;
-use Illuminate\Auth\Events\Login;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Auth\Events\Authenticated;
-use Adldap\Laravel\Resolvers\UserResolver;
-use Adldap\Laravel\Commands\Console\Import;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Commands\Console\Import;
 use Adldap\Laravel\Resolvers\ResolverInterface;
+use Adldap\Laravel\Resolvers\UserResolver;
+use Illuminate\Auth\Events\Authenticated;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\ServiceProvider;
+use RuntimeException;
 
 class AdldapAuthServiceProvider extends ServiceProvider
 {

@@ -2,12 +2,12 @@
 
 namespace Adldap\Laravel\Tests\Listeners;
 
-use Mockery as m;
-use Adldap\Models\User;
-use Adldap\Laravel\Tests\TestCase;
-use Illuminate\Support\Facades\Log;
 use Adldap\Laravel\Events\AuthenticationRejected;
 use Adldap\Laravel\Listeners\LogAuthenticationRejection;
+use Adldap\Laravel\Tests\TestCase;
+use Adldap\Models\User;
+use Illuminate\Support\Facades\Log;
+use Mockery as m;
 
 class LogAuthenticationRejectionTest extends TestCase
 {

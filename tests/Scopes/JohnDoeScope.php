@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Tests\Scopes;
 
-use Adldap\Query\Builder;
 use Adldap\Laravel\Scopes\ScopeInterface;
+use Adldap\Query\Builder;
 
 class JohnDoeScope implements ScopeInterface
 {

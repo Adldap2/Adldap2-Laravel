@@ -2,19 +2,19 @@
 
 namespace Adldap\Laravel\Commands\Console;
 
-use Exception;
-use Adldap\Models\User;
-use Illuminate\Support\Arr;
-use UnexpectedValueException;
-use Illuminate\Console\Command;
-use Adldap\Laravel\Events\Imported;
-use Illuminate\Support\Facades\Bus;
-use Adldap\Laravel\Facades\Resolver;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Database\Eloquent\Model;
-use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Commands\Import as ImportUser;
+use Adldap\Laravel\Commands\SyncPassword;
+use Adldap\Laravel\Events\Imported;
+use Adldap\Laravel\Facades\Resolver;
+use Adldap\Models\User;
+use Exception;
+use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
+use UnexpectedValueException;
 
 class Import extends Command
 {

@@ -2,13 +2,13 @@
 
 namespace Adldap\Laravel\Tests\Listeners;
 
-use Mockery as m;
-use Adldap\Models\User;
-use Adldap\Laravel\Tests\TestCase;
-use Illuminate\Support\Facades\Log;
-use Adldap\Laravel\Listeners\LogWindowsAuth;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Adldap\Laravel\Events\AuthenticatedWithWindows;
+use Adldap\Laravel\Listeners\LogWindowsAuth;
+use Adldap\Laravel\Tests\TestCase;
+use Adldap\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Log;
+use Mockery as m;
 
 class LogWindowsAuthTest extends TestCase
 {
