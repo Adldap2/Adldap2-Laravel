@@ -58,8 +58,7 @@ class Import extends Command
         $count = count($users);
 
         if ($count === 0) {
-            $this->info('There were no users found to import.');
-            exit;
+            return $this->info('There were no users found to import.');
         } elseif ($count === 1) {
             $this->info("Found user '{$users[0]->getCommonName()}'.");
         } else {
