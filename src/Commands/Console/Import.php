@@ -3,7 +3,6 @@
 namespace Adldap\Laravel\Commands\Console;
 
 use Exception;
-use RuntimeException;
 use Adldap\Models\User;
 use Illuminate\Support\Arr;
 use UnexpectedValueException;
@@ -48,7 +47,6 @@ class Import extends Command
     /**
      * Execute the console command.
      *
-     * @throws RuntimeException
      * @throws \Adldap\Models\ModelNotFoundException
      *
      * @return void
@@ -60,7 +58,7 @@ class Import extends Command
         $count = count($users);
 
         if ($count === 0) {
-            throw new RuntimeException('There were no users found to import.');
+            return $this->info('There were no users found to import.');
         } elseif ($count === 1) {
             $this->info("Found user '{$users[0]->getCommonName()}'.");
         } else {
