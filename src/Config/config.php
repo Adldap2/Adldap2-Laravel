@@ -198,8 +198,8 @@ return [
                 |
                 */
 
-                'username' => env('LDAP_USERNAME'),
-                'password' => env('LDAP_PASSWORD'),
+                'username' => env('LDAP_USERNAME', 'username'),
+                'password' => env('LDAP_PASSWORD', 'secret'),
 
                 /*
                 |--------------------------------------------------------------------------
