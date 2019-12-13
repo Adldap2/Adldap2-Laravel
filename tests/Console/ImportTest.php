@@ -166,9 +166,6 @@ class ImportTest extends DatabaseTestCase
         $this->assertTrue($model->fresh()->trashed());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function test_filter_option_applies_to_ldap_query()
     {
         $f = '(samaccountname=jdoe)';
@@ -182,6 +179,7 @@ class ImportTest extends DatabaseTestCase
 
         Resolver::shouldReceive('query')->once()->andReturn($b);
 
-        $this->artisan('adldap:import', ['--filter' => $f, '--no-interaction' => true]);
+        $this->artisan('adldap:import', ['--filter' => $f, '--no-interaction' => true])
+            ->expectsOutput('There were no users found to import.');
     }
 }
