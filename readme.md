@@ -18,8 +18,6 @@
     <a href="http://adldap2.github.io/Adldap2-Laravel/#/?id=quick-start">Quickstart</a>
     <span> · </span>
     <a href="http://adldap2.github.io/Adldap2-Laravel/">Documentation</a>
-    <span> · </span>
-    <a href="http://adldap2.github.io/Adldap2/">Core Documentation (Adldap2)</a>
 </h4>
 
 - **Authenticate LDAP users into your application.** Using the built-in authentication driver, easily allow
