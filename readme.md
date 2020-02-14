@@ -1,3 +1,19 @@
+<p align="center">
+<strong>:wave: Hey there! Looking for something even easier to use for LDAP integration in your PHP applications?
+</br>
+<h3 align="center">
+ 🎉 Introducing <a href="https://ldaprecord.com/docs/laravel" target="_blank" title="LdapRecord Documentation Website">LdapRecord</a> 🎉</strong>
+</h3>
+</p>
+
+<p align="center">
+    <strong>
+        <a href="https://ldaprecord.com">LdapRecord</a> is the successor to Adldap2 - and comes with a ton of new features.
+    </strong> </br> Adldap2-Laravel will continue to be supported with bug fixes, but will not receive new features.
+</p>
+
+<hr/>
+
 <h1 align="center">Adldap2 - Laravel</h1>
 
 <p align="center">
