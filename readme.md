@@ -1,5 +1,5 @@
 <p align="center">
-<strong>:wave: Hey there! Looking for something even easier to use for LDAP integration in your PHP applications?
+<strong>:wave: Hey there! Looking for something even easier to use for LDAP integration in your Laravel applications?
 </br>
 <h3 align="center">
  🎉 Introducing <a href="https://ldaprecord.com/docs/laravel" target="_blank" title="LdapRecord Documentation Website">LdapRecord</a> 🎉</strong>
