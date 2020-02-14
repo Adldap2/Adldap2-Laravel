@@ -92,7 +92,7 @@ class Import extends Command
      *
      * @return int
      */
-    public function import(array $users = []) : int
+    public function import(array $users = []): int
     {
         $imported = 0;
 
@@ -164,7 +164,7 @@ class Import extends Command
      *
      * @return bool
      */
-    public function isLogging() : bool
+    public function isLogging(): bool
     {
         return ! $this->option('no-log');
     }
@@ -175,7 +175,7 @@ class Import extends Command
      *
      * @return bool
      */
-    public function isDeleting() : bool
+    public function isDeleting(): bool
     {
         return $this->option('delete') == 'true';
     }
@@ -186,7 +186,7 @@ class Import extends Command
      *
      * @return bool
      */
-    public function isRestoring() : bool
+    public function isRestoring(): bool
     {
         return $this->option('restore') == 'true';
     }
@@ -198,7 +198,7 @@ class Import extends Command
      *
      * @return array
      */
-    public function getUsers() : array
+    public function getUsers(): array
     {
         /** @var \Adldap\Query\Builder $query */
         $query = Resolver::query();
@@ -234,7 +234,7 @@ class Import extends Command
      *
      * @return bool
      */
-    protected function save(User $user, Model $model) : bool
+    protected function save(User $user, Model $model): bool
     {
         if ($model->save() && $model->wasRecentlyCreated) {
             Event::dispatch(new Imported($user, $model));
@@ -313,7 +313,7 @@ class Import extends Command
      *
      * @return Model
      */
-    protected function model() : Model
+    protected function model(): Model
     {
         if (! $this->model) {
             $this->model = $this->option('model') ?? Config::get('ldap_auth.model') ?: $this->determineModel();
@@ -355,7 +355,7 @@ class Import extends Command
      *
      * @return bool
      */
-    protected function isUsingSoftDeletes(Model $model) : bool
+    protected function isUsingSoftDeletes(Model $model): bool
     {
         return method_exists($model, 'trashed');
     }
