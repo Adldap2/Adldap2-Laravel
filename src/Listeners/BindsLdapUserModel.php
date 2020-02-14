@@ -42,7 +42,7 @@ class BindsLdapUserModel
      *
      * @return bool
      */
-    protected function isUsingAdldapProvider($guard = null) : bool
+    protected function isUsingAdldapProvider($guard = null): bool
     {
         return Auth::guard($guard)->getProvider() instanceof DatabaseUserProvider;
     }
@@ -54,7 +54,7 @@ class BindsLdapUserModel
      *
      * @return bool
      */
-    protected function canBind(Authenticatable $user) : bool
+    protected function canBind(Authenticatable $user): bool
     {
         return array_key_exists(HasLdapUser::class, class_uses_recursive($user)) && is_null($user->ldap);
     }

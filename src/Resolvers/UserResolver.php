@@ -130,7 +130,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function query() : Builder
+    public function query(): Builder
     {
         $query = $this->getLdapAuthProvider()->search()->users();
 
@@ -151,7 +151,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getLdapDiscoveryAttribute() : string
+    public function getLdapDiscoveryAttribute(): string
     {
         return Config::get('ldap_auth.identifiers.ldap.locate_users_by', 'userprincipalname');
     }
@@ -159,7 +159,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getLdapAuthAttribute() : string
+    public function getLdapAuthAttribute(): string
     {
         return Config::get('ldap_auth.identifiers.ldap.bind_users_by', 'distinguishedname');
     }
@@ -167,7 +167,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getDatabaseUsernameColumn() : string
+    public function getDatabaseUsernameColumn(): string
     {
         return Config::get('ldap_auth.identifiers.database.username_column', 'email');
     }
@@ -175,7 +175,7 @@ class UserResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getDatabaseIdColumn() : string
+    public function getDatabaseIdColumn(): string
     {
         return Config::get('ldap_auth.identifiers.database.guid_column', 'objectguid');
     }
@@ -199,7 +199,7 @@ class UserResolver implements ResolverInterface
      *
      * @return ProviderInterface
      */
-    protected function getLdapAuthProvider() : ProviderInterface
+    protected function getLdapAuthProvider(): ProviderInterface
     {
         return $this->ldap->getProvider($this->connection ?? $this->getLdapAuthConnectionName());
     }
@@ -209,7 +209,7 @@ class UserResolver implements ResolverInterface
      *
      * @return UserProvider
      */
-    protected function getAppAuthProvider() : UserProvider
+    protected function getAppAuthProvider(): UserProvider
     {
         return Auth::guard()->getProvider();
     }

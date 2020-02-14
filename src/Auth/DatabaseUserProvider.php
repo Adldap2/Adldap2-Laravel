@@ -108,7 +108,7 @@ class DatabaseUserProvider extends EloquentUserProvider
      *
      * @return bool
      */
-    protected function isFallingBack() : bool
+    protected function isFallingBack(): bool
     {
         return Config::get('ldap_auth.login_fallback', false);
     }
