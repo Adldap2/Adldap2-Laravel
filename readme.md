@@ -2,7 +2,7 @@
 <strong>:wave: Hey there! Looking for something even easier to use for LDAP integration in your Laravel applications?
 </br>
 <h3 align="center">
- 🎉 Introducing <a href="https://ldaprecord.com/docs/laravel" target="_blank" title="LdapRecord Documentation Website">LdapRecord</a> 🎉</strong>
+ 🎉 Introducing <a href="https://github.com/DirectoryTree/LdapRecord-Laravel" target="_blank" title="LdapRecord GitHub Repository">LdapRecord</a> 🎉</strong>
 </h3>
 </p>
 
