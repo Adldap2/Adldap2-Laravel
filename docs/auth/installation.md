@@ -1,5 +1,14 @@
 # Installation
 
+> **Note**: If you're using Laravel 6, you must publish Laravel's auth
+> scaffolding by running the following commands before continuing on:
+> 
+> ```bash
+> composer require laravel/ui --dev
+>
+> php artisan ui vue --auth
+> ```
+
 To start configuring the authentication driver, you will need
 to publish the configuration file using the command below:
 
