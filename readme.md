@@ -1,8 +1,8 @@
 <p align="center">
-<strong>:wave: Hey there! Looking for something even easier to use for LDAP integration in your Laravel applications?
+<strong>:wave: Hey there! Looking for something even easier to use for LDAP integration in your Laravel applications?</strong>
 </br>
 <h3 align="center">
- 🎉 Introducing <a href="https://github.com/DirectoryTree/LdapRecord-Laravel" target="_blank" title="LdapRecord GitHub Repository">LdapRecord</a> 🎉</strong>
+ 🎉 Introducing <a href="https://github.com/DirectoryTree/LdapRecord-Laravel" target="_blank" title="LdapRecord GitHub Repository">LdapRecord</a> 🎉
 </h3>
 </p>
 
