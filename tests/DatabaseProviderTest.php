@@ -18,12 +18,11 @@ class DatabaseProviderTest extends DatabaseTestCase
 {
     use WithFaker;
 
-    /**
-     * @test
-     * @expectedException \RuntimeException
-     */
+    /** @test */
     public function configuration_not_found_exception_when_config_is_null()
     {
+        $this->expectException(\RuntimeException::class);
+
         config(['ldap' => null]);
 
         App::make(AdldapInterface::class);
