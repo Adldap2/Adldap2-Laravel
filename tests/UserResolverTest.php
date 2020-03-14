@@ -3,6 +3,7 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\AdldapInterface;
+use Adldap\Connections\ConnectionInterface;
 use Adldap\Connections\ProviderInterface;
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
 use Adldap\Laravel\Resolvers\UserResolver;
@@ -85,6 +86,11 @@ class UserResolverTest extends TestCase
             ->shouldReceive('users')->once()->andReturn($builder);
 
         $ad = m::mock(AdldapInterface::class);
+        $ldapConnection = m::mock(ConnectionInterface::class);
+        $ldapConnection->shouldReceive('isBound')->once()->andReturn(false);
+
+        $provider->shouldReceive('getConnection')->once()->andReturn($ldapConnection);
+        $provider->shouldReceive('connect')->once();
 
         $ad->shouldReceive('getProvider')->with('default')->andReturn($provider);
 
@@ -99,8 +105,14 @@ class UserResolverTest extends TestCase
         Config::shouldReceive('get')->once()->with('ldap_auth.connection', 'default')->andReturn('other-domain');
 
         $ad = m::mock(AdldapInterface::class);
+        $provider = m::mock(ProviderInterface::class);
 
-        $ad->shouldReceive('getProvider')->andReturn(m::mock(ProviderInterface::class))->with('other-domain');
+        $ad->shouldReceive('getProvider')->with('other-domain')->andReturn($provider);
+        $ldapConnection = m::mock(ConnectionInterface::class);
+        $ldapConnection->shouldReceive('isBound')->once()->andReturn(false);
+
+        $provider->shouldReceive('getConnection')->once()->andReturn($ldapConnection);
+        $provider->shouldReceive('connect')->once();
 
         $r = m::mock(UserResolver::class, [$ad])->makePartial();
 
@@ -130,6 +142,11 @@ class UserResolverTest extends TestCase
             ->shouldReceive('users')->once()->andReturn($query);
 
         $ad = m::mock(AdldapInterface::class);
+        $ldapConnection = m::mock(ConnectionInterface::class);
+        $ldapConnection->shouldReceive('isBound')->once()->andReturn(false);
+
+        $ldapProvider->shouldReceive('getConnection')->once()->andReturn($ldapConnection);
+        $ldapProvider->shouldReceive('connect')->once();
 
         $ad->shouldReceive('getProvider')->once()->andReturn($ldapProvider);
 

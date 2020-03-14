@@ -3,8 +3,13 @@
 namespace Adldap\Laravel\Tests;
 
 use Adldap\AdldapInterface;
+use Adldap\Connections\ConnectionInterface;
+use Adldap\Connections\Provider;
+use Adldap\Connections\ProviderInterface;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Facades\Resolver;
+use Adldap\Laravel\Resolvers\ResolverInterface;
+use Adldap\Laravel\Resolvers\UserResolver;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
 use Adldap\Laravel\Tests\Models\TestUser as EloquentUser;
 use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
@@ -13,6 +18,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Mockery as m;
 
 class DatabaseProviderTest extends DatabaseTestCase
 {
@@ -89,7 +95,19 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function config_scopes_are_applied()
     {
+        $ldapMock = m::mock(AdldapInterface::class);
+        App::instance(AdldapInterface::class, $ldapMock);
+        /** @var Provider $provider */
+        $provider = App::make(Provider::class);
         config(['ldap_auth.scopes' => [JohnDoeScope::class]]);
+
+        $providerMock = m::mock(ProviderInterface::class);
+        $connectionMock = m::mock(ConnectionInterface::class);
+
+        $providerMock->shouldReceive('getConnection')->once()->andReturn($connectionMock);
+        $connectionMock->shouldReceive('isBound')->once()->andReturn(true);
+        $ldapMock->shouldReceive('getProvider')->once()->andReturn($providerMock);
+        $providerMock->shouldReceive('search')->once()->andReturn($provider->search());
 
         $expectedFilter = '(&(objectclass=\75\73\65\72)(objectcategory=\70\65\72\73\6f\6e)(!(objectclass=\63\6f\6e\74\61\63\74))(cn=\4a\6f\68\6e\20\44\6f\65))';
 
@@ -219,6 +237,10 @@ class DatabaseProviderTest extends DatabaseTestCase
     /** @test */
     public function auth_attempts_using_fallback_does_not_require_connection()
     {
+        $ldapMock = m::mock(AdldapInterface::class);
+        App::instance(AdldapInterface::class, $ldapMock);
+        /** @var Provider $provider */
+        $provider = App::make(Provider::class);
         config(['ldap_auth.login_fallback' => true]);
 
         EloquentUser::create([
@@ -231,6 +253,14 @@ class DatabaseProviderTest extends DatabaseTestCase
             'email'    => 'jdoe@email.com',
             'password' => 'Password123',
         ];
+
+        $providerMock = m::mock(ProviderInterface::class);
+        $connectionMock = m::mock(ConnectionInterface::class);
+
+        $providerMock->shouldReceive('getConnection')->times(3)->andReturn($connectionMock);
+        $connectionMock->shouldReceive('isBound')->times(3)->andReturn(true);
+        $ldapMock->shouldReceive('getProvider')->times(3)->andReturn($providerMock);
+        $providerMock->shouldReceive('search')->times(3)->andReturn($provider->search());
 
         $this->assertTrue(Auth::attempt($credentials));
 
