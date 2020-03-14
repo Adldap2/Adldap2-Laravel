@@ -203,7 +203,7 @@ class UserResolver implements ResolverInterface
     {
         $provider = $this->ldap->getProvider($this->connection ?? $this->getLdapAuthConnectionName());
 
-        if (!$provider->getConnection()->isBound()) {
+        if (! $provider->getConnection()->isBound()) {
             // We'll make sure we have a bound connection before
             // allowing dynamic calls on the default provider.
             $provider->connect();

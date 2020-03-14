@@ -8,8 +8,6 @@ use Adldap\Connections\Provider;
 use Adldap\Connections\ProviderInterface;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Facades\Resolver;
-use Adldap\Laravel\Resolvers\ResolverInterface;
-use Adldap\Laravel\Resolvers\UserResolver;
 use Adldap\Laravel\Tests\Handlers\LdapAttributeHandler;
 use Adldap\Laravel\Tests\Models\TestUser as EloquentUser;
 use Adldap\Laravel\Tests\Scopes\JohnDoeScope;
