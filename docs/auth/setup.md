@@ -135,6 +135,7 @@ With this example rule, we only want to allow users to login if they are inside 
 namespace App\Rules;
 
 use Adldap\Laravel\Validation\Rules\Rule;
+use Illuminate\Support\Str; // Laravel >= 5.7
 
 class OnlyManagersAndAccounting extends Rule
 {
@@ -150,7 +151,10 @@ class OnlyManagersAndAccounting extends Rule
             'ou=Managers,dc=acme,dc=org',
         ];
     
+        // Laravel <= 5.6
         return str_contains($this->user->getDn(), $ous);
+
+        return Str::contains($this->user->getDn(), $ous)
     }
 }
 ```
