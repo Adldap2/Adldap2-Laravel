@@ -154,6 +154,7 @@ class OnlyManagersAndAccounting extends Rule
         // Laravel <= 5.6
         return str_contains($this->user->getDn(), $ous);
 
+        // Laravel >= 5.7
         return Str::contains($this->user->getDn(), $ous)
     }
 }
