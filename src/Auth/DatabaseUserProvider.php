@@ -63,7 +63,7 @@ class DatabaseUserProvider extends UserProvider
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function retrieveById($identifier)
     {
@@ -71,7 +71,7 @@ class DatabaseUserProvider extends UserProvider
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function retrieveByToken($identifier, $token)
     {
@@ -79,7 +79,7 @@ class DatabaseUserProvider extends UserProvider
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function updateRememberToken(Authenticatable $user, $token)
     {
@@ -133,12 +133,12 @@ class DatabaseUserProvider extends UserProvider
         if (
             $model->exists
             && $this->isFallingBack()
-            && !$this->user instanceof User
+            && ! $this->user instanceof User
         ) {
             return $this->eloquent->validateCredentials($model, $credentials);
         }
 
-        if (!Resolver::authenticate($this->user, $credentials)) {
+        if (! Resolver::authenticate($this->user, $credentials)) {
             return false;
         }
 
@@ -147,7 +147,7 @@ class DatabaseUserProvider extends UserProvider
         // Here we will perform authorization on the LDAP user. If all
         // validation rules pass, we will allow the authentication
         // attempt. Otherwise, it is automatically rejected.
-        if (!$this->passesValidation($this->user, $model)) {
+        if (! $this->passesValidation($this->user, $model)) {
             Event::dispatch(new AuthenticationRejected($this->user, $model));
 
             return false;
