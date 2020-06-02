@@ -17,7 +17,6 @@ use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Traits\ForwardsCalls;
 
 /** @mixin EloquentUserProvider */
 class DatabaseUserProvider extends UserProvider
