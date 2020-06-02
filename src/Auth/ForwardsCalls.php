@@ -2,8 +2,8 @@
 
 namespace Adldap\Laravel\Auth;
 
-use Error;
 use BadMethodCallException;
+use Error;
 
 trait ForwardsCalls
 {
