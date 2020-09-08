@@ -7,12 +7,12 @@
     "require": {
         "php": ">=7.1",
         "adldap2/adldap2": "^10.1",
-        "illuminate/support": "~5.5|~6.0|~7.0"
+        "illuminate/support": "~5.5|~6.0|~7.0|~8.0"
     },
     "require-dev": {
         "mockery/mockery": "~1.0",
-        "phpunit/phpunit": "~7.0",
-        "orchestra/testbench": "~3.7"
+        "phpunit/phpunit": "~7.0|~8.0",
+        "orchestra/testbench": "~3.7|~4.0"
     },
     "archive": {
         "exclude": ["/tests"]
