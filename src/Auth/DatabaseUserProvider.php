@@ -2,6 +2,7 @@
 
 namespace Adldap\Laravel\Auth;
 
+use Adldap\Auth\BindException;
 use Adldap\Laravel\Commands\Import;
 use Adldap\Laravel\Commands\SyncPassword;
 use Adldap\Laravel\Events\AuthenticatedWithCredentials;
@@ -90,7 +91,13 @@ class DatabaseUserProvider extends UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        $user = Resolver::byCredentials($credentials);
+        try {
+            $user = Resolver::byCredentials($credentials);
+        } catch (BindException $e) {
+            if (!$this->isFallingBack()) {
+                throw $e;
+            }
+        }
 
         if ($user instanceof User) {
             return $this->setAndImportAuthenticatingUser($user);
