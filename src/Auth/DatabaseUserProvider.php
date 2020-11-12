@@ -91,10 +91,12 @@ class DatabaseUserProvider extends UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
+        $user = null;
+
         try {
             $user = Resolver::byCredentials($credentials);
         } catch (BindException $e) {
-            if (!$this->isFallingBack()) {
+            if (! $this->isFallingBack()) {
                 throw $e;
             }
         }
