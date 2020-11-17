@@ -14,7 +14,7 @@
 
 <p align="center">
  <strong>
- <a href="https://stevebauman.ca/posts/why-ldap-record/">Read Why</a>
+ <a href="https://stevebauman.ca/why-ldap-record/">Read Why</a>
  </strong>
 </p>
 
