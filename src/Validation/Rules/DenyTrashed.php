@@ -30,6 +30,9 @@ class DenyTrashed extends Rule
      */
     protected function isTrashed()
     {
-        return method_exists($this->model, 'trashed') && $this->model->trashed();
+        if ($this->model) {
+            return method_exists($this->model, 'trashed') && $this->model->trashed();
+        }
+        return false;
     }
 }
