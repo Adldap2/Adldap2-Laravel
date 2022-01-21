@@ -9,7 +9,7 @@
 <p align="center">
     <strong>
         <a href="https://ldaprecord.com">LdapRecord</a> is the successor to Adldap2 - and comes with a ton of new features.
-    </strong> </br> Adldap2-Laravel will continue to be supported with bug fixes, but will not receive new features.
+    </strong> </br> Adldap2-Laravel will be supported with minor bug fixes, but will not receive any new updates or features.
 </p>
 
 <p align="center">
