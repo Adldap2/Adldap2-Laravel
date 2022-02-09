@@ -1,4 +1,10 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sgarwood/Adldap2.git"
+        }
+    ],
     "name": "adldap2/adldap2-laravel",
     "description": "LDAP Authentication & Management for Laravel.",
     "keywords": ["adldap", "adldap2", "ldap", "laravel"],
