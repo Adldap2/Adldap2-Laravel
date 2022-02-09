@@ -1,10 +1,4 @@
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/sgarwood/Adldap2.git"
-        }
-    ],
     "name": "adldap2/adldap2-laravel",
     "description": "LDAP Authentication & Management for Laravel.",
     "keywords": ["adldap", "adldap2", "ldap", "laravel"],
@@ -12,7 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=7.1",
-        "adldap2/adldap2": "dev-patch-1",
+        "adldap2/adldap2": "^10.1",
         "illuminate/support": "~5.5|~6.0|~7.0|~8.0|~9.0"
     },
     "require-dev": {
