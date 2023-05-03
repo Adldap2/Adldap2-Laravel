@@ -101,7 +101,7 @@ return [
         
         // Fetch the userAccountControl attibute
         // This is needed on FreeIPA to determine if an user is disabled
-        Adldap\Laravel\Scopes\UserAccountControlScope::class,
+        // Adldap\Laravel\Scopes\UserAccountControlScope::class,
 
     ],
 
