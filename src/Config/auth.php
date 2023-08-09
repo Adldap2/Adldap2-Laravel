@@ -98,6 +98,10 @@ return [
         // Only allows users with a uid to authenticate.
         // Suitable when using OpenLDAP.
         // Adldap\Laravel\Scopes\UidScope::class,
+        
+        // Fetch the userAccountControl attibute
+        // This is needed on FreeIPA to determine if an user is disabled
+        // Adldap\Laravel\Scopes\UserAccountControlScope::class,
 
     ],
 
